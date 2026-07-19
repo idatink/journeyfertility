@@ -104,7 +104,6 @@ export default function App() {
   const [searchMode, setSearchMode] = useState('clinic-costings');
   const [location, setLocation] = useState('all');
   const [clinic, setClinic] = useState('all');
-  const [appointmentDate, setAppointmentDate] = useState('all');
   const [budgetRange, setBudgetRange] = useState('all');
   const [showChat, setShowChat] = useState(false);
   const [showQuiz, setShowQuiz] = useState(false);
@@ -411,7 +410,7 @@ export default function App() {
             </div>
           ) : (
             /* Standard Treatment Search Form */
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
             <div className="relative">
               <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 z-10 pointer-events-none" />
               <Select value={location} onValueChange={setLocation}>
@@ -506,23 +505,11 @@ export default function App() {
               </Select>
             </div>
 
-            <div className="relative">
-              <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 z-10 pointer-events-none" />
-              <Select value={appointmentDate} onValueChange={setAppointmentDate}>
-                <SelectTrigger className="pl-10 bg-white">
-                  <SelectValue placeholder="Appointment Date" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Dates</SelectItem>
-                  <SelectItem value="this-week">This Week</SelectItem>
-                  <SelectItem value="next-week">Next Week</SelectItem>
-                  <SelectItem value="this-month">This Month</SelectItem>
-                  <SelectItem value="next-month">Next Month</SelectItem>
-                  <SelectItem value="next-3-months">Next 3 Months</SelectItem>
-                  <SelectItem value="flexible">Flexible</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
+            {/*
+              Appointment date filter removed: there is no clinic availability
+              data behind it, so it could only ever appear to filter. It returns
+              when clinics supply real availability.
+            */}
 
             <div className="relative">
               <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 z-10 pointer-events-none" />
@@ -598,7 +585,13 @@ export default function App() {
             >
               ← Back to Search
             </Button>
-            <ClinicCostings serviceType={serviceType} atHomeOnly={atHomeOnly} />
+            <ClinicCostings
+              serviceType={serviceType}
+              atHomeOnly={atHomeOnly}
+              location={location}
+              clinic={clinic}
+              budgetRange={budgetRange}
+            />
           </div>
         )}
 

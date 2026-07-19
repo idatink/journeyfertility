@@ -17,10 +17,34 @@ import { AtHomeTestKitsComparison } from './AtHomeTestKitsComparison';
 interface ClinicCostingsProps {
   serviceType: 'egg-freezing' | 'embryo' | 'ivf' | 'fertility';
   atHomeOnly?: boolean;
+  /** city slug from the search form, or 'all' */
+  location?: string;
+  /** clinic slug from the search form, or 'all' */
+  clinic?: string;
+  /** budget bracket id from the search form, or 'all' / 'flexible' */
+  budgetRange?: string;
 }
+
+/**
+ * Budget brackets are expressed as inclusive-exclusive bounds on the service
+ * total. The treatment form and the testing form use different scales, so both
+ * sets are declared here rather than parsed from the id at call time.
+ */
+const BUDGET_BOUNDS: Record<string, { min: number; max: number }> = {
+  'under-25k': { min: 0, max: 25000 },
+  '25k-35k': { min: 25000, max: 35000 },
+  '35k-45k': { min: 35000, max: 45000 },
+  'over-45k': { min: 45000, max: Infinity },
+  'under-200': { min: 0, max: 200 },
+  '200-500': { min: 200, max: 500 },
+  '500-1000': { min: 500, max: 1000 },
+  'over-1000': { min: 1000, max: Infinity },
+};
 
 interface ClinicCost {
   id: number;
+  slug: string;
+  citySlug: string;
   clinicName: string;
   location: string;
   consultation: number;
@@ -30,6 +54,8 @@ interface ClinicCost {
   medications: number;
   storagePerYear: number;
   geneticTesting: number;
+  embryoFreezing: number;
+  fertilityTestPanel: number;
   successRate: number;
   total: number;
 }
@@ -51,6 +77,8 @@ interface AtHomeTestKit {
 const mockClinicData: ClinicCost[] = [
   {
     id: 1,
+    slug: "reproductive-health",
+    citySlug: "new-york",
     clinicName: "Reproductive Health Center",
     location: "New York, NY",
     consultation: 350,
@@ -60,11 +88,15 @@ const mockClinicData: ClinicCost[] = [
     medications: 4500,
     storagePerYear: 800,
     geneticTesting: 3500,
+    embryoFreezing: 4200,
+    fertilityTestPanel: 650,
     successRate: 68,
     total: 34150
   },
   {
     id: 2,
+    slug: "fertility-la",
+    citySlug: "los-angeles",
     clinicName: "Fertility Institute of LA",
     location: "Los Angeles, CA",
     consultation: 300,
@@ -74,11 +106,15 @@ const mockClinicData: ClinicCost[] = [
     medications: 5200,
     storagePerYear: 950,
     geneticTesting: 4000,
+    embryoFreezing: 4600,
+    fertilityTestPanel: 720,
     successRate: 71,
     total: 38150
   },
   {
     id: 3,
+    slug: "boston-ivf",
+    citySlug: "boston",
     clinicName: "Boston IVF",
     location: "Boston, MA",
     consultation: 400,
@@ -88,11 +124,15 @@ const mockClinicData: ClinicCost[] = [
     medications: 4000,
     storagePerYear: 750,
     geneticTesting: 3200,
+    embryoFreezing: 3900,
+    fertilityTestPanel: 600,
     successRate: 65,
     total: 32050
   },
   {
     id: 4,
+    slug: "chicago-fertility",
+    citySlug: "chicago",
     clinicName: "Chicago Fertility Center",
     location: "Chicago, IL",
     consultation: 325,
@@ -102,11 +142,15 @@ const mockClinicData: ClinicCost[] = [
     medications: 3800,
     storagePerYear: 700,
     geneticTesting: 3000,
+    embryoFreezing: 3600,
+    fertilityTestPanel: 540,
     successRate: 62,
     total: 30325
   },
   {
     id: 5,
+    slug: "pacific-fertility",
+    citySlug: "san-francisco",
     clinicName: "Pacific Fertility",
     location: "San Francisco, CA",
     consultation: 450,
@@ -116,11 +160,15 @@ const mockClinicData: ClinicCost[] = [
     medications: 5800,
     storagePerYear: 1000,
     geneticTesting: 4500,
+    embryoFreezing: 5000,
+    fertilityTestPanel: 850,
     successRate: 73,
     total: 41750
   },
   {
     id: 6,
+    slug: "texas-fertility",
+    citySlug: "austin",
     clinicName: "Texas Fertility Clinic",
     location: "Austin, TX",
     consultation: 275,
@@ -130,11 +178,15 @@ const mockClinicData: ClinicCost[] = [
     medications: 3500,
     storagePerYear: 650,
     geneticTesting: 2800,
+    embryoFreezing: 3300,
+    fertilityTestPanel: 480,
     successRate: 59,
     total: 28025
   },
   {
     id: 7,
+    slug: "memorial-bahcelievler",
+    citySlug: "istanbul",
     clinicName: "Memorial Bahçelievler IVF Center",
     location: "Istanbul, Turkey",
     consultation: 150,
@@ -144,11 +196,15 @@ const mockClinicData: ClinicCost[] = [
     medications: 2000,
     storagePerYear: 400,
     geneticTesting: 1500,
+    embryoFreezing: 1500,
+    fertilityTestPanel: 260,
     successRate: 64,
     total: 13550
   },
   {
     id: 8,
+    slug: "acibadem-maslak",
+    citySlug: "istanbul",
     clinicName: "Acıbadem Maslak Hospital IVF",
     location: "Istanbul, Turkey",
     consultation: 200,
@@ -158,11 +214,15 @@ const mockClinicData: ClinicCost[] = [
     medications: 2200,
     storagePerYear: 450,
     geneticTesting: 1800,
+    embryoFreezing: 1750,
+    fertilityTestPanel: 310,
     successRate: 67,
     total: 15150
   },
   {
     id: 9,
+    slug: "istanbul-fertility",
+    citySlug: "istanbul",
     clinicName: "Istanbul Fertility Center",
     location: "Istanbul, Turkey",
     consultation: 120,
@@ -172,11 +232,15 @@ const mockClinicData: ClinicCost[] = [
     medications: 1800,
     storagePerYear: 350,
     geneticTesting: 1400,
+    embryoFreezing: 1300,
+    fertilityTestPanel: 210,
     successRate: 61,
     total: 12270
   },
   {
     id: 10,
+    slug: "american-hospital-istanbul",
+    citySlug: "istanbul",
     clinicName: "American Hospital IVF Clinic",
     location: "Istanbul, Turkey",
     consultation: 250,
@@ -186,11 +250,15 @@ const mockClinicData: ClinicCost[] = [
     medications: 2400,
     storagePerYear: 500,
     geneticTesting: 2000,
+    embryoFreezing: 1950,
+    fertilityTestPanel: 380,
     successRate: 69,
     total: 16850
   },
   {
     id: 11,
+    slug: "jinemed",
+    citySlug: "istanbul",
     clinicName: "Jinemed Hospital Women's Health",
     location: "Istanbul, Turkey",
     consultation: 180,
@@ -200,11 +268,15 @@ const mockClinicData: ClinicCost[] = [
     medications: 2100,
     storagePerYear: 420,
     geneticTesting: 1600,
+    embryoFreezing: 1600,
+    fertilityTestPanel: 290,
     successRate: 66,
     total: 14400
   },
   {
     id: 12,
+    slug: "medipol-mega",
+    citySlug: "istanbul",
     clinicName: "Medipol Mega Hospital IVF",
     location: "Istanbul, Turkey",
     consultation: 160,
@@ -214,43 +286,72 @@ const mockClinicData: ClinicCost[] = [
     medications: 1900,
     storagePerYear: 380,
     geneticTesting: 1500,
+    embryoFreezing: 1450,
+    fertilityTestPanel: 240,
     successRate: 63,
     total: 13140
   }
 ];
 
-// Function to get service-specific data and calculate totals
-function getServiceData(serviceType: 'egg-freezing' | 'embryo' | 'ivf' | 'fertility') {
-  return mockClinicData.map(clinic => {
-    let total = clinic.consultation;
-    
-    switch (serviceType) {
-      case 'egg-freezing':
-        // Egg freezing: consultation + egg retrieval + medications + storage
-        total = clinic.consultation + clinic.eggRetrieval + clinic.medications + clinic.storagePerYear;
-        break;
-      case 'embryo':
-        // Embryo freezing: consultation + egg retrieval + medications + fertilization + storage
-        total = clinic.consultation + clinic.eggRetrieval + clinic.medications + (clinic.ivfCycle * 0.3) + clinic.storagePerYear;
-        break;
-      case 'ivf':
-        // Full IVF: all costs included
-        total = clinic.consultation + clinic.eggRetrieval + clinic.ivfCycle + clinic.embryoTransfer + clinic.medications;
-        break;
-      case 'fertility':
-        // Fertility testing: just consultation and basic tests (lower costs)
-        total = clinic.consultation + (clinic.eggRetrieval * 0.1);
-        break;
-    }
-    
+type ServiceType = 'egg-freezing' | 'embryo' | 'ivf' | 'fertility';
+
+// Priced line items are always named explicitly. A total is the sum of real,
+// individually quoted components — never a multiplier applied to an unrelated
+// price. If a clinic has not quoted one of these, its total is unavailable
+// rather than estimated.
+const PRICED_COMPONENTS: Record<ServiceType, (keyof ClinicCost)[]> = {
+  'egg-freezing': ['consultation', 'eggRetrieval', 'medications', 'storagePerYear'],
+  embryo: ['consultation', 'eggRetrieval', 'medications', 'embryoFreezing', 'storagePerYear'],
+  ivf: ['consultation', 'eggRetrieval', 'ivfCycle', 'embryoTransfer', 'medications'],
+  fertility: ['consultation', 'fertilityTestPanel'],
+};
+
+export const COMPONENT_LABELS: Partial<Record<keyof ClinicCost, string>> = {
+  consultation: 'Consultation',
+  eggRetrieval: 'Egg retrieval',
+  ivfCycle: 'IVF cycle',
+  embryoTransfer: 'Embryo transfer',
+  medications: 'Medications',
+  storagePerYear: 'Storage (first year)',
+  embryoFreezing: 'Fertilisation & freezing',
+  fertilityTestPanel: 'Test panel',
+};
+
+export interface PricedClinic extends ClinicCost {
+  /** null when the clinic has not quoted every component of this service */
+  total: number | null;
+  components: { key: keyof ClinicCost; label: string; amount: number }[];
+}
+
+function getServiceData(serviceType: ServiceType): PricedClinic[] {
+  const keys = PRICED_COMPONENTS[serviceType];
+
+  return mockClinicData.map((clinic) => {
+    const components = keys.map((key) => ({
+      key,
+      label: COMPONENT_LABELS[key] ?? String(key),
+      amount: clinic[key] as number,
+    }));
+
+    const incomplete = components.some(
+      (c) => typeof c.amount !== 'number' || Number.isNaN(c.amount)
+    );
+
     return {
       ...clinic,
-      total: Math.round(total)
+      components,
+      total: incomplete ? null : components.reduce((sum, c) => sum + c.amount, 0),
     };
   });
 }
 
-export function ClinicCostings({ serviceType, atHomeOnly }: ClinicCostingsProps) {
+export function ClinicCostings({
+  serviceType,
+  atHomeOnly,
+  location = 'all',
+  clinic: clinicFilter = 'all',
+  budgetRange = 'all',
+}: ClinicCostingsProps) {
   const [sortField, setSortField] = useState<keyof ClinicCost>('total');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
   const [selectedClinics, setSelectedClinics] = useState<number[]>([]);
@@ -279,24 +380,50 @@ export function ClinicCostings({ serviceType, atHomeOnly }: ClinicCostingsProps)
     }
   };
 
-  const sortedData = [...getServiceData(serviceType)].sort((a, b) => {
+  const allPriced = getServiceData(serviceType);
+
+  // Hard filters from the search form. Each is skipped when unset so that an
+  // untouched form returns everything.
+  const budget = BUDGET_BOUNDS[budgetRange];
+  const filteredData = allPriced.filter((c) => {
+    if (location !== 'all' && c.citySlug !== location) return false;
+    if (clinicFilter !== 'all' && c.slug !== clinicFilter) return false;
+    if (budget) {
+      if (c.total === null) return false;
+      if (c.total < budget.min || c.total >= budget.max) return false;
+    }
+    return true;
+  });
+
+  const activeFilterCount =
+    (location !== 'all' ? 1 : 0) + (clinicFilter !== 'all' ? 1 : 0) + (budget ? 1 : 0);
+
+  const sortedData = [...filteredData].sort((a, b) => {
     const aValue = a[sortField];
     const bValue = b[sortField];
-    
+
+    // Clinics without a complete quote always sort last, whichever direction.
+    if (aValue === null && bValue === null) return 0;
+    if (aValue === null) return 1;
+    if (bValue === null) return -1;
+
     if (typeof aValue === 'number' && typeof bValue === 'number') {
       return sortDirection === 'asc' ? aValue - bValue : bValue - aValue;
     }
-    
+
     if (typeof aValue === 'string' && typeof bValue === 'string') {
-      return sortDirection === 'asc' 
+      return sortDirection === 'asc'
         ? aValue.localeCompare(bValue)
         : bValue.localeCompare(aValue);
     }
-    
+
     return 0;
   });
 
-  const lowestTotal = Math.min(...sortedData.map(c => c.total));
+  const quotedTotals = sortedData
+    .map((c) => c.total)
+    .filter((t): t is number => t !== null);
+  const lowestTotal = quotedTotals.length ? Math.min(...quotedTotals) : null;
 
   const toggleClinicSelection = (id: number) => {
     setSelectedClinics(prev => 
@@ -349,7 +476,12 @@ export function ClinicCostings({ serviceType, atHomeOnly }: ClinicCostingsProps)
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-3xl mb-2">Clinic Cost Comparison</h2>
-          <p className="text-gray-600">Compare pricing across {mockClinicData.length} fertility clinics</p>
+          <p className="text-[#5C6478]">
+            {sortedData.length} of {allPriced.length} clinics
+            {activeFilterCount > 0 && (
+              <> · {activeFilterCount} filter{activeFilterCount > 1 ? 's' : ''} applied</>
+            )}
+          </p>
         </div>
         <div className="flex gap-3">
           <Button variant="outline">
@@ -387,8 +519,21 @@ export function ClinicCostings({ serviceType, atHomeOnly }: ClinicCostingsProps)
         </div>
       </div>
 
+      {/* No results */}
+      {sortedData.length === 0 && (
+        <div className="glass rounded-2xl p-10 text-center">
+          <h3 className="text-lg font-semibold text-[#2F3440] mb-2">
+            No clinics match these filters
+          </h3>
+          <p className="text-[#5C6478] max-w-md mx-auto">
+            We do not yet list a clinic for this combination of location, provider and budget. Try
+            widening the budget or clearing the location to see what else is available.
+          </p>
+        </div>
+      )}
+
       {/* Table */}
-      <div className="border rounded-lg overflow-hidden bg-white">
+      <div className={`border rounded-lg overflow-hidden bg-white ${sortedData.length === 0 ? 'hidden' : ''}`}>
         <div className="overflow-x-auto">
           <Table>
             <TableHeader>
@@ -531,7 +676,13 @@ export function ClinicCostings({ serviceType, atHomeOnly }: ClinicCostingsProps)
                         <span className="text-sm">{clinic.successRate}%</span>
                       </div>
                     </TableCell>
-                    <TableCell className="text-[#5B6AA5]">${clinic.total.toLocaleString()}</TableCell>
+                    <TableCell className="text-[#5B6AA5]">
+                      {clinic.total !== null ? (
+                        `$${clinic.total.toLocaleString()}`
+                      ) : (
+                        <span className="text-[#5C6478] text-sm">Not quoted</span>
+                      )}
+                    </TableCell>
                   </TableRow>
                   
                   {expandedRows.includes(clinic.id) && (
