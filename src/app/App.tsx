@@ -16,6 +16,7 @@ import { IVFTreatmentInfo } from './components/IVFTreatmentInfo';
 import { FertilityTestingInfo } from './components/FertilityTestingInfo';
 import { MarketingAssets } from './components/MarketingAssets';
 import { Resources } from './components/Resources';
+import { BUDGET_BRACKETS } from './lib/budget';
 import { About } from './components/About';
 import { TestimonialModal } from './components/TestimonialModal';
 import eggFreezingImage from 'figma:asset/837faeedfcc3fc383751b333377e75ebb80b8527.png';
@@ -105,6 +106,13 @@ export default function App() {
   const [location, setLocation] = useState('all');
   const [clinic, setClinic] = useState('all');
   const [budgetRange, setBudgetRange] = useState('all');
+
+  // Bracket ids are namespaced per service, so a bracket chosen for one service
+  // is meaningless for another. Clear it whenever the service changes rather
+  // than leaving a stale id that silently filters everything out.
+  useEffect(() => {
+    setBudgetRange('all');
+  }, [serviceType]);
   const [showChat, setShowChat] = useState(false);
   const [showQuiz, setShowQuiz] = useState(false);
   const [scrollToClinics, setScrollToClinics] = useState(false);
@@ -399,11 +407,11 @@ export default function App() {
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">All Budgets</SelectItem>
-                    <SelectItem value="under-200">Under $200 (At-Home Kits)</SelectItem>
-                    <SelectItem value="200-500">$200 - $500</SelectItem>
-                    <SelectItem value="500-1000">$500 - $1,000</SelectItem>
-                    <SelectItem value="over-1000">Over $1,000</SelectItem>
-                    <SelectItem value="flexible">Flexible Budget</SelectItem>
+                    {BUDGET_BRACKETS[serviceType].map((b) => (
+                      <SelectItem key={b.id} value={b.id}>
+                        {b.label}
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
               </div>
@@ -519,11 +527,11 @@ export default function App() {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">All Budgets</SelectItem>
-                  <SelectItem value="under-25k">Under $25,000</SelectItem>
-                  <SelectItem value="25k-35k">$25,000 - $35,000</SelectItem>
-                  <SelectItem value="35k-45k">$35,000 - $45,000</SelectItem>
-                  <SelectItem value="over-45k">Over $45,000</SelectItem>
-                  <SelectItem value="flexible">Flexible Budget</SelectItem>
+                  {BUDGET_BRACKETS[serviceType].map((b) => (
+                    <SelectItem key={b.id} value={b.id}>
+                      {b.label}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
             </div>

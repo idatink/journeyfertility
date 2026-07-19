@@ -13,6 +13,7 @@ import {
 } from './ui/table';
 import { ClinicDetailedCostings } from './ClinicDetailedCostings';
 import { AtHomeTestKitsComparison } from './AtHomeTestKitsComparison';
+import { getBudgetBounds } from '../lib/budget';
 
 interface ClinicCostingsProps {
   serviceType: 'egg-freezing' | 'embryo' | 'ivf' | 'fertility';
@@ -25,21 +26,8 @@ interface ClinicCostingsProps {
   budgetRange?: string;
 }
 
-/**
- * Budget brackets are expressed as inclusive-exclusive bounds on the service
- * total. The treatment form and the testing form use different scales, so both
- * sets are declared here rather than parsed from the id at call time.
- */
-const BUDGET_BOUNDS: Record<string, { min: number; max: number }> = {
-  'under-25k': { min: 0, max: 25000 },
-  '25k-35k': { min: 25000, max: 35000 },
-  '35k-45k': { min: 35000, max: 45000 },
-  'over-45k': { min: 45000, max: Infinity },
-  'under-200': { min: 0, max: 200 },
-  '200-500': { min: 200, max: 500 },
-  '500-1000': { min: 500, max: 1000 },
-  'over-1000': { min: 1000, max: Infinity },
-};
+// Budget bounds come from the shared bracket table so the form options and the
+// filter can never drift apart.
 
 interface ClinicCost {
   id: number;
@@ -384,7 +372,7 @@ export function ClinicCostings({
 
   // Hard filters from the search form. Each is skipped when unset so that an
   // untouched form returns everything.
-  const budget = BUDGET_BOUNDS[budgetRange];
+  const budget = getBudgetBounds(serviceType, budgetRange);
   const filteredData = allPriced.filter((c) => {
     if (location !== 'all' && c.citySlug !== location) return false;
     if (clinicFilter !== 'all' && c.slug !== clinicFilter) return false;
