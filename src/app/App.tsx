@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Search, MapPin, Calendar, DollarSign, Users, Heart, Menu, Globe, User, ChevronDown, Plus, ChevronLeft, ChevronRight, Snowflake, Baby, Activity, Sparkles, HeartPulse } from 'lucide-react';
+import { Search, MapPin, Calendar, DollarSign, Users, Heart, Menu, User, ChevronDown, Plus, ChevronLeft, ChevronRight, Snowflake, Baby, Activity, Sparkles, HeartPulse } from 'lucide-react';
 import { Button } from './components/ui/button';
 import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from './components/ui/select';
 import { Checkbox } from './components/ui/checkbox';
@@ -15,8 +15,15 @@ import { EmbryoFreezingInfo } from './components/EmbryoFreezingInfo';
 import { IVFTreatmentInfo } from './components/IVFTreatmentInfo';
 import { FertilityTestingInfo } from './components/FertilityTestingInfo';
 import { MarketingAssets } from './components/MarketingAssets';
+import { Resources } from './components/Resources';
+import { About } from './components/About';
 import { TestimonialModal } from './components/TestimonialModal';
 import eggFreezingImage from 'figma:asset/837faeedfcc3fc383751b333377e75ebb80b8527.png';
+import heroImage from '../assets/hero.jpg';
+import eggFreezingBanner from '../assets/SOMEDAYBANNER.jpg';
+import embryoBanner from '../assets/EMBRYOFREEZINGBANNER.jpg';
+import ivfBanner from '../assets/IVFBANNER.jpg';
+import testingBanner from '../assets/TESTINGBANNER.jpg';
 
 const CONFIDENCE_WORDS = ['clarity', 'confidence', 'calm', 'control', 'certainty', 'support'];
 
@@ -80,7 +87,7 @@ function RotatingWord() {
 
   return (
     <span
-      className={`inline-block bg-[#f7f775] text-[#313131] font-bold px-2 rounded-md transition-all duration-300 ${
+      className={`grain inline-block bg-[#F8AD7C] text-[#2F3440] font-bold px-2 rounded-md transition-all duration-300 ${
         show ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-1'
       }`}
     >
@@ -92,7 +99,8 @@ function RotatingWord() {
 export default function App() {
   const [serviceType, setServiceType] = useState('egg-freezing');
   const [showFAQ, setShowFAQ] = useState<Record<number, boolean>>({});
-  const [viewMode, setViewMode] = useState<'home' | 'costings' | 'egg-freezing-info' | 'embryo-info' | 'ivf-info' | 'fertility-info' | 'marketing'>('home');
+  const [viewMode, setViewMode] = useState<'home' | 'costings' | 'egg-freezing-info' | 'embryo-info' | 'ivf-info' | 'fertility-info' | 'marketing' | 'resources' | 'about'>('home');
+  const [resourcesCategory, setResourcesCategory] = useState('All');
   const [searchMode, setSearchMode] = useState('clinic-costings');
   const [location, setLocation] = useState('all');
   const [clinic, setClinic] = useState('all');
@@ -155,13 +163,13 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F5F5F5] text-[#313131]">
+    <div className="min-h-screen text-[#2F3440]">
       {/* Header */}
-      <header className="border-b border-[#83835B]/20">
+      <header className="border-b border-[#A8BEEB]/20">
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <span
-              className="text-xl font-bold tracking-tight text-[#313131] cursor-pointer hover:opacity-80 transition-opacity"
+              className="text-xl font-bold tracking-tight text-[#2F3440] cursor-pointer hover:opacity-80 transition-opacity"
               onClick={() => setViewMode('home')}
             >
               JourneyFertility
@@ -169,11 +177,25 @@ export default function App() {
           </div>
           
           <nav className="hidden md:flex items-center gap-6">
-            <button className="flex items-center gap-1 text-gray-700 hover:text-gray-900">
-              <Globe className="w-4 h-4" />
-              USD
+            <button
+              onClick={() => {
+                setViewMode('about');
+                window.scrollTo(0, 0);
+              }}
+              className="text-gray-700 hover:text-gray-900"
+            >
+              About
             </button>
-            <button className="text-gray-700 hover:text-gray-900">Help</button>
+            <button
+              onClick={() => {
+                setResourcesCategory('All');
+                setViewMode('resources');
+                window.scrollTo(0, 0);
+              }}
+              className="text-gray-700 hover:text-gray-900"
+            >
+              Resources
+            </button>
             <button className="flex items-center gap-1 text-gray-700 hover:text-gray-900">
               <User className="w-4 h-4" />
               Sign in
@@ -193,13 +215,13 @@ export default function App() {
         {/* Hero Heading */}
         <div className="mb-16 md:mb-24 grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
           <div>
-          <div className="text-xs font-semibold uppercase tracking-[0.14em] text-[#5e6300] mb-4">
+          <div className="text-xs font-semibold uppercase tracking-[0.14em] text-[#5B6AA5] mb-4">
             Fertility Clinic &amp; Cost Comparison
           </div>
-          <h1 className="text-5xl lg:text-6xl font-bold tracking-tight text-[#313131] mb-5">
+          <h1 className="text-5xl lg:text-6xl font-bold tracking-tight text-[#2F3440] mb-5">
             Your fertility options. One simple search.
           </h1>
-          <p className="text-lg md:text-2xl text-[#474838] max-w-2xl leading-relaxed mb-8">
+          <p className="text-lg md:text-2xl text-[#5C6478] max-w-2xl leading-relaxed mb-8">
             Navigate your fertility journey without the anxiety — with{' '}
             <RotatingWord />
           </p>
@@ -212,13 +234,13 @@ export default function App() {
               { n: '3', label: 'Book with the clinic' },
             ].map((step, idx) => (
               <div key={step.n} className="flex items-center gap-2">
-                <div className="flex items-center gap-2 bg-white border border-[#83835B]/25 rounded-full pl-1.5 pr-4 py-1.5">
-                  <span className="w-6 h-6 rounded-full bg-[#313131] text-white text-xs font-semibold flex items-center justify-center">
+                <div className="flex items-center gap-2 grain glass rounded-full pl-1.5 pr-4 py-1.5">
+                  <span className="w-6 h-6 rounded-full bg-[#2F3440] text-white text-xs font-semibold flex items-center justify-center">
                     {step.n}
                   </span>
-                  <span className="text-sm font-medium text-[#313131] whitespace-nowrap">{step.label}</span>
+                  <span className="text-sm font-medium text-[#2F3440] whitespace-nowrap">{step.label}</span>
                 </div>
-                {idx < 2 && <ChevronRight className="hidden sm:block w-4 h-4 text-[#83835B] shrink-0" />}
+                {idx < 2 && <ChevronRight className="hidden sm:block w-4 h-4 text-[#A8BEEB] shrink-0" />}
               </div>
             ))}
           </div>
@@ -227,13 +249,13 @@ export default function App() {
           {/* Hero image */}
           <div className="relative">
             <ImageWithFallback
-              src="https://images.unsplash.com/photo-1758518727888-ffa196002e59?w=1000&q=80"
-              alt="A woman feeling calm and hopeful about her fertility options"
-              className="w-full h-[360px] md:h-[460px] lg:h-[560px] object-cover object-top rounded-xl"
+              src={heroImage}
+              alt="A woman in the golden evening light, calm and hopeful about her fertility options"
+              className="w-full h-[360px] md:h-[460px] lg:h-[560px] object-cover object-[50%_22%] rounded-xl"
             />
-            <div className="absolute bottom-4 left-4 bg-white/95 backdrop-blur-sm rounded-lg px-4 py-3 border border-[#83835B]/20 shadow-[0_8px_24px_rgba(131,131,91,0.14)]">
-              <div className="text-2xl font-bold text-[#313131] leading-none mb-1">500+</div>
-              <div className="text-xs text-[#474838]">verified clinics worldwide</div>
+            <div className="absolute bottom-4 left-4 grain glass-strong rounded-xl px-4 py-3">
+              <div className="text-2xl font-bold text-[#2F3440] leading-none mb-1">500+</div>
+              <div className="text-xs text-[#5C6478]">verified clinics worldwide</div>
             </div>
           </div>
         </div>
@@ -241,10 +263,10 @@ export default function App() {
         {/* Stage selector */}
         <div className="mb-16 md:mb-24">
           <div className="max-w-2xl mb-8">
-            <h2 className="text-3xl md:text-4xl font-semibold tracking-tight text-[#313131] mb-3">
+            <h2 className="text-3xl md:text-4xl font-semibold tracking-tight text-[#2F3440] mb-3">
               Where are you right now?
             </h2>
-            <p className="text-[#474838] text-lg leading-relaxed">
+            <p className="text-[#5C6478] text-lg leading-relaxed">
               Everyone's journey looks different. Pick the line that sounds most like you and we'll tailor your search.
             </p>
           </div>
@@ -265,22 +287,22 @@ export default function App() {
                   }}
                   className={`group text-left rounded-2xl border p-6 transition-all duration-200 ${
                     active
-                      ? 'border-[#f7f775] bg-[#FBFCE8] ring-2 ring-[#f7f775]'
-                      : 'border-[#83835B]/20 bg-white hover:border-[#83835B]/50 hover:-translate-y-0.5'
+                      ? 'border-[#F8AD7C] bg-[#FDEEE1] ring-2 ring-[#F8AD7C]'
+                      : 'glass hover:-translate-y-0.5 hover:shadow-[0_12px_40px_rgba(120,140,200,0.22)]'
                   }`}
                 >
                   <div className="flex items-center justify-between mb-5">
-                    <div className="w-11 h-11 rounded-full bg-[#E6E5B6]/50 flex items-center justify-center text-[#5e6300]">
+                    <div className="w-11 h-11 rounded-full bg-[#DEE8FF]/50 flex items-center justify-center text-[#5B6AA5]">
                       <Icon className="w-5 h-5" />
                     </div>
-                    <span className="text-[11px] font-semibold uppercase tracking-wide text-[#5e6300] bg-[#E6E5B6]/60 px-3 py-1 rounded-full">
+                    <span className="grain text-[11px] font-semibold uppercase tracking-wide text-[#5B6AA5] bg-[#DEE8FF]/60 px-3 py-1 rounded-full">
                       Age {stage.age}
                     </span>
                   </div>
-                  <p className="text-lg text-[#313131] leading-snug mb-6 min-h-[3.5rem]">
+                  <p className="text-lg text-[#2F3440] leading-snug mb-6 min-h-[3.5rem]">
                     “{stage.statement}”
                   </p>
-                  <div className="flex items-center gap-1.5 text-sm font-semibold text-[#5e6300]">
+                  <div className="flex items-center gap-1.5 text-sm font-semibold text-[#5B6AA5]">
                     {stage.tag}
                     <ChevronRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5" />
                   </div>
@@ -292,17 +314,17 @@ export default function App() {
 
         {/* Browse by service */}
         <div id="search" className="scroll-mt-6 flex items-center justify-between flex-wrap gap-3 mb-4">
-          <span className="text-sm font-medium text-[#474838]">Or browse by service</span>
+          <span className="text-sm font-medium text-[#5C6478]">Or browse by service</span>
           <div className="flex gap-2 flex-wrap">
-            <Button variant={serviceType === 'egg-freezing' ? 'default' : 'outline'} size="sm" onClick={() => setServiceType('egg-freezing')} className={serviceType === 'egg-freezing' ? 'bg-[#313131] text-white hover:bg-[#454545]' : ''}>Egg Freezing</Button>
-            <Button variant={serviceType === 'embryo' ? 'default' : 'outline'} size="sm" onClick={() => setServiceType('embryo')} className={serviceType === 'embryo' ? 'bg-[#313131] text-white hover:bg-[#454545]' : ''}>Embryo Freezing</Button>
-            <Button variant={serviceType === 'ivf' ? 'default' : 'outline'} size="sm" onClick={() => setServiceType('ivf')} className={serviceType === 'ivf' ? 'bg-[#313131] text-white hover:bg-[#454545]' : ''}>IVF Treatment</Button>
-            <Button variant={serviceType === 'fertility' ? 'default' : 'outline'} size="sm" onClick={() => setServiceType('fertility')} className={serviceType === 'fertility' ? 'bg-[#313131] text-white hover:bg-[#454545]' : ''}>Fertility Testing</Button>
+            <Button variant={serviceType === 'egg-freezing' ? 'default' : 'outline'} size="sm" onClick={() => setServiceType('egg-freezing')} className={serviceType === 'egg-freezing' ? 'bg-[#2F3440] text-white hover:bg-[#434A5C]' : ''}>Egg Freezing</Button>
+            <Button variant={serviceType === 'embryo' ? 'default' : 'outline'} size="sm" onClick={() => setServiceType('embryo')} className={serviceType === 'embryo' ? 'bg-[#2F3440] text-white hover:bg-[#434A5C]' : ''}>Embryo Freezing</Button>
+            <Button variant={serviceType === 'ivf' ? 'default' : 'outline'} size="sm" onClick={() => setServiceType('ivf')} className={serviceType === 'ivf' ? 'bg-[#2F3440] text-white hover:bg-[#434A5C]' : ''}>IVF Treatment</Button>
+            <Button variant={serviceType === 'fertility' ? 'default' : 'outline'} size="sm" onClick={() => setServiceType('fertility')} className={serviceType === 'fertility' ? 'bg-[#2F3440] text-white hover:bg-[#434A5C]' : ''}>Fertility Testing</Button>
           </div>
         </div>
 
         {/* Search Form */}
-        <div className="bg-white rounded-xl p-6 mb-16 border border-[#83835B]/20">
+        <div className="glass rounded-2xl p-6 mb-16">
           <div className="flex items-center gap-2 mb-4">
             <Select value={searchMode} onValueChange={setSearchMode}>
               <SelectTrigger className="w-64 bg-white">
@@ -558,7 +580,7 @@ export default function App() {
             </div>
           )}
 
-          <Button className="w-full md:w-auto px-8 py-6 bg-[#f7f775] hover:bg-[#e9e95c] text-[#313131] font-semibold" onClick={handleSearch}>
+          <Button className="w-full md:w-auto px-8 py-6 bg-[#F8AD7C] hover:bg-[#F2955F] text-[#2F3440] font-semibold" onClick={handleSearch}>
             <Search className="w-4 h-4 mr-2" />
             Search
           </Button>
@@ -585,6 +607,30 @@ export default function App() {
           <MarketingAssets onBack={() => setViewMode('home')} />
         )}
 
+        {/* Resources */}
+        {viewMode === 'resources' && (
+          <Resources onBack={() => setViewMode('home')} initialCategory={resourcesCategory} />
+        )}
+
+        {/* About */}
+        {viewMode === 'about' && (
+          <About
+            onBack={() => setViewMode('home')}
+            onExplore={() => {
+              setViewMode('home');
+              setTimeout(
+                () => document.getElementById('search')?.scrollIntoView({ behavior: 'smooth', block: 'start' }),
+                100
+              );
+            }}
+            onResources={() => {
+              setResourcesCategory('All');
+              setViewMode('resources');
+              window.scrollTo(0, 0);
+            }}
+          />
+        )}
+
         {/* Home Content */}
         {viewMode === 'home' && (
           <>
@@ -592,37 +638,37 @@ export default function App() {
         <div className="relative rounded-lg overflow-hidden mb-8 h-64 md:h-80 lg:h-96">
           <ImageWithFallback 
             src={
-              serviceType === 'egg-freezing' 
-                ? "https://images.unsplash.com/photo-1679496124845-ac6957c8bffd?w=1200&q=80"
+              serviceType === 'egg-freezing'
+                ? eggFreezingBanner
                 : serviceType === 'embryo'
-                ? "https://images.unsplash.com/photo-1616996691356-4659297f4baf?w=1200&q=80"
+                ? embryoBanner
                 : serviceType === 'ivf'
-                ? "https://images.unsplash.com/photo-1581093588401-fbb62a02f120?w=1200&q=80"
-                : "https://images.unsplash.com/photo-1760861715390-d85bd4eb617e?w=1200&q=80"
+                ? ivfBanner
+                : testingBanner
             }
             alt={
-              serviceType === 'egg-freezing' 
-                ? "Precision embryology laboratory"
+              serviceType === 'egg-freezing'
+                ? "Soft peach forms evoking preserved potential"
                 : serviceType === 'embryo'
-                ? "State-of-the-art embryo storage facilities"
+                ? "Culture dishes in cool tones, embryo storage"
                 : serviceType === 'ivf'
-                ? "Advanced IVF clinical environment"
-                : "Diagnostic fertility testing laboratory"
+                ? "Laboratory culture dishes with a pipette"
+                : "A softly lit orb in blue and rose, diagnostic testing"
             }
             className="w-full h-full object-cover"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent flex flex-col justify-end p-8 md:p-12">
+          <div className="absolute inset-0 bg-gradient-to-t from-white/95 via-white/70 to-white/10 flex flex-col justify-end p-8 md:p-12">
             <div className="max-w-3xl">
-              <span className="inline-block px-3 py-1 bg-[#f7f775] text-[#313131] text-xs font-bold uppercase tracking-wider rounded-full mb-4">
+              <span className="grain inline-block px-3 py-1 bg-[#F8AD7C] text-[#2F3440] text-xs font-bold uppercase tracking-wider rounded-full mb-4">
                 Clinical Excellence & Transparency
               </span>
-              <h2 className="text-white text-3xl md:text-5xl font-semibold tracking-tight mb-4 leading-tight">
+              <h2 className="text-[#2F3440] text-3xl md:text-5xl font-semibold tracking-tight mb-4 leading-tight">
                 {serviceType === 'egg-freezing' && 'Science-Backed Egg Freezing. Full Lab Transparency.'}
                 {serviceType === 'embryo' && 'Advanced Embryology Lab Standards & Storage.'}
                 {serviceType === 'ivf' && 'World-Class IVF Labs. Transparent Clinical Data.'}
                 {serviceType === 'fertility' && 'Precision Diagnostic Testing. Lab-Direct Results.'}
               </h2>
-              <div className="flex flex-wrap items-center gap-4 text-white/90 text-sm md:text-base mb-6">
+              <div className="flex flex-wrap items-center gap-4 text-[#5C6478] text-sm md:text-base mb-6">
                 <span className="flex items-center gap-1"><Users className="w-4 h-4" /> Expert Embryologists</span>
                 <span className="hidden md:inline">•</span>
                 <span className="flex items-center gap-1"><Heart className="w-4 h-4" /> ISO Certified Facilities</span>
@@ -630,10 +676,10 @@ export default function App() {
                 <span className="flex items-center gap-1"><DollarSign className="w-4 h-4" /> No Hidden Lab Fees</span>
               </div>
               <div className="flex flex-col sm:flex-row gap-4">
-                <Button className="bg-[#f7f775] hover:bg-[#e9e95c] text-[#313131] font-semibold px-8 h-12" onClick={() => setShowQuiz(true)}>
+                <Button className="bg-[#F8AD7C] hover:bg-[#F2955F] text-[#2F3440] font-semibold px-8 h-12" onClick={() => setShowQuiz(true)}>
                   Take Self-Assessment Quiz
                 </Button>
-                <Button variant="outline" className="bg-white/10 backdrop-blur-md border-white/30 text-white hover:bg-white/20 h-12 px-8">
+                <Button variant="outline" className="glass border-white/70 text-[#2F3440] hover:bg-white/75 h-12 px-8">
                   View Lab Standards
                 </Button>
               </div>
@@ -643,22 +689,22 @@ export default function App() {
 
         {/* Lab Transparency Section */}
         <div className="grid md:grid-cols-3 gap-6 mb-12">
-          <div className="bg-white border border-[#83835B]/20 rounded-2xl p-6 flex flex-col items-center text-center">
-            <div className="w-12 h-12 bg-[#f7f775]/50 rounded-full flex items-center justify-center mb-4 text-[#5e6300]">
+          <div className="glass rounded-2xl p-6 flex flex-col items-center text-center">
+            <div className="w-12 h-12 bg-[#F8AD7C]/50 rounded-full flex items-center justify-center mb-4 text-[#5B6AA5]">
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" /></svg>
             </div>
             <h3 className="font-semibold mb-2">Certified Laboratories</h3>
             <p className="text-sm text-gray-600">Every clinic on our platform meets strict ISO 15189 standards for clinical laboratories.</p>
           </div>
-          <div className="bg-white border border-[#83835B]/20 rounded-2xl p-6 flex flex-col items-center text-center">
-            <div className="w-12 h-12 bg-[#f7f775]/50 rounded-full flex items-center justify-center mb-4 text-[#5e6300]">
+          <div className="glass rounded-2xl p-6 flex flex-col items-center text-center">
+            <div className="w-12 h-12 bg-[#F8AD7C]/50 rounded-full flex items-center justify-center mb-4 text-[#5B6AA5]">
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>
             </div>
             <h3 className="font-semibold mb-2">Verified Success Rates</h3>
             <p className="text-sm text-gray-600">Lab-verified outcomes and audit reports available for every clinic listed.</p>
           </div>
-          <div className="bg-white border border-[#83835B]/20 rounded-2xl p-6 flex flex-col items-center text-center">
-            <div className="w-12 h-12 bg-[#f7f775]/50 rounded-full flex items-center justify-center mb-4 text-[#5e6300]">
+          <div className="glass rounded-2xl p-6 flex flex-col items-center text-center">
+            <div className="w-12 h-12 bg-[#F8AD7C]/50 rounded-full flex items-center justify-center mb-4 text-[#5B6AA5]">
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
             </div>
             <h3 className="font-semibold mb-2">Real-time Lab Access</h3>
@@ -670,7 +716,7 @@ export default function App() {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12">
           <Button 
             variant="outline" 
-            className="h-16 justify-start bg-white text-[#313131] border border-[#83835B]/30 hover:bg-[#E6E5B6]/50 hover:text-[#313131]"
+            className="h-16 justify-start bg-white text-[#2F3440] border border-[#A8BEEB]/30 hover:bg-[#DEE8FF]/50 hover:text-[#2F3440]"
             onClick={() => {
               setScrollToClinics(true);
               if (serviceType === 'egg-freezing') setViewMode('egg-freezing-info');
@@ -688,21 +734,21 @@ export default function App() {
           </Button>
           <Button 
             variant="outline" 
-            className="h-16 justify-start bg-white text-[#313131] border border-[#83835B]/30 hover:bg-[#E6E5B6]/50 hover:text-[#313131]"
+            className="h-16 justify-start bg-white text-[#2F3440] border border-[#A8BEEB]/30 hover:bg-[#DEE8FF]/50 hover:text-[#2F3440]"
           >
             <MapPin className="w-5 h-5 mr-2" />
             Find by Location
           </Button>
           <Button 
             variant="outline" 
-            className="h-16 justify-start bg-white text-[#313131] border border-[#83835B]/30 hover:bg-[#E6E5B6]/50 hover:text-[#313131]"
+            className="h-16 justify-start bg-white text-[#2F3440] border border-[#A8BEEB]/30 hover:bg-[#DEE8FF]/50 hover:text-[#2F3440]"
           >
             <Calendar className="w-5 h-5 mr-2" />
             Book Consultation
           </Button>
           <Button 
             variant="outline" 
-            className="h-16 justify-start bg-white text-[#313131] border border-[#83835B]/30 hover:bg-[#E6E5B6]/50 hover:text-[#313131]"
+            className="h-16 justify-start bg-white text-[#2F3440] border border-[#A8BEEB]/30 hover:bg-[#DEE8FF]/50 hover:text-[#2F3440]"
           >
             <DollarSign className="w-5 h-5 mr-2" />
             Compare Costs
@@ -710,12 +756,12 @@ export default function App() {
         </div>
 
         {/* Journey Section */}
-        <div className="mb-16 bg-[#E6E5B6]/40 rounded-2xl p-8 md:p-12">
+        <div className="mb-16 bg-[#DEE8FF]/40 rounded-2xl p-8 md:p-12">
           <div className="grid md:grid-cols-2 gap-8 items-center">
             {/* Left Content */}
             <div>
-              <h2 className="text-4xl md:text-5xl font-semibold tracking-tight text-[#313131] mb-4">
-                We're all at different stages of our <span className="italic text-[#5e6300]">journey</span>
+              <h2 className="text-4xl md:text-5xl font-semibold tracking-tight text-[#2F3440] mb-4">
+                We're all at different stages of our <span className="italic text-[#5B6AA5]">journey</span>
               </h2>
               <p className="text-gray-600 text-lg mb-6">
                 {serviceType === 'egg-freezing' && 'What\'s more important to learn right now for you?'}
@@ -743,13 +789,13 @@ export default function App() {
                   alt="Egg freezing"
                   className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                 />
-                <div className={`absolute inset-0 bg-gradient-to-r from-black/70 to-black/40 flex items-center justify-between px-6 ${serviceType === 'egg-freezing' ? 'ring-4 ring-[#f7f775]' : ''}`}>
+                <div className={`absolute inset-0 bg-gradient-to-r from-black/70 to-black/40 flex items-center justify-between px-6 ${serviceType === 'egg-freezing' ? 'ring-4 ring-[#F8AD7C]' : ''}`}>
                   <div>
                     <h3 className="text-white text-xl mb-1">Egg Freezing</h3>
                     <p className="text-white/90 text-sm">Preserve your fertility for the future</p>
                   </div>
                   <button className="w-10 h-10 rounded-full bg-white/90 hover:bg-white flex items-center justify-center transition-colors">
-                    <Plus className="w-5 h-5 text-[#313131]" />
+                    <Plus className="w-5 h-5 text-[#2F3440]" />
                   </button>
                 </div>
               </div>
@@ -764,13 +810,13 @@ export default function App() {
                   alt="IVF treatment"
                   className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                 />
-                <div className={`absolute inset-0 bg-gradient-to-r from-black/70 to-black/40 flex items-center justify-between px-6 ${serviceType === 'ivf' ? 'ring-4 ring-[#f7f775]' : ''}`}>
+                <div className={`absolute inset-0 bg-gradient-to-r from-black/70 to-black/40 flex items-center justify-between px-6 ${serviceType === 'ivf' ? 'ring-4 ring-[#F8AD7C]' : ''}`}>
                   <div>
                     <h3 className="text-white text-xl mb-1">IVF Treatment</h3>
                     <p className="text-white/90 text-sm">Building your family through assisted reproduction</p>
                   </div>
                   <button className="w-10 h-10 rounded-full bg-white/90 hover:bg-white flex items-center justify-center transition-colors">
-                    <Plus className="w-5 h-5 text-[#313131]" />
+                    <Plus className="w-5 h-5 text-[#2F3440]" />
                   </button>
                 </div>
               </div>
@@ -785,13 +831,13 @@ export default function App() {
                   alt="Embryo freezing"
                   className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                 />
-                <div className={`absolute inset-0 bg-gradient-to-r from-black/70 to-black/40 flex items-center justify-between px-6 ${serviceType === 'embryo' ? 'ring-4 ring-[#f7f775]' : ''}`}>
+                <div className={`absolute inset-0 bg-gradient-to-r from-black/70 to-black/40 flex items-center justify-between px-6 ${serviceType === 'embryo' ? 'ring-4 ring-[#F8AD7C]' : ''}`}>
                   <div>
                     <h3 className="text-white text-xl mb-1">Embryo Freezing</h3>
                     <p className="text-white/90 text-sm">Preserve embryos for future family planning</p>
                   </div>
                   <button className="w-10 h-10 rounded-full bg-white/90 hover:bg-white flex items-center justify-center transition-colors">
-                    <Plus className="w-5 h-5 text-[#313131]" />
+                    <Plus className="w-5 h-5 text-[#2F3440]" />
                   </button>
                 </div>
               </div>
@@ -806,13 +852,13 @@ export default function App() {
                   alt="Fertility testing"
                   className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                 />
-                <div className={`absolute inset-0 bg-gradient-to-r from-black/70 to-black/40 flex items-center justify-between px-6 ${serviceType === 'fertility' ? 'ring-4 ring-[#f7f775]' : ''}`}>
+                <div className={`absolute inset-0 bg-gradient-to-r from-black/70 to-black/40 flex items-center justify-between px-6 ${serviceType === 'fertility' ? 'ring-4 ring-[#F8AD7C]' : ''}`}>
                   <div>
                     <h3 className="text-white text-xl mb-1">Fertility Testing</h3>
                     <p className="text-white/90 text-sm">Understand your fertility health and options</p>
                   </div>
                   <button className="w-10 h-10 rounded-full bg-white/90 hover:bg-white flex items-center justify-center transition-colors">
-                    <Plus className="w-5 h-5 text-[#313131]" />
+                    <Plus className="w-5 h-5 text-[#2F3440]" />
                   </button>
                 </div>
               </div>
@@ -820,15 +866,15 @@ export default function App() {
           </div>
 
           {/* CTA Section */}
-          <div className="mt-8 pt-8 border-t border-[#83835B]/20 text-center">
+          <div className="mt-8 pt-8 border-t border-[#A8BEEB]/20 text-center">
             <div className="flex flex-col md:flex-row items-center justify-center gap-4">
-              <Button className="bg-[#f7f775] hover:bg-[#e9e95c] text-[#313131] font-semibold px-8">
+              <Button className="bg-[#F8AD7C] hover:bg-[#F2955F] text-[#2F3440] font-semibold px-8">
                 {serviceType === 'egg-freezing' && 'Explore Egg Freezing Clinics'}
                 {serviceType === 'embryo' && 'Explore Embryo Storage Options'}
                 {serviceType === 'ivf' && 'Explore IVF Treatment Centers'}
                 {serviceType === 'fertility' && 'Find Testing Centers Near You'}
               </Button>
-              <Button variant="outline" className="border-[#83835B] text-[#313131] hover:bg-[#313131] hover:border-[#313131] hover:text-white px-8">
+              <Button variant="outline" className="border-[#A8BEEB] text-[#2F3440] hover:bg-[#2F3440] hover:border-[#2F3440] hover:text-white px-8">
                 Read Success Stories
               </Button>
             </div>
@@ -845,7 +891,7 @@ export default function App() {
         <div className="mb-16">
           <div className="flex flex-col md:flex-row md:items-center justify-between mb-6 gap-4">
             <div>
-              <h2 className="text-2xl md:text-4xl font-semibold tracking-tight text-[#313131] mb-2">
+              <h2 className="text-2xl md:text-4xl font-semibold tracking-tight text-[#2F3440] mb-2">
                 Helping hundreds of women search their fertility options
               </h2>
               <p className="text-gray-600 text-sm md:text-base">
@@ -863,7 +909,7 @@ export default function App() {
               <button
                 onClick={() => setTestimonialIndex(Math.min(3, testimonialIndex + 1))}
                 disabled={testimonialIndex >= 3}
-                className="w-12 h-12 rounded-full bg-[#313131] hover:bg-[#454545] disabled:opacity-30 disabled:cursor-not-allowed flex items-center justify-center transition-colors"
+                className="w-12 h-12 rounded-full bg-[#2F3440] hover:bg-[#434A5C] disabled:opacity-30 disabled:cursor-not-allowed flex items-center justify-center transition-colors"
               >
                 <ChevronRight className="w-5 h-5 text-white" />
               </button>
@@ -921,7 +967,7 @@ export default function App() {
                 key={idx}
                 onClick={() => setTestimonialIndex(idx)}
                 className={`w-2 h-2 rounded-full transition-colors ${
-                  testimonialIndex === idx ? 'bg-[#313131]' : 'bg-[#DADADA]'
+                  testimonialIndex === idx ? 'bg-[#2F3440]' : 'bg-[#DADADA]'
                 }`}
               />
             ))}
@@ -930,7 +976,7 @@ export default function App() {
 
         {/* FAQ Section */}
         <div className="mb-12">
-          <h2 className="text-3xl font-semibold tracking-tight text-[#313131] mb-8">Finding fertility treatment with JourneyFertility</h2>
+          <h2 className="text-3xl font-semibold tracking-tight text-[#2F3440] mb-8">Finding fertility treatment with JourneyFertility</h2>
           
           <div className="grid md:grid-cols-2 gap-8">
             <div>
@@ -1000,7 +1046,7 @@ export default function App() {
         </div>
 
         {/* Travel Package Example - London to Istanbul */}
-        <div className="mt-12 bg-[#E6E5B6]/40 border border-[#83835B]/20 rounded-2xl p-6 md:p-8">
+        <div className="mt-12 bg-[#DEE8FF]/40 border border-[#A8BEEB]/20 rounded-2xl p-6 md:p-8">
           <h3 className="text-xl md:text-2xl mb-2">Example Travel Package</h3>
           <p className="text-gray-600 mb-6 text-sm md:text-base">London to Istanbul - Full Egg Freezing Package</p>
           
@@ -1018,11 +1064,11 @@ export default function App() {
                       <h4 className="font-semibold mb-1">Return Flight</h4>
                       <p className="text-sm text-gray-600">London → Istanbul</p>
                     </div>
-                    <svg className="w-8 h-8 text-[#83835B]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-8 h-8 text-[#A8BEEB]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
                     </svg>
                   </div>
-                  <div className="text-2xl font-semibold text-[#5e6300]">£280</div>
+                  <div className="text-2xl font-semibold text-[#5B6AA5]">£280</div>
                   <p className="text-xs text-gray-500 mt-1">Economy class, direct</p>
                 </div>
 
@@ -1033,11 +1079,11 @@ export default function App() {
                       <h4 className="font-semibold mb-1">Accommodation</h4>
                       <p className="text-sm text-gray-600">7 nights, 4-star hotel</p>
                     </div>
-                    <svg className="w-8 h-8 text-[#83835B]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-8 h-8 text-[#A8BEEB]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
                     </svg>
                   </div>
-                  <div className="text-2xl font-semibold text-[#5e6300]">£420</div>
+                  <div className="text-2xl font-semibold text-[#5B6AA5]">£420</div>
                   <p className="text-xs text-gray-500 mt-1">Near clinic, breakfast included</p>
                 </div>
 
@@ -1048,11 +1094,11 @@ export default function App() {
                       <h4 className="font-semibold mb-1">Egg Freezing</h4>
                       <p className="text-sm text-gray-600">Full cycle at Jinemed</p>
                     </div>
-                    <svg className="w-8 h-8 text-[#83835B]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-8 h-8 text-[#A8BEEB]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                     </svg>
                   </div>
-                  <div className="text-2xl font-semibold text-[#5e6300]">£2,100</div>
+                  <div className="text-2xl font-semibold text-[#5B6AA5]">£2,100</div>
                   <p className="text-xs text-gray-500 mt-1">Including medications</p>
                 </div>
               </div>
@@ -1065,7 +1111,7 @@ export default function App() {
                   key={idx}
                   onClick={() => setTravelPackageIndex(idx)}
                   className={`w-2 h-2 rounded-full transition-colors ${
-                    travelPackageIndex === idx ? 'bg-[#313131]' : 'bg-[#DADADA]'
+                    travelPackageIndex === idx ? 'bg-[#2F3440]' : 'bg-[#DADADA]'
                   }`}
                 />
               ))}
@@ -1075,66 +1121,66 @@ export default function App() {
           {/* Desktop Grid */}
           <div className="hidden md:grid md:grid-cols-3 gap-6 mb-6">
             {/* Flight */}
-            <div className="bg-white rounded-xl p-6">
+            <div className="glass rounded-xl p-6">
               <div className="flex items-start justify-between mb-3">
                 <div>
                   <h4 className="font-semibold mb-1">Return Flight</h4>
                   <p className="text-sm text-gray-600">London → Istanbul</p>
                 </div>
-                <svg className="w-8 h-8 text-[#83835B]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-8 h-8 text-[#A8BEEB]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
                 </svg>
               </div>
-              <div className="text-2xl font-semibold text-[#5e6300]">£280</div>
+              <div className="text-2xl font-semibold text-[#5B6AA5]">£280</div>
               <p className="text-xs text-gray-500 mt-1">Economy class, direct</p>
             </div>
 
             {/* Accommodation */}
-            <div className="bg-white rounded-xl p-6">
+            <div className="glass rounded-xl p-6">
               <div className="flex items-start justify-between mb-3">
                 <div>
                   <h4 className="font-semibold mb-1">Accommodation</h4>
                   <p className="text-sm text-gray-600">7 nights, 4-star hotel</p>
                 </div>
-                <svg className="w-8 h-8 text-[#83835B]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-8 h-8 text-[#A8BEEB]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
                 </svg>
               </div>
-              <div className="text-2xl font-semibold text-[#5e6300]">£420</div>
+              <div className="text-2xl font-semibold text-[#5B6AA5]">£420</div>
               <p className="text-xs text-gray-500 mt-1">Near clinic, breakfast included</p>
             </div>
 
             {/* Treatment */}
-            <div className="bg-white rounded-xl p-6">
+            <div className="glass rounded-xl p-6">
               <div className="flex items-start justify-between mb-3">
                 <div>
                   <h4 className="font-semibold mb-1">Egg Freezing</h4>
                   <p className="text-sm text-gray-600">Full cycle at Jinemed</p>
                 </div>
-                <svg className="w-8 h-8 text-[#83835B]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-8 h-8 text-[#A8BEEB]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                 </svg>
               </div>
-              <div className="text-2xl font-semibold text-[#5e6300]">£2,100</div>
+              <div className="text-2xl font-semibold text-[#5B6AA5]">£2,100</div>
               <p className="text-xs text-gray-500 mt-1">Including medications</p>
             </div>
           </div>
 
           {/* Total */}
-          <div className="bg-white rounded-xl p-4 md:p-6 border-2 border-[#5e6300]">
+          <div className="bg-white rounded-xl p-4 md:p-6 border-2 border-[#5B6AA5]">
             <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
               <div className="flex-1">
                 <h4 className="text-lg md:text-xl font-semibold mb-1">Total Package Cost</h4>
                 <p className="text-sm text-gray-600 mb-3">All-inclusive egg freezing trip</p>
                 <div className="flex flex-wrap gap-2">
-                  <span className="px-3 py-1 bg-[#E6E5B6]/60 text-[#313131] rounded-full text-xs md:text-sm">✓ Flights</span>
-                  <span className="px-3 py-1 bg-[#E6E5B6]/60 text-[#313131] rounded-full text-xs md:text-sm">✓ Accommodation</span>
-                  <span className="px-3 py-1 bg-[#E6E5B6]/60 text-[#313131] rounded-full text-xs md:text-sm">✓ Treatment</span>
-                  <span className="px-3 py-1 bg-[#E6E5B6]/60 text-[#313131] rounded-full text-xs md:text-sm">✓ Airport transfers</span>
+                  <span className="px-3 py-1 bg-[#DEE8FF]/60 text-[#2F3440] rounded-full text-xs md:text-sm">✓ Flights</span>
+                  <span className="px-3 py-1 bg-[#DEE8FF]/60 text-[#2F3440] rounded-full text-xs md:text-sm">✓ Accommodation</span>
+                  <span className="px-3 py-1 bg-[#DEE8FF]/60 text-[#2F3440] rounded-full text-xs md:text-sm">✓ Treatment</span>
+                  <span className="px-3 py-1 bg-[#DEE8FF]/60 text-[#2F3440] rounded-full text-xs md:text-sm">✓ Airport transfers</span>
                 </div>
               </div>
               <div className="text-left md:text-right">
-                <div className="text-3xl md:text-4xl font-bold text-[#5e6300]">£2,800</div>
+                <div className="text-3xl md:text-4xl font-bold text-[#5B6AA5]">£2,800</div>
                 <p className="text-sm text-gray-500 mt-1">Save ~£8,700 vs UK</p>
               </div>
             </div>
@@ -1230,7 +1276,7 @@ export default function App() {
       )}
 
       {/* Footer */}
-      <footer className="bg-[#313131] text-[#F5F5F5] mt-20">
+      <footer className="bg-[#2F3440] text-[#F7F8FC] mt-20">
         <div className="max-w-7xl mx-auto px-6 py-12">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-8">
             <div>
@@ -1251,7 +1297,17 @@ export default function App() {
             <div>
               <h3 className="mb-4">Company</h3>
               <ul className="space-y-2 text-gray-300">
-                <li><a href="#" className="hover:text-white">About us</a></li>
+                <li>
+                  <button
+                    onClick={() => {
+                      setViewMode('about');
+                      window.scrollTo(0, 0);
+                    }}
+                    className="hover:text-white transition-colors text-left"
+                  >
+                    About us
+                  </button>
+                </li>
                 <li><a href="#" className="hover:text-white">Careers</a></li>
                 <li><a href="#" className="hover:text-white">Partner clinics</a></li>
                 <li>
@@ -1270,7 +1326,18 @@ export default function App() {
             <div>
               <h3 className="mb-4">Explore</h3>
               <ul className="space-y-2 text-gray-300">
-                <li><a href="#" className="hover:text-white">Blog</a></li>
+                <li>
+                  <button
+                    onClick={() => {
+                      setResourcesCategory('All');
+                      setViewMode('resources');
+                      window.scrollTo(0, 0);
+                    }}
+                    className="hover:text-white transition-colors text-left"
+                  >
+                    Resources
+                  </button>
+                </li>
                 <li><a href="#" className="hover:text-white">Partnerships</a></li>
                 <li><a href="#" className="hover:text-white">Trips</a></li>
                 <li><a href="#" className="hover:text-white">International Sites</a></li>
