@@ -761,10 +761,10 @@ export default function App() {
             {/* Left Content */}
             <div>
               <h2 className="text-4xl md:text-5xl font-semibold tracking-tight text-[#2F3440] mb-4">
-                We're all at different stages of our <span className="italic text-[#5B6AA5]">journey</span>
+                Get to know each <span className="italic text-[#5B6AA5]">option</span>
               </h2>
-              <p className="text-gray-600 text-lg mb-6">
-                {serviceType === 'egg-freezing' && 'What\'s more important to learn right now for you?'}
+              <p className="text-[#5C6478] text-lg mb-6">
+                {serviceType === 'egg-freezing' && 'What would be most useful to understand right now?'}
                 {serviceType === 'embryo' && 'Ready to preserve your embryos?'}
                 {serviceType === 'ivf' && 'Starting your IVF journey?'}
                 {serviceType === 'fertility' && 'Understanding your fertility health?'}
@@ -892,10 +892,11 @@ export default function App() {
           <div className="flex flex-col md:flex-row md:items-center justify-between mb-6 gap-4">
             <div>
               <h2 className="text-2xl md:text-4xl font-semibold tracking-tight text-[#2F3440] mb-2">
-                Helping hundreds of women search their fertility options
+                Stories from people who have been here
               </h2>
-              <p className="text-gray-600 text-sm md:text-base">
-                From navigating financial plans to finding fertility answers, we've supported thousands of women on their personal journeys. Watch their stories.
+              <p className="text-[#5C6478] text-sm md:text-base">
+                From working out what they could afford to finding the right clinic — how others
+                navigated the same decisions you are facing now.
               </p>
             </div>
             <div className="hidden md:flex gap-2">
@@ -983,7 +984,7 @@ export default function App() {
               {[
                 {
                   question: "How does JourneyFertility work?",
-                  answer: "JourneyFertility compares prices and services from hundreds of fertility clinics worldwide, helping you find the best option for your needs and budget."
+                  answer: "We break clinic quotes into their real line items — treatment, medication, storage and extras — so you can compare like with like. Search by treatment, location and budget, then see the full cost of each option in one place."
                 },
                 {
                   question: "How can I find the most affordable fertility clinic using JourneyFertility?",
@@ -1280,14 +1281,15 @@ export default function App() {
         <div className="max-w-7xl mx-auto px-6 py-12">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-8">
             <div>
-              <h3 className="mb-4">Help</h3>
+              <h3 className="mb-4">Support</h3>
               <ul className="space-y-2 text-gray-300">
                 <li><a href="#" className="hover:text-white">FAQs & support</a></li>
+                <li><a href="#" className="hover:text-white">Contact us</a></li>
                 <li><a href="#" className="hover:text-white">Log in</a></li>
               </ul>
             </div>
             <div>
-              <h3 className="mb-4">Guides and tips</h3>
+              <h3 className="mb-4">Legal</h3>
               <ul className="space-y-2 text-gray-300">
                 <li><a href="#" className="hover:text-white">Privacy policy</a></li>
                 <li><a href="#" className="hover:text-white">Terms of service</a></li>
@@ -1338,16 +1340,17 @@ export default function App() {
                     Resources
                   </button>
                 </li>
+                <li><a href="#" className="hover:text-white">Treatment abroad</a></li>
                 <li><a href="#" className="hover:text-white">Partnerships</a></li>
-                <li><a href="#" className="hover:text-white">Trips</a></li>
-                <li><a href="#" className="hover:text-white">International Sites</a></li>
               </ul>
             </div>
           </div>
 
           <div className="border-t border-gray-700 pt-8 text-center text-gray-400 text-sm">
-            <p>Copyright © FertilitySearch Ltd 2002–2025</p>
-            <p className="mt-2">FertilitySearch Ltd is part of the Family Planning Group.</p>
+            <p>© 2026 JourneyFertility. All rights reserved.</p>
+            <p className="mt-2">
+              JourneyFertility is a comparison service, not a clinic. Nothing here is medical advice.
+            </p>
           </div>
         </div>
       </footer>
