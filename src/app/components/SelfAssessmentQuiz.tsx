@@ -195,7 +195,7 @@ export function SelfAssessmentQuiz({ onClose }: SelfAssessmentQuizProps) {
 
           <div className="p-6 space-y-6">
             {/* Expected Outcomes */}
-            <div className="bg-[#F1F1E4] rounded-lg p-6">
+            <div className="bg-[#EEF2FE] rounded-lg p-6">
               <div className="flex items-center gap-2 mb-4">
                 <h3 className="text-xl">Expected Outcomes</h3>
                 <div className="relative">
@@ -203,7 +203,7 @@ export function SelfAssessmentQuiz({ onClose }: SelfAssessmentQuizProps) {
                     onMouseEnter={() => setShowTooltip(true)}
                     onMouseLeave={() => setShowTooltip(false)}
                     onClick={() => setShowTooltip(!showTooltip)}
-                    className="text-[#5e6300] hover:text-[#464a00] transition-colors"
+                    className="text-[#5B6AA5] hover:text-[#464a00] transition-colors"
                   >
                     <Info className="w-5 h-5" />
                   </button>
@@ -270,28 +270,28 @@ export function SelfAssessmentQuiz({ onClose }: SelfAssessmentQuizProps) {
             {/* Timeline Visual */}
             <div>
               <h3 className="text-xl mb-4">Treatment Timeline</h3>
-              <div className="bg-[#F1F1E4] rounded-lg p-4">
+              <div className="bg-[#EEF2FE] rounded-lg p-4">
                 <div className="flex items-center justify-between mb-2">
                   <div className="text-center flex-1">
-                    <div className="w-8 h-8 bg-[#313131] rounded-full mx-auto mb-2 flex items-center justify-center text-white text-sm">1</div>
+                    <div className="w-8 h-8 bg-[#2F3440] rounded-full mx-auto mb-2 flex items-center justify-center text-white text-sm">1</div>
                     <p className="text-xs">Initial Consult</p>
                     <p className="text-xs text-gray-500">Day 1</p>
                   </div>
                   <div className="flex-1 h-0.5 bg-gray-300"></div>
                   <div className="text-center flex-1">
-                    <div className="w-8 h-8 bg-[#313131] rounded-full mx-auto mb-2 flex items-center justify-center text-white text-sm">2</div>
+                    <div className="w-8 h-8 bg-[#2F3440] rounded-full mx-auto mb-2 flex items-center justify-center text-white text-sm">2</div>
                     <p className="text-xs">Start Medications</p>
                     <p className="text-xs text-gray-500">Day 2-3</p>
                   </div>
                   <div className="flex-1 h-0.5 bg-gray-300"></div>
                   <div className="text-center flex-1">
-                    <div className="w-8 h-8 bg-[#313131] rounded-full mx-auto mb-2 flex items-center justify-center text-white text-sm">3</div>
+                    <div className="w-8 h-8 bg-[#2F3440] rounded-full mx-auto mb-2 flex items-center justify-center text-white text-sm">3</div>
                     <p className="text-xs">Monitoring</p>
                     <p className="text-xs text-gray-500">Day 4-9</p>
                   </div>
                   <div className="flex-1 h-0.5 bg-gray-300"></div>
                   <div className="text-center flex-1">
-                    <div className="w-8 h-8 bg-[#313131] rounded-full mx-auto mb-2 flex items-center justify-center text-white text-sm">4</div>
+                    <div className="w-8 h-8 bg-[#2F3440] rounded-full mx-auto mb-2 flex items-center justify-center text-white text-sm">4</div>
                     <p className="text-xs">Egg Retrieval</p>
                     <p className="text-xs text-gray-500">Day 10-12</p>
                   </div>
@@ -311,7 +311,7 @@ export function SelfAssessmentQuiz({ onClose }: SelfAssessmentQuizProps) {
                         <p className="text-sm text-gray-600">{clinic.location}</p>
                       </div>
                       <div className="text-right">
-                        <div className="bg-[#EDECD4] text-[#5e6300] px-2 py-1 rounded text-sm">
+                        <div className="bg-[#E7EDFD] text-[#5B6AA5] px-2 py-1 rounded text-sm">
                           {clinic.successRate}% success rate
                         </div>
                       </div>
@@ -326,10 +326,10 @@ export function SelfAssessmentQuiz({ onClose }: SelfAssessmentQuizProps) {
             </div>
 
             {/* Call to Action */}
-            <div className="bg-gradient-to-r from-[#83835B] to-[#60603b] rounded-lg p-6 text-white text-center">
+            <div className="bg-gradient-to-r from-[#A8BEEB] to-[#6B7FC7] rounded-lg p-6 text-white text-center">
               <h3 className="text-xl mb-2">Ready to take the next step?</h3>
               <p className="mb-4">Get a personalized quote from these clinics based on your assessment</p>
-              <Button variant="secondary" className="bg-white text-[#5e6300] hover:bg-gray-100">
+              <Button variant="secondary" className="bg-white text-[#5B6AA5] hover:bg-gray-100">
                 Get Personalized Quote
               </Button>
             </div>
@@ -362,7 +362,7 @@ export function SelfAssessmentQuiz({ onClose }: SelfAssessmentQuizProps) {
           </div>
           <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
             <div 
-              className="h-full bg-gradient-to-r from-[#83835B] to-[#60603b] transition-all duration-300"
+              className="h-full bg-gradient-to-r from-[#A8BEEB] to-[#6B7FC7] transition-all duration-300"
               style={{ width: `${(currentStep / totalSteps) * 100}%` }}
             ></div>
           </div>
@@ -387,7 +387,7 @@ export function SelfAssessmentQuiz({ onClose }: SelfAssessmentQuizProps) {
                     onClick={() => setAnswers({ ...answers, age: option.value })}
                     className={`p-4 border-2 rounded-lg text-left transition-all ${
                       answers.age === option.value
-                        ? 'border-[#f7f775] bg-[#FBFCE8]'
+                        ? 'border-[#F8AD7C] bg-[#FDEEE1]'
                         : 'border-gray-200 hover:border-gray-300'
                     }`}
                   >
@@ -413,7 +413,7 @@ export function SelfAssessmentQuiz({ onClose }: SelfAssessmentQuizProps) {
                     onClick={() => setAnswers({ ...answers, hasAMH: option.value })}
                     className={`w-full p-4 border-2 rounded-lg text-left transition-all ${
                       answers.hasAMH === option.value
-                        ? 'border-[#f7f775] bg-[#FBFCE8]'
+                        ? 'border-[#F8AD7C] bg-[#FDEEE1]'
                         : 'border-gray-200 hover:border-gray-300'
                     }`}
                   >
@@ -436,7 +436,7 @@ export function SelfAssessmentQuiz({ onClose }: SelfAssessmentQuizProps) {
                         onClick={() => setAnswers({ ...answers, amhLevel: level.value })}
                         className={`p-3 border-2 rounded-lg transition-all ${
                           answers.amhLevel === level.value
-                            ? 'border-[#f7f775] bg-[#FBFCE8]'
+                            ? 'border-[#F8AD7C] bg-[#FDEEE1]'
                             : 'border-gray-200 hover:border-gray-300'
                         }`}
                       >
@@ -484,7 +484,7 @@ export function SelfAssessmentQuiz({ onClose }: SelfAssessmentQuizProps) {
                     onClick={() => setAnswers({ ...answers, primaryGoal: option.value })}
                     className={`w-full p-4 border-2 rounded-lg text-left transition-all ${
                       answers.primaryGoal === option.value
-                        ? 'border-[#f7f775] bg-[#FBFCE8]'
+                        ? 'border-[#F8AD7C] bg-[#FDEEE1]'
                         : 'border-gray-200 hover:border-gray-300'
                     }`}
                   >
@@ -511,7 +511,7 @@ export function SelfAssessmentQuiz({ onClose }: SelfAssessmentQuizProps) {
                     onClick={() => setAnswers({ ...answers, timing: option.value })}
                     className={`w-full p-4 border-2 rounded-lg text-left transition-all ${
                       answers.timing === option.value
-                        ? 'border-[#f7f775] bg-[#FBFCE8]'
+                        ? 'border-[#F8AD7C] bg-[#FDEEE1]'
                         : 'border-gray-200 hover:border-gray-300'
                     }`}
                   >
@@ -537,7 +537,7 @@ export function SelfAssessmentQuiz({ onClose }: SelfAssessmentQuizProps) {
                     onClick={() => setAnswers({ ...answers, travelPreference: option.value })}
                     className={`w-full p-4 border-2 rounded-lg text-left transition-all ${
                       answers.travelPreference === option.value
-                        ? 'border-[#f7f775] bg-[#FBFCE8]'
+                        ? 'border-[#F8AD7C] bg-[#FDEEE1]'
                         : 'border-gray-200 hover:border-gray-300'
                     }`}
                   >
@@ -564,7 +564,7 @@ export function SelfAssessmentQuiz({ onClose }: SelfAssessmentQuizProps) {
                     onClick={() => setAnswers({ ...answers, stimulationProtocol: option.value })}
                     className={`w-full p-4 border-2 rounded-lg text-left transition-all ${
                       answers.stimulationProtocol === option.value
-                        ? 'border-[#f7f775] bg-[#FBFCE8]'
+                        ? 'border-[#F8AD7C] bg-[#FDEEE1]'
                         : 'border-gray-200 hover:border-gray-300'
                     }`}
                   >
@@ -617,7 +617,7 @@ export function SelfAssessmentQuiz({ onClose }: SelfAssessmentQuizProps) {
                       }}
                       className={`p-3 border-2 rounded-lg text-left text-sm transition-all ${
                         isSelected
-                          ? 'border-[#f7f775] bg-[#FBFCE8]'
+                          ? 'border-[#F8AD7C] bg-[#FDEEE1]'
                           : 'border-gray-200 hover:border-gray-300'
                       }`}
                     >
@@ -692,7 +692,7 @@ export function SelfAssessmentQuiz({ onClose }: SelfAssessmentQuizProps) {
             Back
           </Button>
           <Button
-            onClick={handleNext} className={currentStep === totalSteps ? '' : 'bg-[#313131] text-white hover:bg-[#454545]'}
+            onClick={handleNext} className={currentStep === totalSteps ? '' : 'bg-[#2F3440] text-white hover:bg-[#434A5C]'}
             disabled={
               (currentStep === 1 && !answers.age) ||
               (currentStep === 2 && !answers.hasAMH) ||

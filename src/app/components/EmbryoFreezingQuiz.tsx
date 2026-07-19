@@ -165,7 +165,7 @@ export function EmbryoFreezingQuiz({ onClose }: EmbryoFreezingQuizProps) {
 
           <div className="p-6 space-y-6">
             {/* Expected Outcomes */}
-            <div className="bg-[#F1F1E4] rounded-lg p-6">
+            <div className="bg-[#EEF2FE] rounded-lg p-6">
               <div className="flex items-center gap-2 mb-4">
                 <h3 className="text-xl">Expected Outcomes</h3>
                 <div className="relative">
@@ -173,7 +173,7 @@ export function EmbryoFreezingQuiz({ onClose }: EmbryoFreezingQuizProps) {
                     onMouseEnter={() => setShowTooltip(true)}
                     onMouseLeave={() => setShowTooltip(false)}
                     onClick={() => setShowTooltip(!showTooltip)}
-                    className="text-[#5e6300] hover:text-[#464a00] transition-colors"
+                    className="text-[#5B6AA5] hover:text-[#464a00] transition-colors"
                   >
                     <Info className="w-5 h-5" />
                   </button>
@@ -253,7 +253,7 @@ export function EmbryoFreezingQuiz({ onClose }: EmbryoFreezingQuizProps) {
                         <p className="text-sm text-gray-600">{clinic.location}</p>
                       </div>
                       <div className="text-right">
-                        <div className="bg-[#EDECD4] text-[#5e6300] px-2 py-1 rounded text-sm">
+                        <div className="bg-[#E7EDFD] text-[#5B6AA5] px-2 py-1 rounded text-sm">
                           {clinic.successRate}% success rate
                         </div>
                       </div>
@@ -268,10 +268,10 @@ export function EmbryoFreezingQuiz({ onClose }: EmbryoFreezingQuizProps) {
             </div>
 
             {/* Call to Action */}
-            <div className="bg-gradient-to-r from-[#83835B] to-[#60603b] rounded-lg p-6 text-white text-center">
+            <div className="bg-gradient-to-r from-[#A8BEEB] to-[#6B7FC7] rounded-lg p-6 text-white text-center">
               <h3 className="text-xl mb-2">Ready to take the next step?</h3>
               <p className="mb-4">Get a personalized quote from these clinics based on your assessment</p>
-              <Button variant="secondary" className="bg-white text-[#5e6300] hover:bg-gray-100">
+              <Button variant="secondary" className="bg-white text-[#5B6AA5] hover:bg-gray-100">
                 Get Personalized Quote
               </Button>
             </div>
@@ -304,7 +304,7 @@ export function EmbryoFreezingQuiz({ onClose }: EmbryoFreezingQuizProps) {
           </div>
           <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
             <div 
-              className="h-full bg-gradient-to-r from-[#83835B] to-[#60603b] transition-all duration-300"
+              className="h-full bg-gradient-to-r from-[#A8BEEB] to-[#6B7FC7] transition-all duration-300"
               style={{ width: `${(currentStep / totalSteps) * 100}%` }}
             ></div>
           </div>
@@ -329,7 +329,7 @@ export function EmbryoFreezingQuiz({ onClose }: EmbryoFreezingQuizProps) {
                     onClick={() => setAnswers({ ...answers, age: option.value })}
                     className={`p-4 border-2 rounded-lg text-left transition-all ${
                       answers.age === option.value
-                        ? 'border-[#f7f775] bg-[#FBFCE8]'
+                        ? 'border-[#F8AD7C] bg-[#FDEEE1]'
                         : 'border-gray-200 hover:border-gray-300'
                     }`}
                   >
@@ -358,7 +358,7 @@ export function EmbryoFreezingQuiz({ onClose }: EmbryoFreezingQuizProps) {
                     onClick={() => setAnswers({ ...answers, partnerAge: option.value })}
                     className={`p-4 border-2 rounded-lg text-left transition-all ${
                       answers.partnerAge === option.value
-                        ? 'border-[#f7f775] bg-[#FBFCE8]'
+                        ? 'border-[#F8AD7C] bg-[#FDEEE1]'
                         : 'border-gray-200 hover:border-gray-300'
                     }`}
                   >
@@ -386,7 +386,7 @@ export function EmbryoFreezingQuiz({ onClose }: EmbryoFreezingQuizProps) {
                     onClick={() => setAnswers({ ...answers, embryoReason: option.value })}
                     className={`w-full p-4 border-2 rounded-lg text-left transition-all ${
                       answers.embryoReason === option.value
-                        ? 'border-[#f7f775] bg-[#FBFCE8]'
+                        ? 'border-[#F8AD7C] bg-[#FDEEE1]'
                         : 'border-gray-200 hover:border-gray-300'
                     }`}
                   >
@@ -412,7 +412,7 @@ export function EmbryoFreezingQuiz({ onClose }: EmbryoFreezingQuizProps) {
                     onClick={() => setAnswers({ ...answers, hasAMH: option.value })}
                     className={`w-full p-4 border-2 rounded-lg text-left transition-all ${
                       answers.hasAMH === option.value
-                        ? 'border-[#f7f775] bg-[#FBFCE8]'
+                        ? 'border-[#F8AD7C] bg-[#FDEEE1]'
                         : 'border-gray-200 hover:border-gray-300'
                     }`}
                   >
@@ -435,7 +435,7 @@ export function EmbryoFreezingQuiz({ onClose }: EmbryoFreezingQuizProps) {
                         onClick={() => setAnswers({ ...answers, amhLevel: level.value })}
                         className={`p-3 border-2 rounded-lg transition-all ${
                           answers.amhLevel === level.value
-                            ? 'border-[#f7f775] bg-[#FBFCE8]'
+                            ? 'border-[#F8AD7C] bg-[#FDEEE1]'
                             : 'border-gray-200 hover:border-gray-300'
                         }`}
                       >
@@ -464,7 +464,7 @@ export function EmbryoFreezingQuiz({ onClose }: EmbryoFreezingQuizProps) {
                     onClick={() => setAnswers({ ...answers, timing: option.value })}
                     className={`w-full p-4 border-2 rounded-lg text-left transition-all ${
                       answers.timing === option.value
-                        ? 'border-[#f7f775] bg-[#FBFCE8]'
+                        ? 'border-[#F8AD7C] bg-[#FDEEE1]'
                         : 'border-gray-200 hover:border-gray-300'
                     }`}
                   >
@@ -490,7 +490,7 @@ export function EmbryoFreezingQuiz({ onClose }: EmbryoFreezingQuizProps) {
                     onClick={() => setAnswers({ ...answers, travelPreference: option.value })}
                     className={`w-full p-4 border-2 rounded-lg text-left transition-all ${
                       answers.travelPreference === option.value
-                        ? 'border-[#f7f775] bg-[#FBFCE8]'
+                        ? 'border-[#F8AD7C] bg-[#FDEEE1]'
                         : 'border-gray-200 hover:border-gray-300'
                     }`}
                   >
@@ -518,7 +518,7 @@ export function EmbryoFreezingQuiz({ onClose }: EmbryoFreezingQuizProps) {
                     onClick={() => setAnswers({ ...answers, storagePreference: option.value })}
                     className={`w-full p-4 border-2 rounded-lg text-left transition-all ${
                       answers.storagePreference === option.value
-                        ? 'border-[#f7f775] bg-[#FBFCE8]'
+                        ? 'border-[#F8AD7C] bg-[#FDEEE1]'
                         : 'border-gray-200 hover:border-gray-300'
                     }`}
                   >
@@ -542,8 +542,8 @@ export function EmbryoFreezingQuiz({ onClose }: EmbryoFreezingQuizProps) {
             Back
           </Button>
           <Button
-            onClick={handleNext} className={currentStep === totalSteps ? '' : 'bg-[#313131] text-white hover:bg-[#454545]'}
-            className="bg-gradient-to-r from-[#83835B] to-[#60603b] hover:opacity-90 flex items-center gap-2"
+            onClick={handleNext} className={currentStep === totalSteps ? '' : 'bg-[#2F3440] text-white hover:bg-[#434A5C]'}
+            className="bg-gradient-to-r from-[#A8BEEB] to-[#6B7FC7] hover:opacity-90 flex items-center gap-2"
           >
             {currentStep === totalSteps ? 'See Results' : 'Next'}
             <ChevronRight className="w-4 h-4" />

@@ -92,23 +92,23 @@ export function AtHomeTestKitsComparison() {
 
       {/* Summary Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div className="bg-[#F1F1E4] p-4 rounded-lg border border-[#C9C8B2]">
-          <div className="text-sm text-[#5e6300] mb-1">Lowest Price</div>
+        <div className="bg-[#EEF2FE] p-4 rounded-lg border border-[#CBD8F5]">
+          <div className="text-sm text-[#5B6AA5] mb-1">Lowest Price</div>
           <div className="text-2xl">${Math.min(...testKits.map(k => k.price))}</div>
           <div className="text-sm text-gray-500 mt-1">LetsGetChecked</div>
         </div>
-        <div className="bg-[#F1F1E4] p-4 rounded-lg border border-[#C9C8B2]">
-          <div className="text-sm text-[#5e6300] mb-1">Average Price</div>
+        <div className="bg-[#EEF2FE] p-4 rounded-lg border border-[#CBD8F5]">
+          <div className="text-sm text-[#5B6AA5] mb-1">Average Price</div>
           <div className="text-2xl">${Math.round(testKits.reduce((acc, k) => acc + k.price, 0) / testKits.length)}</div>
           <div className="text-sm text-gray-500 mt-1">Across all kits</div>
         </div>
-        <div className="bg-[#F1F1E4] p-4 rounded-lg border border-[#C9C8B2]">
-          <div className="text-sm text-[#5e6300] mb-1">Fastest Results</div>
+        <div className="bg-[#EEF2FE] p-4 rounded-lg border border-[#CBD8F5]">
+          <div className="text-sm text-[#5B6AA5] mb-1">Fastest Results</div>
           <div className="text-2xl">2-5 days</div>
           <div className="text-sm text-gray-500 mt-1">LetsGetChecked</div>
         </div>
-        <div className="bg-[#F1F1E4] p-4 rounded-lg border border-[#C9C8B2]">
-          <div className="text-sm text-[#5e6300] mb-1">All HSA/FSA</div>
+        <div className="bg-[#EEF2FE] p-4 rounded-lg border border-[#CBD8F5]">
+          <div className="text-sm text-[#5B6AA5] mb-1">All HSA/FSA</div>
           <div className="text-2xl">100%</div>
           <div className="text-sm text-gray-500 mt-1">Eligible</div>
         </div>
@@ -121,7 +121,7 @@ export function AtHomeTestKitsComparison() {
             key={kit.id}
             className={`border-2 rounded-xl p-6 transition-all ${
               selectedKits.includes(kit.id)
-                ? 'border-[#83835B] bg-[#F1F1E4]'
+                ? 'border-[#A8BEEB] bg-[#EEF2FE]'
                 : 'border-gray-200 hover:border-gray-300'
             }`}
           >
@@ -132,7 +132,7 @@ export function AtHomeTestKitsComparison() {
                 <p className="text-sm text-gray-600">{kit.provider}</p>
               </div>
               {kit.badge && (
-                <span className="bg-[#83835B] text-white px-3 py-1 rounded-full text-sm">
+                <span className="bg-[#A8BEEB] text-white px-3 py-1 rounded-full text-sm">
                   {kit.badge}
                 </span>
               )}
@@ -140,7 +140,7 @@ export function AtHomeTestKitsComparison() {
 
             {/* Price */}
             <div className="mb-4">
-              <div className="text-3xl text-[#83835B]">${kit.price}</div>
+              <div className="text-3xl text-[#A8BEEB]">${kit.price}</div>
               {kit.hsaEligible && (
                 <p className="text-sm text-gray-600 mt-1">HSA/FSA eligible</p>
               )}
@@ -149,7 +149,7 @@ export function AtHomeTestKitsComparison() {
             {/* Rating */}
             <div className="flex items-center gap-2 mb-4">
               <div className="flex items-center gap-1">
-                <Star className="w-4 h-4 fill-[#83835B] text-[#83835B]" />
+                <Star className="w-4 h-4 fill-[#A8BEEB] text-[#A8BEEB]" />
                 <span>{kit.rating}</span>
               </div>
               <span className="text-sm text-gray-600">
@@ -160,7 +160,7 @@ export function AtHomeTestKitsComparison() {
             {/* Details */}
             <div className="space-y-3 mb-4">
               <div className="flex items-start gap-2">
-                <Clock className="w-5 h-5 text-[#83835B] flex-shrink-0 mt-0.5" />
+                <Clock className="w-5 h-5 text-[#A8BEEB] flex-shrink-0 mt-0.5" />
                 <div>
                   <p className="text-sm">Turnaround Time</p>
                   <p className="text-sm text-gray-600">{kit.turnaroundTime}</p>
@@ -169,7 +169,7 @@ export function AtHomeTestKitsComparison() {
 
               {kit.nurseConsult && (
                 <div className="flex items-start gap-2">
-                  <Check className="w-5 h-5 text-[#83835B] flex-shrink-0 mt-0.5" />
+                  <Check className="w-5 h-5 text-[#A8BEEB] flex-shrink-0 mt-0.5" />
                   <p className="text-sm">Free nurse consultation included</p>
                 </div>
               )}
@@ -199,7 +199,7 @@ export function AtHomeTestKitsComparison() {
               >
                 {selectedKits.includes(kit.id) ? 'Selected' : 'Select to Compare'}
               </Button>
-              <Button className="flex-1 bg-[#313131] hover:bg-[#454545]">
+              <Button className="flex-1 bg-[#2F3440] hover:bg-[#434A5C]">
                 Order Now
               </Button>
             </div>
@@ -208,25 +208,25 @@ export function AtHomeTestKitsComparison() {
       </div>
 
       {/* Info Banner */}
-      <div className="bg-gradient-to-br from-[#EDECD4] to-[#F1F1E4] rounded-xl p-6">
+      <div className="bg-gradient-to-br from-[#E7EDFD] to-[#EEF2FE] rounded-xl p-6">
         <h3 className="text-xl mb-3">Why Choose At-Home Testing?</h3>
         <div className="grid md:grid-cols-3 gap-4 text-sm">
           <div className="flex items-start gap-2">
-            <Check className="w-5 h-5 text-[#83835B] flex-shrink-0 mt-0.5" />
+            <Check className="w-5 h-5 text-[#A8BEEB] flex-shrink-0 mt-0.5" />
             <div>
               <p><strong>Convenient</strong></p>
               <p className="text-gray-600">Test from home, no appointment needed</p>
             </div>
           </div>
           <div className="flex items-start gap-2">
-            <Check className="w-5 h-5 text-[#83835B] flex-shrink-0 mt-0.5" />
+            <Check className="w-5 h-5 text-[#A8BEEB] flex-shrink-0 mt-0.5" />
             <div>
               <p><strong>Affordable</strong></p>
               <p className="text-gray-600">$139-$179 vs $500-$1,000 at clinics</p>
             </div>
           </div>
           <div className="flex items-start gap-2">
-            <Check className="w-5 h-5 text-[#83835B] flex-shrink-0 mt-0.5" />
+            <Check className="w-5 h-5 text-[#A8BEEB] flex-shrink-0 mt-0.5" />
             <div>
               <p><strong>Accurate</strong></p>
               <p className="text-gray-600">CLIA-certified labs, same as doctor's office</p>
@@ -237,9 +237,9 @@ export function AtHomeTestKitsComparison() {
 
       {/* Footer Actions */}
       {selectedKits.length > 0 && (
-        <div className="flex items-center justify-between p-4 bg-[#F1F1E4] rounded-lg border border-[#C9C8B2]">
+        <div className="flex items-center justify-between p-4 bg-[#EEF2FE] rounded-lg border border-[#CBD8F5]">
           <div className="text-sm">
-            <span className="text-[#5e6300]">
+            <span className="text-[#5B6AA5]">
               {selectedKits.length} kit{selectedKits.length > 1 ? 's' : ''}
             </span>{' '}
             selected

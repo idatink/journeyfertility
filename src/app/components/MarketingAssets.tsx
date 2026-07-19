@@ -44,14 +44,14 @@ export function MarketingAssets({ onBack }: MarketingAssetsProps) {
       <Button 
         variant="ghost" 
         onClick={onBack}
-        className="mb-8 hover:bg-[#F1F1E4] -ml-2"
+        className="mb-8 hover:bg-[#EEF2FE] -ml-2"
       >
         <ChevronLeft className="w-4 h-4 mr-2" />
         Back to Home
       </Button>
 
       <div className="mb-12">
-        <h1 className="text-4xl font-serif mb-4 text-[#83835B]">PR & Marketing Assets</h1>
+        <h1 className="text-4xl font-serif mb-4 text-[#A8BEEB]">PR & Marketing Assets</h1>
         <p className="text-gray-600 max-w-2xl text-lg">
           Download high-quality visuals and media assets for press, marketing, and social media. 
           All images are provided in 550x344 optimized for online posting.
@@ -60,7 +60,7 @@ export function MarketingAssets({ onBack }: MarketingAssetsProps) {
 
       <div className="grid md:grid-cols-2 gap-8">
         {assets.map((asset) => (
-          <div key={asset.id} className="bg-white rounded-2xl overflow-hidden border border-[#C9C8B2] shadow-sm hover:shadow-md transition-shadow">
+          <div key={asset.id} className="bg-white rounded-2xl overflow-hidden border border-[#CBD8F5] shadow-sm hover:shadow-md transition-shadow">
             <div className="relative aspect-[550/344] overflow-hidden">
               <ImageWithFallback 
                 src={asset.url} 
@@ -68,7 +68,7 @@ export function MarketingAssets({ onBack }: MarketingAssetsProps) {
                 className="w-full h-full object-cover"
               />
               <div className="absolute top-4 right-4">
-                <span className="bg-white/90 backdrop-blur px-3 py-1 rounded-full text-xs font-medium text-[#83835B]">
+                <span className="bg-white/90 backdrop-blur px-3 py-1 rounded-full text-xs font-medium text-[#A8BEEB]">
                   {asset.category}
                 </span>
               </div>
@@ -77,7 +77,7 @@ export function MarketingAssets({ onBack }: MarketingAssetsProps) {
               <div className="flex justify-between items-start mb-2">
                 <h3 className="text-xl font-semibold text-gray-900">{asset.title}</h3>
                 <div className="flex gap-2">
-                  <button className="p-2 text-gray-400 hover:text-[#83835B] transition-colors">
+                  <button className="p-2 text-gray-400 hover:text-[#A8BEEB] transition-colors">
                     <Share2 className="w-5 h-5" />
                   </button>
                 </div>
@@ -87,7 +87,7 @@ export function MarketingAssets({ onBack }: MarketingAssetsProps) {
               </p>
               <div className="flex items-center justify-between pt-4 border-t border-gray-100">
                 <span className="text-xs text-gray-400">Format: 550x344px • JPG</span>
-                <Button className="bg-[#83835B] hover:bg-[#60603b]">
+                <Button className="bg-[#A8BEEB] hover:bg-[#6B7FC7]">
                   <Download className="w-4 h-4 mr-2" />
                   Download
                 </Button>
@@ -97,9 +97,9 @@ export function MarketingAssets({ onBack }: MarketingAssetsProps) {
         ))}
       </div>
 
-      <div className="mt-16 bg-[#F1F1E4] rounded-2xl p-8 border border-[#C9C8B2]">
+      <div className="mt-16 bg-[#EEF2FE] rounded-2xl p-8 border border-[#CBD8F5]">
         <div className="flex items-center gap-4 mb-4">
-          <div className="p-3 bg-white rounded-xl text-[#83835B]">
+          <div className="p-3 bg-white rounded-xl text-[#A8BEEB]">
             <ImageIcon className="w-6 h-6" />
           </div>
           <h2 className="text-2xl font-semibold">Need custom assets?</h2>
@@ -108,7 +108,7 @@ export function MarketingAssets({ onBack }: MarketingAssetsProps) {
           If you require specific resolutions, raw video footage, or brand guidelines for JourneyFertility, 
           please contact our press office.
         </p>
-        <Button variant="outline" className="border-[#83835B] text-[#83835B] hover:bg-[#83835B] hover:text-white">
+        <Button variant="outline" className="border-[#A8BEEB] text-[#A8BEEB] hover:bg-[#A8BEEB] hover:text-white">
           Contact PR Team
         </Button>
       </div>

@@ -365,23 +365,23 @@ export function ClinicCostings({ serviceType, atHomeOnly }: ClinicCostingsProps)
 
       {/* Summary Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div className="bg-[#E6E5B6]/50 p-4 rounded-lg border-l-4 border border-[#83835B]/60 border-l-[#5e6300]">
-          <div className="text-sm text-[#5e6300] mb-1">Lowest Total Cost</div>
+        <div className="bg-[#DEE8FF]/50 p-4 rounded-lg border-l-4 border border-[#A8BEEB]/60 border-l-[#5B6AA5]">
+          <div className="text-sm text-[#5B6AA5] mb-1">Lowest Total Cost</div>
           <div className="text-2xl">${Math.min(...mockClinicData.map(c => c.total)).toLocaleString()}</div>
           <div className="text-sm text-gray-500 mt-1">Memorial Bahçelievler</div>
         </div>
-        <div className="bg-[#F1F1E4] p-4 rounded-lg border border-[#C9C8B2]">
-          <div className="text-sm text-[#5e6300] mb-1">Average Cost</div>
+        <div className="glass p-4 rounded-xl">
+          <div className="text-sm text-[#5B6AA5] mb-1">Average Cost</div>
           <div className="text-2xl">${Math.round(mockClinicData.reduce((acc, c) => acc + c.total, 0) / mockClinicData.length).toLocaleString()}</div>
           <div className="text-sm text-gray-500 mt-1">Across all clinics</div>
         </div>
-        <div className="bg-[#F1F1E4] p-4 rounded-lg border border-[#C9C8B2]">
-          <div className="text-sm text-[#5e6300] mb-1">Highest Success Rate</div>
+        <div className="glass p-4 rounded-xl">
+          <div className="text-sm text-[#5B6AA5] mb-1">Highest Success Rate</div>
           <div className="text-2xl">{Math.max(...mockClinicData.map(c => c.successRate))}%</div>
           <div className="text-sm text-gray-500 mt-1">Boston IVF</div>
         </div>
-        <div className="bg-[#F1F1E4] p-4 rounded-lg border border-[#C9C8B2]">
-          <div className="text-sm text-[#5e6300] mb-1">Clinics Compared</div>
+        <div className="glass p-4 rounded-xl">
+          <div className="text-sm text-[#5B6AA5] mb-1">Clinics Compared</div>
           <div className="text-2xl">{mockClinicData.length}</div>
           <div className="text-sm text-gray-500 mt-1">In your search</div>
         </div>
@@ -409,7 +409,7 @@ export function ClinicCostings({ serviceType, atHomeOnly }: ClinicCostingsProps)
                 <TableHead>
                   <button 
                     onClick={() => handleSort('clinicName')}
-                    className="flex items-center gap-1 hover:text-[#5e6300]"
+                    className="flex items-center gap-1 hover:text-[#5B6AA5]"
                   >
                     Clinic Name
                     <ArrowUpDown className="w-3 h-3" />
@@ -418,7 +418,7 @@ export function ClinicCostings({ serviceType, atHomeOnly }: ClinicCostingsProps)
                 <TableHead>
                   <button 
                     onClick={() => handleSort('consultation')}
-                    className="flex items-center gap-1 hover:text-[#5e6300]"
+                    className="flex items-center gap-1 hover:text-[#5B6AA5]"
                   >
                     Consultation
                     <ArrowUpDown className="w-3 h-3" />
@@ -427,7 +427,7 @@ export function ClinicCostings({ serviceType, atHomeOnly }: ClinicCostingsProps)
                 <TableHead>
                   <button 
                     onClick={() => handleSort('eggRetrieval')}
-                    className="flex items-center gap-1 hover:text-[#5e6300]"
+                    className="flex items-center gap-1 hover:text-[#5B6AA5]"
                   >
                     Egg Retrieval
                     <ArrowUpDown className="w-3 h-3" />
@@ -436,7 +436,7 @@ export function ClinicCostings({ serviceType, atHomeOnly }: ClinicCostingsProps)
                 <TableHead>
                   <button 
                     onClick={() => handleSort('ivfCycle')}
-                    className="flex items-center gap-1 hover:text-[#5e6300]"
+                    className="flex items-center gap-1 hover:text-[#5B6AA5]"
                   >
                     IVF Cycle
                     <ArrowUpDown className="w-3 h-3" />
@@ -445,7 +445,7 @@ export function ClinicCostings({ serviceType, atHomeOnly }: ClinicCostingsProps)
                 <TableHead>
                   <button 
                     onClick={() => handleSort('embryoTransfer')}
-                    className="flex items-center gap-1 hover:text-[#5e6300]"
+                    className="flex items-center gap-1 hover:text-[#5B6AA5]"
                   >
                     Embryo Transfer
                     <ArrowUpDown className="w-3 h-3" />
@@ -454,7 +454,7 @@ export function ClinicCostings({ serviceType, atHomeOnly }: ClinicCostingsProps)
                 <TableHead>
                   <button 
                     onClick={() => handleSort('medications')}
-                    className="flex items-center gap-1 hover:text-[#5e6300]"
+                    className="flex items-center gap-1 hover:text-[#5B6AA5]"
                   >
                     Medications
                     <ArrowUpDown className="w-3 h-3" />
@@ -463,7 +463,7 @@ export function ClinicCostings({ serviceType, atHomeOnly }: ClinicCostingsProps)
                 <TableHead>
                   <button 
                     onClick={() => handleSort('successRate')}
-                    className="flex items-center gap-1 hover:text-[#5e6300]"
+                    className="flex items-center gap-1 hover:text-[#5B6AA5]"
                   >
                     Success Rate
                     <ArrowUpDown className="w-3 h-3" />
@@ -472,7 +472,7 @@ export function ClinicCostings({ serviceType, atHomeOnly }: ClinicCostingsProps)
                 <TableHead>
                   <button 
                     onClick={() => handleSort('total')}
-                    className="flex items-center gap-1 hover:text-[#5e6300]"
+                    className="flex items-center gap-1 hover:text-[#5B6AA5]"
                   >
                     Total Cost
                     <ArrowUpDown className="w-3 h-3" />
@@ -483,7 +483,7 @@ export function ClinicCostings({ serviceType, atHomeOnly }: ClinicCostingsProps)
             <TableBody>
               {sortedData.map((clinic) => (
                 <Fragment key={clinic.id}>
-                  <TableRow className={selectedClinics.includes(clinic.id) ? 'bg-[#F1F1E4]' : clinic.total === lowestTotal ? 'bg-[#E6E5B6]/40' : ''}>
+                  <TableRow className={selectedClinics.includes(clinic.id) ? 'bg-[#EEF2FE]' : clinic.total === lowestTotal ? 'bg-[#DEE8FF]/40' : ''}>
                     <TableCell>
                       <Checkbox 
                         checked={selectedClinics.includes(clinic.id)}
@@ -493,7 +493,7 @@ export function ClinicCostings({ serviceType, atHomeOnly }: ClinicCostingsProps)
                     <TableCell>
                       <button
                         onClick={() => toggleRowExpansion(clinic.id)}
-                        className="hover:text-[#5e6300]"
+                        className="hover:text-[#5B6AA5]"
                       >
                         {expandedRows.includes(clinic.id) ? (
                           <ChevronUp className="w-4 h-4" />
@@ -507,7 +507,7 @@ export function ClinicCostings({ serviceType, atHomeOnly }: ClinicCostingsProps)
                         <div className="flex items-center gap-2">
                           {clinic.clinicName}
                           {clinic.total === lowestTotal && (
-                            <span className="text-[10px] font-semibold uppercase tracking-wide text-[#5e6300] bg-[#E6E5B6]/70 px-2 py-0.5 rounded-full whitespace-nowrap">
+                            <span className="grain text-[10px] font-semibold uppercase tracking-wide text-[#5B6AA5] bg-[#DEE8FF]/70 px-2 py-0.5 rounded-full whitespace-nowrap">
                               Best value
                             </span>
                           )}
@@ -524,14 +524,14 @@ export function ClinicCostings({ serviceType, atHomeOnly }: ClinicCostingsProps)
                       <div className="flex items-center gap-2">
                         <div className="flex-1 bg-gray-200 rounded-full h-2">
                           <div 
-                            className="bg-[#83835B] h-2 rounded-full"
+                            className="bg-[#A8BEEB] h-2 rounded-full"
                             style={{ width: `${clinic.successRate}%` }}
                           />
                         </div>
                         <span className="text-sm">{clinic.successRate}%</span>
                       </div>
                     </TableCell>
-                    <TableCell className="text-[#5e6300]">${clinic.total.toLocaleString()}</TableCell>
+                    <TableCell className="text-[#5B6AA5]">${clinic.total.toLocaleString()}</TableCell>
                   </TableRow>
                   
                   {expandedRows.includes(clinic.id) && (
@@ -571,7 +571,7 @@ export function ClinicCostings({ serviceType, atHomeOnly }: ClinicCostingsProps)
                             <div className="flex gap-3 justify-end">
                               <Button variant="outline" size="sm">View Full Details</Button>
                               <Button variant="outline" size="sm">Book Consultation</Button>
-                              <Button className="bg-[#313131] hover:bg-[#5e6300]" size="sm" onClick={() => handleViewDetails(clinic)}>
+                              <Button className="bg-[#2F3440] hover:bg-[#5B6AA5]" size="sm" onClick={() => handleViewDetails(clinic)}>
                                 See clinic costings
                               </Button>
                             </div>
@@ -589,9 +589,9 @@ export function ClinicCostings({ serviceType, atHomeOnly }: ClinicCostingsProps)
 
       {/* Footer Actions */}
       {selectedClinics.length > 0 && (
-        <div className="flex items-center justify-between p-4 bg-[#F1F1E4] rounded-lg border border-[#C9C8B2]">
+        <div className="flex items-center justify-between p-4 glass rounded-xl">
           <div className="text-sm">
-            <span className="text-[#5e6300]">{selectedClinics.length} clinic{selectedClinics.length > 1 ? 's' : ''}</span> selected
+            <span className="text-[#5B6AA5]">{selectedClinics.length} clinic{selectedClinics.length > 1 ? 's' : ''}</span> selected
           </div>
           <div className="flex gap-3">
             <Button variant="outline" size="sm">Compare Selected</Button>

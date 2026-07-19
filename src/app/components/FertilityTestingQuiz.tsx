@@ -146,7 +146,7 @@ export function FertilityTestingQuiz({ onClose }: FertilityTestingQuizProps) {
 
           <div className="p-6 space-y-6">
             {/* Recommended Tests */}
-            <div className="bg-[#F1F1E4] rounded-lg p-6">
+            <div className="bg-[#EEF2FE] rounded-lg p-6">
               <div className="flex items-center gap-2 mb-4">
                 <h3 className="text-xl">Recommended Tests</h3>
                 <div className="relative">
@@ -154,7 +154,7 @@ export function FertilityTestingQuiz({ onClose }: FertilityTestingQuizProps) {
                     onMouseEnter={() => setShowTooltip(true)}
                     onMouseLeave={() => setShowTooltip(false)}
                     onClick={() => setShowTooltip(!showTooltip)}
-                    className="text-[#5e6300] hover:text-[#464a00] transition-colors"
+                    className="text-[#5B6AA5] hover:text-[#464a00] transition-colors"
                   >
                     <Info className="w-5 h-5" />
                   </button>
@@ -170,7 +170,7 @@ export function FertilityTestingQuiz({ onClose }: FertilityTestingQuizProps) {
               <div className="space-y-3">
                 {results.recommendedTests.map((test, index) => (
                   <div key={index} className="flex items-start gap-3 p-3 bg-white rounded-lg">
-                    <div className="w-6 h-6 bg-[#313131] rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <div className="w-6 h-6 bg-[#2F3440] rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
                       <span className="text-white text-sm">{index + 1}</span>
                     </div>
                     <div className="flex-1">
@@ -228,7 +228,7 @@ export function FertilityTestingQuiz({ onClose }: FertilityTestingQuizProps) {
                         <p className="text-sm text-gray-600">{clinic.location}</p>
                       </div>
                       <div className="text-right">
-                        <div className="bg-[#EDECD4] text-[#5e6300] px-2 py-1 rounded text-sm">
+                        <div className="bg-[#E7EDFD] text-[#5B6AA5] px-2 py-1 rounded text-sm">
                           {clinic.rating} ★ rating
                         </div>
                       </div>
@@ -256,7 +256,7 @@ export function FertilityTestingQuiz({ onClose }: FertilityTestingQuizProps) {
                       <p className="text-sm text-gray-600">Tests AMH, FSH, TSH, and 6 other hormones</p>
                     </div>
                     <div className="text-right">
-                      <div className="bg-[#EDECD4] text-[#5e6300] px-2 py-1 rounded text-sm">
+                      <div className="bg-[#E7EDFD] text-[#5B6AA5] px-2 py-1 rounded text-sm">
                         Popular choice
                       </div>
                     </div>
@@ -274,7 +274,7 @@ export function FertilityTestingQuiz({ onClose }: FertilityTestingQuizProps) {
                       <p className="text-sm text-gray-600">AMH, TSH, fT4, and other key markers</p>
                     </div>
                     <div className="text-right">
-                      <div className="bg-[#EDECD4] text-[#5e6300] px-2 py-1 rounded text-sm">
+                      <div className="bg-[#E7EDFD] text-[#5B6AA5] px-2 py-1 rounded text-sm">
                         HSA/FSA eligible
                       </div>
                     </div>
@@ -312,7 +312,7 @@ export function FertilityTestingQuiz({ onClose }: FertilityTestingQuizProps) {
                 </div>
               </div>
               
-              <div className="mt-4 p-4 bg-[#F1F1E4] rounded-lg">
+              <div className="mt-4 p-4 bg-[#EEF2FE] rounded-lg">
                 <p className="text-sm text-gray-700">
                   <strong>Note:</strong> At-home tests are great for initial insights, but we recommend following up with a fertility specialist to discuss your results and next steps.
                 </p>
@@ -320,7 +320,7 @@ export function FertilityTestingQuiz({ onClose }: FertilityTestingQuizProps) {
             </div>
 
             {/* Next Steps */}
-            <div className="bg-[#F1F1E4] rounded-lg p-6">
+            <div className="bg-[#EEF2FE] rounded-lg p-6">
               <h3 className="text-xl mb-4">Next Steps</h3>
               <ol className="space-y-3">
                 <li className="flex gap-3">
@@ -339,10 +339,10 @@ export function FertilityTestingQuiz({ onClose }: FertilityTestingQuizProps) {
             </div>
 
             {/* Call to Action */}
-            <div className="bg-gradient-to-r from-[#83835B] to-[#60603b] rounded-lg p-6 text-white text-center">
+            <div className="bg-gradient-to-r from-[#A8BEEB] to-[#6B7FC7] rounded-lg p-6 text-white text-center">
               <h3 className="text-xl mb-2">Ready to get tested?</h3>
               <p className="mb-4">Book your fertility testing appointment at one of our recommended centers</p>
-              <Button variant="secondary" className="bg-white text-[#5e6300] hover:bg-gray-100">
+              <Button variant="secondary" className="bg-white text-[#5B6AA5] hover:bg-gray-100">
                 Book Testing Appointment
               </Button>
             </div>
@@ -375,7 +375,7 @@ export function FertilityTestingQuiz({ onClose }: FertilityTestingQuizProps) {
           </div>
           <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
             <div 
-              className="h-full bg-gradient-to-r from-[#83835B] to-[#60603b] transition-all duration-300"
+              className="h-full bg-gradient-to-r from-[#A8BEEB] to-[#6B7FC7] transition-all duration-300"
               style={{ width: `${(currentStep / totalSteps) * 100}%` }}
             ></div>
           </div>
@@ -400,7 +400,7 @@ export function FertilityTestingQuiz({ onClose }: FertilityTestingQuizProps) {
                     onClick={() => setAnswers({ ...answers, age: option.value })}
                     className={`p-4 border-2 rounded-lg text-left transition-all ${
                       answers.age === option.value
-                        ? 'border-[#f7f775] bg-[#FBFCE8]'
+                        ? 'border-[#F8AD7C] bg-[#FDEEE1]'
                         : 'border-gray-200 hover:border-gray-300'
                     }`}
                   >
@@ -427,7 +427,7 @@ export function FertilityTestingQuiz({ onClose }: FertilityTestingQuizProps) {
                     onClick={() => setAnswers({ ...answers, relationshipStatus: option.value })}
                     className={`w-full p-4 border-2 rounded-lg text-left transition-all ${
                       answers.relationshipStatus === option.value
-                        ? 'border-[#f7f775] bg-[#FBFCE8]'
+                        ? 'border-[#F8AD7C] bg-[#FDEEE1]'
                         : 'border-gray-200 hover:border-gray-300'
                     }`}
                   >
@@ -455,7 +455,7 @@ export function FertilityTestingQuiz({ onClose }: FertilityTestingQuizProps) {
                     onClick={() => setAnswers({ ...answers, tryingDuration: option.value })}
                     className={`w-full p-4 border-2 rounded-lg text-left transition-all ${
                       answers.tryingDuration === option.value
-                        ? 'border-[#f7f775] bg-[#FBFCE8]'
+                        ? 'border-[#F8AD7C] bg-[#FDEEE1]'
                         : 'border-gray-200 hover:border-gray-300'
                     }`}
                   >
@@ -482,7 +482,7 @@ export function FertilityTestingQuiz({ onClose }: FertilityTestingQuizProps) {
                     onClick={() => setAnswers({ ...answers, menstrualCycle: option.value })}
                     className={`w-full p-4 border-2 rounded-lg text-left transition-all ${
                       answers.menstrualCycle === option.value
-                        ? 'border-[#f7f775] bg-[#FBFCE8]'
+                        ? 'border-[#F8AD7C] bg-[#FDEEE1]'
                         : 'border-gray-200 hover:border-gray-300'
                     }`}
                   >
@@ -526,7 +526,7 @@ export function FertilityTestingQuiz({ onClose }: FertilityTestingQuizProps) {
                       }}
                       className={`p-3 border-2 rounded-lg text-left text-sm transition-all ${
                         isSelected
-                          ? 'border-[#f7f775] bg-[#FBFCE8]'
+                          ? 'border-[#F8AD7C] bg-[#FDEEE1]'
                           : 'border-gray-200 hover:border-gray-300'
                       }`}
                     >
@@ -553,7 +553,7 @@ export function FertilityTestingQuiz({ onClose }: FertilityTestingQuizProps) {
                     onClick={() => setAnswers({ ...answers, previousTests: option.value })}
                     className={`w-full p-4 border-2 rounded-lg text-left transition-all ${
                       answers.previousTests === option.value
-                        ? 'border-[#f7f775] bg-[#FBFCE8]'
+                        ? 'border-[#F8AD7C] bg-[#FDEEE1]'
                         : 'border-gray-200 hover:border-gray-300'
                     }`}
                   >
@@ -581,7 +581,7 @@ export function FertilityTestingQuiz({ onClose }: FertilityTestingQuizProps) {
                     onClick={() => setAnswers({ ...answers, testingGoal: option.value })}
                     className={`w-full p-4 border-2 rounded-lg text-left transition-all ${
                       answers.testingGoal === option.value
-                        ? 'border-[#f7f775] bg-[#FBFCE8]'
+                        ? 'border-[#F8AD7C] bg-[#FDEEE1]'
                         : 'border-gray-200 hover:border-gray-300'
                     }`}
                   >
@@ -605,8 +605,8 @@ export function FertilityTestingQuiz({ onClose }: FertilityTestingQuizProps) {
             Back
           </Button>
           <Button
-            onClick={handleNext} className={currentStep === totalSteps ? '' : 'bg-[#313131] text-white hover:bg-[#454545]'}
-            className="bg-gradient-to-r from-[#83835B] to-[#60603b] hover:opacity-90 flex items-center gap-2"
+            onClick={handleNext} className={currentStep === totalSteps ? '' : 'bg-[#2F3440] text-white hover:bg-[#434A5C]'}
+            className="bg-gradient-to-r from-[#A8BEEB] to-[#6B7FC7] hover:opacity-90 flex items-center gap-2"
           >
             {currentStep === totalSteps ? 'See Results' : 'Next'}
             <ChevronRight className="w-4 h-4" />

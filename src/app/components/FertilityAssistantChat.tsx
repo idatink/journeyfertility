@@ -205,7 +205,7 @@ export function FertilityAssistantChat({ onClose }: FertilityAssistantChatProps)
     <div className="fixed inset-0 bg-black/50 z-50 flex items-end md:items-center justify-center p-0 md:p-4">
       <Card className="w-full md:max-w-2xl h-[100vh] md:h-[85vh] flex flex-col bg-white rounded-none md:rounded-lg shadow-2xl">
         {/* Header */}
-        <div className="flex items-center justify-between p-4 border-b bg-gradient-to-r from-blue-600 to-purple-600">
+        <div className="flex items-center justify-between p-4 border-b bg-gradient-to-r from-[#2F3440] to-[#4A5890]">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
               <Sparkles className="w-5 h-5 text-white" />
@@ -238,7 +238,7 @@ export function FertilityAssistantChat({ onClose }: FertilityAssistantChatProps)
             </div>
             <div className="w-full bg-gray-200 rounded-full h-2">
               <div
-                className="bg-gradient-to-r from-blue-600 to-purple-600 h-2 rounded-full transition-all duration-500"
+                className="bg-[#F8AD7C] h-2 rounded-full transition-all duration-500"
                 style={{ width: `${((currentTopicIndex + 1) / topics.length) * 100}%` }}
               />
             </div>
@@ -246,7 +246,7 @@ export function FertilityAssistantChat({ onClose }: FertilityAssistantChatProps)
         )}
 
         {/* Topics Overview */}
-        <div className="px-4 py-3 bg-[#F1F1E4] border-b">
+        <div className="px-4 py-3 bg-[#EEF2FE] border-b">
           <div className="flex gap-2 overflow-x-auto pb-2">
             {topics.map((topic, index) => (
               <button
@@ -256,7 +256,7 @@ export function FertilityAssistantChat({ onClose }: FertilityAssistantChatProps)
                   completedTopics.has(index)
                     ? 'bg-green-100 text-green-700'
                     : index === currentTopicIndex
-                    ? 'bg-[#313131] text-white'
+                    ? 'bg-[#2F3440] text-white'
                     : 'bg-white text-gray-600'
                 }`}
               >
@@ -277,13 +277,13 @@ export function FertilityAssistantChat({ onClose }: FertilityAssistantChatProps)
                 <div
                   className={`max-w-[80%] rounded-lg p-3 ${
                     message.type === 'user'
-                      ? 'bg-[#313131] text-white'
+                      ? 'bg-[#2F3440] text-white'
                       : 'bg-gray-100 text-gray-900'
                   }`}
                 >
                   {message.type === 'ai' && (
                     <div className="flex items-center gap-2 mb-1">
-                      <Sparkles className="w-3 h-3 text-[#5e6300]" />
+                      <Sparkles className="w-3 h-3 text-[#5B6AA5]" />
                       <span className="text-xs text-gray-500">Assistant</span>
                     </div>
                   )}
@@ -316,7 +316,7 @@ export function FertilityAssistantChat({ onClose }: FertilityAssistantChatProps)
             <div className="flex gap-2">
               <Button
                 onClick={handleQuickStart}
-                className="flex-1 bg-gradient-to-r from-blue-600 to-purple-600"
+                className="flex-1 bg-[#F8AD7C] hover:bg-[#F2955F] text-[#2F3440]"
               >
                 <MessageCircle className="w-4 h-4 mr-2" />
                 Start Consultation
