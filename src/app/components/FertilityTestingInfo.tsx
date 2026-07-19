@@ -2,6 +2,7 @@ import { ArrowLeft, Check, Clock, DollarSign, Users, ChevronDown, Star, MapPin }
 import { Button } from './ui/button';
 import { useState, useEffect, useRef } from 'react';
 import { ImageWithFallback } from './figma/ImageWithFallback';
+import testingHeroImage from '../../assets/fertlitytestshero.jpg';
 
 interface FertilityTestingInfoProps {
   onBack: () => void;
@@ -140,13 +141,18 @@ export function FertilityTestingInfo({ onBack, onSearchClinics, onTakeQuiz, scro
   return (
     <div className="min-h-screen bg-white">
       {/* Hero Section */}
-      <div className="relative h-[500px] bg-gray-900">
+      <div className="relative h-[500px] bg-[#2F3440] overflow-hidden">
         <ImageWithFallback
-          src="https://images.unsplash.com/photo-1579154341906-48e37b8b2b7d?w=1200&q=80"
-          alt="Fertility Testing"
-          className="w-full h-full object-cover opacity-70"
+          src={testingHeroImage}
+          alt=""
+          className="absolute inset-0 w-full h-full object-cover scale-110 blur-2xl opacity-45"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent">
+        <ImageWithFallback
+          src={testingHeroImage}
+          alt="Fertility Testing"
+          className="absolute right-[7%] top-1/2 -translate-y-1/2 h-[400px] w-[290px] object-cover rounded-2xl hidden lg:block"
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-black/85 via-black/45 to-black/10">
           <div className="max-w-7xl mx-auto px-4 h-full flex flex-col justify-between py-8">
             <Button
               variant="ghost"
@@ -166,14 +172,14 @@ export function FertilityTestingInfo({ onBack, onSearchClinics, onTakeQuiz, scro
               </p>
               <div className="flex flex-wrap gap-4">
                 <Button 
-                  className="bg-[#f7f775] hover:bg-[#e9e95c] text-[#313131] font-semibold"
+                  className="bg-[#F8AD7C] hover:bg-[#F2955F] text-[#2F3440] font-semibold"
                   onClick={() => clinicsRef.current?.scrollIntoView({ behavior: 'smooth' })}
                 >
                   Find Testing Centers
                 </Button>
                 <Button 
                   variant="outline"
-                  className="bg-white/90 hover:bg-white border-0 text-[#83835B]"
+                  className="bg-white/90 hover:bg-white border-0 text-[#A8BEEB]"
                   onClick={onTakeQuiz}
                 >
                   Take Self-Assessment Quiz
@@ -257,18 +263,18 @@ export function FertilityTestingInfo({ onBack, onSearchClinics, onTakeQuiz, scro
                 badge: "Most Comprehensive"
               }
             ].map((kit, idx) => (
-              <div key={idx} className="bg-[#F1F1E4] rounded-xl p-6 relative">
+              <div key={idx} className="bg-[#EEF2FE] rounded-xl p-6 relative">
                 {kit.badge && (
-                  <div className="absolute top-4 right-4 bg-[#83835B] text-white px-3 py-1 rounded-full text-sm">
+                  <div className="absolute top-4 right-4 bg-[#A8BEEB] text-white px-3 py-1 rounded-full text-sm">
                     {kit.badge}
                   </div>
                 )}
                 <h3 className="text-2xl mb-2">{kit.title}</h3>
-                <p className="text-3xl text-[#83835B] mb-4">{kit.price}</p>
+                <p className="text-3xl text-[#A8BEEB] mb-4">{kit.price}</p>
                 <ul className="space-y-3">
                   {kit.features.map((feature, featureIdx) => (
                     <li key={featureIdx} className="flex items-start gap-3">
-                      <Check className="w-5 h-5 text-[#83835B] flex-shrink-0 mt-0.5" />
+                      <Check className="w-5 h-5 text-[#A8BEEB] flex-shrink-0 mt-0.5" />
                       <span className="text-gray-700">{feature}</span>
                     </li>
                   ))}
@@ -279,7 +285,7 @@ export function FertilityTestingInfo({ onBack, onSearchClinics, onTakeQuiz, scro
         </div>
 
         {/* How It Works */}
-        <div className="mb-16 bg-gradient-to-br from-[#EDECD4] to-[#F1F1E4] rounded-2xl p-8 md:p-12">
+        <div className="mb-16 bg-gradient-to-br from-[#E7EDFD] to-[#EEF2FE] rounded-2xl p-8 md:p-12">
           <h2 className="text-4xl mb-8">How At-Home Testing Works</h2>
           <div className="grid md:grid-cols-4 gap-6">
             {[
@@ -305,7 +311,7 @@ export function FertilityTestingInfo({ onBack, onSearchClinics, onTakeQuiz, scro
               }
             ].map((step, idx) => (
               <div key={idx} className="text-center">
-                <div className="w-16 h-16 bg-[#83835B] text-white rounded-full flex items-center justify-center text-2xl mx-auto mb-4">
+                <div className="w-16 h-16 bg-[#A8BEEB] text-white rounded-full flex items-center justify-center text-2xl mx-auto mb-4">
                   {step.step}
                 </div>
                 <h3 className="text-xl mb-2">{step.title}</h3>
@@ -343,12 +349,12 @@ export function FertilityTestingInfo({ onBack, onSearchClinics, onTakeQuiz, scro
                 ]
               }
             ].map((category, idx) => (
-              <div key={idx} className="bg-[#F1F1E4] rounded-xl p-6">
+              <div key={idx} className="bg-[#EEF2FE] rounded-xl p-6">
                 <h3 className="text-2xl mb-4">{category.title}</h3>
                 <ul className="space-y-3">
                   {category.tests.map((test, testIdx) => (
                     <li key={testIdx} className="flex items-start gap-3">
-                      <Check className="w-5 h-5 text-[#83835B] flex-shrink-0 mt-0.5" />
+                      <Check className="w-5 h-5 text-[#A8BEEB] flex-shrink-0 mt-0.5" />
                       <span className="text-gray-700">{test}</span>
                     </li>
                   ))}
@@ -359,7 +365,7 @@ export function FertilityTestingInfo({ onBack, onSearchClinics, onTakeQuiz, scro
         </div>
 
         {/* Who It's For */}
-        <div className="mb-16 bg-[#F1F1E4] rounded-2xl p-8 md:p-12">
+        <div className="mb-16 bg-[#EEF2FE] rounded-2xl p-8 md:p-12">
           <h2 className="text-4xl mb-8">Who Should Use At-Home Fertility Testing?</h2>
           <div className="grid md:grid-cols-2 gap-6">
             {[
@@ -374,7 +380,7 @@ export function FertilityTestingInfo({ onBack, onSearchClinics, onTakeQuiz, scro
               "People wanting to understand their fertility status"
             ].map((item, idx) => (
               <div key={idx} className="flex items-start gap-3">
-                <Check className="w-6 h-6 text-[#83835B] flex-shrink-0 mt-1" />
+                <Check className="w-6 h-6 text-[#A8BEEB] flex-shrink-0 mt-1" />
                 <span className="text-gray-700">{item}</span>
               </div>
             ))}
@@ -385,8 +391,8 @@ export function FertilityTestingInfo({ onBack, onSearchClinics, onTakeQuiz, scro
         <div className="mb-16">
           <h2 className="text-4xl mb-8">Key Information</h2>
           <div className="grid md:grid-cols-3 gap-6">
-            <div className="bg-white border-2 border-[#C9C8B2] rounded-xl p-6">
-              <Clock className="w-10 h-10 text-[#83835B] mb-4" />
+            <div className="bg-white border-2 border-[#CBD8F5] rounded-xl p-6">
+              <Clock className="w-10 h-10 text-[#A8BEEB] mb-4" />
               <h3 className="text-2xl mb-2">Timeline</h3>
               <p className="text-gray-600 mb-4">Testing schedule and results</p>
               <ul className="text-sm text-gray-600 space-y-2">
@@ -397,8 +403,8 @@ export function FertilityTestingInfo({ onBack, onSearchClinics, onTakeQuiz, scro
               </ul>
             </div>
 
-            <div className="bg-white border-2 border-[#C9C8B2] rounded-xl p-6">
-              <DollarSign className="w-10 h-10 text-[#83835B] mb-4" />
+            <div className="bg-white border-2 border-[#CBD8F5] rounded-xl p-6">
+              <DollarSign className="w-10 h-10 text-[#A8BEEB] mb-4" />
               <h3 className="text-2xl mb-2">Cost Range</h3>
               <p className="text-gray-600 mb-4">Average testing costs</p>
               <ul className="text-sm text-gray-600 space-y-2">
@@ -408,8 +414,8 @@ export function FertilityTestingInfo({ onBack, onSearchClinics, onTakeQuiz, scro
               </ul>
             </div>
 
-            <div className="bg-white border-2 border-[#C9C8B2] rounded-xl p-6">
-              <Users className="w-10 h-10 text-[#83835B] mb-4" />
+            <div className="bg-white border-2 border-[#CBD8F5] rounded-xl p-6">
+              <Users className="w-10 h-10 text-[#A8BEEB] mb-4" />
               <h3 className="text-2xl mb-2">For Both Partners</h3>
               <p className="text-gray-600 mb-4">Testing for couples</p>
               <ul className="text-sm text-gray-600 space-y-2">
@@ -433,7 +439,7 @@ export function FertilityTestingInfo({ onBack, onSearchClinics, onTakeQuiz, scro
                 onClick={() => setSelectedCity(city === 'All cities' ? 'all' : city)}
                 className={`px-4 py-2 rounded-full whitespace-nowrap transition-colors ${
                   (city === 'All cities' && selectedCity === 'all') || city === selectedCity
-                    ? 'bg-[#83835B] text-white'
+                    ? 'bg-[#A8BEEB] text-white'
                     : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                 }`}
               >
@@ -448,14 +454,14 @@ export function FertilityTestingInfo({ onBack, onSearchClinics, onTakeQuiz, scro
               <div key={clinic.id} className="bg-white border border-gray-200 rounded-xl p-6 hover:shadow-lg transition-shadow">
                 <div className="flex items-start justify-between mb-3">
                   <h3 className="text-xl flex-1 pr-4">{clinic.name}</h3>
-                  <div className="flex items-center justify-center w-16 h-16 rounded-full bg-[#83835B] text-white flex-shrink-0">
+                  <div className="flex items-center justify-center w-16 h-16 rounded-full bg-[#A8BEEB] text-white flex-shrink-0">
                     <span className="text-2xl">{clinic.rating}</span>
                   </div>
                 </div>
                 
                 <div className="mb-4">
                   <div className="flex items-center gap-2 mb-2">
-                    <Star className="w-4 h-4 text-[#83835B] fill-current" />
+                    <Star className="w-4 h-4 text-[#A8BEEB] fill-current" />
                     <span className="text-sm">
                       {Math.round(clinic.rating * 10)}% strongly recommend
                     </span>
@@ -472,7 +478,7 @@ export function FertilityTestingInfo({ onBack, onSearchClinics, onTakeQuiz, scro
                     {clinic.features.slice(0, 3).map((feature, idx) => (
                       <span
                         key={idx}
-                        className="px-2 py-1 bg-[#F1F1E4] text-gray-700 rounded text-xs"
+                        className="px-2 py-1 bg-[#EEF2FE] text-gray-700 rounded text-xs"
                       >
                         {feature}
                       </span>
@@ -490,7 +496,7 @@ export function FertilityTestingInfo({ onBack, onSearchClinics, onTakeQuiz, scro
                         {clinic.priceDetails}
                       </div>
                     </div>
-                    <Button className="bg-[#83835B] hover:bg-[#60603b] text-white">
+                    <Button className="bg-[#A8BEEB] hover:bg-[#6B7FC7] text-white">
                       View Details
                     </Button>
                   </div>
@@ -511,14 +517,14 @@ export function FertilityTestingInfo({ onBack, onSearchClinics, onTakeQuiz, scro
           <h2 className="text-4xl mb-8">Frequently Asked Questions</h2>
           <div className="space-y-4">
             {faqs.map((faq, idx) => (
-              <div key={idx} className="border-2 border-[#C9C8B2] rounded-xl overflow-hidden">
+              <div key={idx} className="border-2 border-[#CBD8F5] rounded-xl overflow-hidden">
                 <button
-                  className="w-full px-6 py-5 flex items-center justify-between text-left hover:bg-[#F1F1E4] transition-colors"
+                  className="w-full px-6 py-5 flex items-center justify-between text-left hover:bg-[#EEF2FE] transition-colors"
                   onClick={() => setOpenFaq(openFaq === idx ? null : idx)}
                 >
                   <span className="text-lg pr-4">{faq.question}</span>
                   <ChevronDown 
-                    className={`w-5 h-5 text-[#83835B] flex-shrink-0 transition-transform ${openFaq === idx ? 'rotate-180' : ''}`}
+                    className={`w-5 h-5 text-[#A8BEEB] flex-shrink-0 transition-transform ${openFaq === idx ? 'rotate-180' : ''}`}
                   />
                 </button>
                 {openFaq === idx && (
@@ -532,14 +538,14 @@ export function FertilityTestingInfo({ onBack, onSearchClinics, onTakeQuiz, scro
         </div>
 
         {/* CTA Section */}
-        <div className="bg-gradient-to-r from-[#83835B] to-[#60603b] rounded-2xl p-8 md:p-12 text-center text-white">
+        <div className="bg-gradient-to-r from-[#A8BEEB] to-[#6B7FC7] rounded-2xl p-8 md:p-12 text-center text-white">
           <h2 className="text-3xl md:text-4xl mb-4">Ready to Understand Your Fertility?</h2>
           <p className="text-xl mb-8 text-white/90 max-w-2xl mx-auto">
             Get comprehensive fertility testing to make informed decisions about your reproductive health
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button 
-              className="bg-white text-[#83835B] hover:bg-white/90"
+              className="bg-white text-[#A8BEEB] hover:bg-white/90"
               onClick={onSearchClinics}
             >
               Find Testing Centers

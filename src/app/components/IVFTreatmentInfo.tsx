@@ -2,6 +2,7 @@ import { ArrowLeft, Check, Clock, DollarSign, Users, ChevronDown, Heart, Star, M
 import { Button } from './ui/button';
 import { useState, useEffect, useRef } from 'react';
 import { ImageWithFallback } from './figma/ImageWithFallback';
+import ivfHeroImage from '../../assets/ivfhero.jpg';
 
 interface IVFTreatmentInfoProps {
   onBack: () => void;
@@ -140,13 +141,18 @@ export function IVFTreatmentInfo({ onBack, onSearchClinics, onTakeQuiz, scrollTo
   return (
     <div className="min-h-screen bg-white">
       {/* Hero Section */}
-      <div className="relative h-[500px] bg-gray-900">
+      <div className="relative h-[500px] bg-[#2F3440] overflow-hidden">
         <ImageWithFallback
-          src="https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=1200&q=80"
-          alt="IVF Treatment"
-          className="w-full h-full object-cover opacity-70"
+          src={ivfHeroImage}
+          alt=""
+          className="absolute inset-0 w-full h-full object-cover scale-110 blur-2xl opacity-45"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent">
+        <ImageWithFallback
+          src={ivfHeroImage}
+          alt="IVF Treatment"
+          className="absolute right-[7%] top-1/2 -translate-y-1/2 h-[400px] w-[290px] object-cover rounded-2xl hidden lg:block"
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-black/85 via-black/45 to-black/10">
           <div className="max-w-7xl mx-auto px-4 h-full flex flex-col justify-between py-8">
             <Button
               variant="ghost"
@@ -166,14 +172,14 @@ export function IVFTreatmentInfo({ onBack, onSearchClinics, onTakeQuiz, scrollTo
               </p>
               <div className="flex flex-wrap gap-4">
                 <Button 
-                  className="bg-[#f7f775] hover:bg-[#e9e95c] text-[#313131] font-semibold"
+                  className="bg-[#F8AD7C] hover:bg-[#F2955F] text-[#2F3440] font-semibold"
                   onClick={() => clinicsRef.current?.scrollIntoView({ behavior: 'smooth' })}
                 >
                   Find IVF Clinics
                 </Button>
                 <Button 
                   variant="outline"
-                  className="bg-white/90 hover:bg-white border-0 text-[#83835B]"
+                  className="bg-white/90 hover:bg-white border-0 text-[#A8BEEB]"
                   onClick={onTakeQuiz}
                 >
                   Take Self-Assessment Quiz
@@ -230,8 +236,8 @@ export function IVFTreatmentInfo({ onBack, onSearchClinics, onTakeQuiz, scrollTo
                 description: "One or more embryos are placed into your uterus. Remaining embryos can be frozen for future use."
               }
             ].map((item) => (
-              <div key={item.step} className="bg-[#F1F1E4] rounded-xl p-6">
-                <div className="w-12 h-12 rounded-full bg-[#83835B] text-white flex items-center justify-center text-xl mb-4">
+              <div key={item.step} className="bg-[#EEF2FE] rounded-xl p-6">
+                <div className="w-12 h-12 rounded-full bg-[#A8BEEB] text-white flex items-center justify-center text-xl mb-4">
                   {item.step}
                 </div>
                 <h3 className="text-xl mb-3">{item.title}</h3>
@@ -242,7 +248,7 @@ export function IVFTreatmentInfo({ onBack, onSearchClinics, onTakeQuiz, scrollTo
         </div>
 
         {/* Who It's For */}
-        <div className="mb-16 bg-[#F1F1E4] rounded-2xl p-8 md:p-12">
+        <div className="mb-16 bg-[#EEF2FE] rounded-2xl p-8 md:p-12">
           <h2 className="text-4xl mb-8">Who Should Consider IVF?</h2>
           <div className="grid md:grid-cols-2 gap-6">
             {[
@@ -256,7 +262,7 @@ export function IVFTreatmentInfo({ onBack, onSearchClinics, onTakeQuiz, scrollTo
               "Those who've been unsuccessful with IUI or other treatments"
             ].map((item, idx) => (
               <div key={idx} className="flex items-start gap-3">
-                <Check className="w-6 h-6 text-[#83835B] flex-shrink-0 mt-1" />
+                <Check className="w-6 h-6 text-[#A8BEEB] flex-shrink-0 mt-1" />
                 <span className="text-gray-700">{item}</span>
               </div>
             ))}
@@ -267,8 +273,8 @@ export function IVFTreatmentInfo({ onBack, onSearchClinics, onTakeQuiz, scrollTo
         <div className="mb-16">
           <h2 className="text-4xl mb-8">Key Information</h2>
           <div className="grid md:grid-cols-3 gap-6">
-            <div className="bg-white border-2 border-[#C9C8B2] rounded-xl p-6">
-              <Clock className="w-10 h-10 text-[#83835B] mb-4" />
+            <div className="bg-white border-2 border-[#CBD8F5] rounded-xl p-6">
+              <Clock className="w-10 h-10 text-[#A8BEEB] mb-4" />
               <h3 className="text-2xl mb-2">Timeline</h3>
               <p className="text-gray-600 mb-4">One complete cycle takes 4-6 weeks</p>
               <ul className="text-sm text-gray-600 space-y-2">
@@ -279,8 +285,8 @@ export function IVFTreatmentInfo({ onBack, onSearchClinics, onTakeQuiz, scrollTo
               </ul>
             </div>
 
-            <div className="bg-white border-2 border-[#C9C8B2] rounded-xl p-6">
-              <DollarSign className="w-10 h-10 text-[#83835B] mb-4" />
+            <div className="bg-white border-2 border-[#CBD8F5] rounded-xl p-6">
+              <DollarSign className="w-10 h-10 text-[#A8BEEB] mb-4" />
               <h3 className="text-2xl mb-2">Cost Range</h3>
               <p className="text-gray-600 mb-4">Average investment per cycle</p>
               <ul className="text-sm text-gray-600 space-y-2">
@@ -290,8 +296,8 @@ export function IVFTreatmentInfo({ onBack, onSearchClinics, onTakeQuiz, scrollTo
               </ul>
             </div>
 
-            <div className="bg-white border-2 border-[#C9C8B2] rounded-xl p-6">
-              <Heart className="w-10 h-10 text-[#83835B] mb-4" />
+            <div className="bg-white border-2 border-[#CBD8F5] rounded-xl p-6">
+              <Heart className="w-10 h-10 text-[#A8BEEB] mb-4" />
               <h3 className="text-2xl mb-2">Success Rates</h3>
               <p className="text-gray-600 mb-4">Live birth rates per cycle by age</p>
               <ul className="text-sm text-gray-600 space-y-2">
@@ -315,7 +321,7 @@ export function IVFTreatmentInfo({ onBack, onSearchClinics, onTakeQuiz, scrollTo
                 onClick={() => setSelectedCity(city === 'All cities' ? 'all' : city)}
                 className={`px-4 py-2 rounded-full whitespace-nowrap transition-colors ${
                   (city === 'All cities' && selectedCity === 'all') || city === selectedCity
-                    ? 'bg-[#83835B] text-white'
+                    ? 'bg-[#A8BEEB] text-white'
                     : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                 }`}
               >
@@ -330,14 +336,14 @@ export function IVFTreatmentInfo({ onBack, onSearchClinics, onTakeQuiz, scrollTo
               <div key={clinic.id} className="bg-white border border-gray-200 rounded-xl p-6 hover:shadow-lg transition-shadow">
                 <div className="flex items-start justify-between mb-3">
                   <h3 className="text-xl flex-1 pr-4">{clinic.name}</h3>
-                  <div className="flex items-center justify-center w-16 h-16 rounded-full bg-[#83835B] text-white flex-shrink-0">
+                  <div className="flex items-center justify-center w-16 h-16 rounded-full bg-[#A8BEEB] text-white flex-shrink-0">
                     <span className="text-2xl">{clinic.rating}</span>
                   </div>
                 </div>
                 
                 <div className="mb-4">
                   <div className="flex items-center gap-2 mb-2">
-                    <Star className="w-4 h-4 text-[#83835B] fill-current" />
+                    <Star className="w-4 h-4 text-[#A8BEEB] fill-current" />
                     <span className="text-sm">
                       {Math.round(clinic.rating * 10)}% strongly recommend
                     </span>
@@ -354,7 +360,7 @@ export function IVFTreatmentInfo({ onBack, onSearchClinics, onTakeQuiz, scrollTo
                     {clinic.features.slice(0, 3).map((feature, idx) => (
                       <span
                         key={idx}
-                        className="px-2 py-1 bg-[#F1F1E4] text-gray-700 rounded text-xs"
+                        className="px-2 py-1 bg-[#EEF2FE] text-gray-700 rounded text-xs"
                       >
                         {feature}
                       </span>
@@ -372,7 +378,7 @@ export function IVFTreatmentInfo({ onBack, onSearchClinics, onTakeQuiz, scrollTo
                         {clinic.priceDetails}
                       </div>
                     </div>
-                    <Button className="bg-[#83835B] hover:bg-[#60603b] text-white">
+                    <Button className="bg-[#A8BEEB] hover:bg-[#6B7FC7] text-white">
                       View Details
                     </Button>
                   </div>
@@ -393,14 +399,14 @@ export function IVFTreatmentInfo({ onBack, onSearchClinics, onTakeQuiz, scrollTo
           <h2 className="text-4xl mb-8">Frequently Asked Questions</h2>
           <div className="space-y-4">
             {faqs.map((faq, idx) => (
-              <div key={idx} className="border-2 border-[#C9C8B2] rounded-xl overflow-hidden">
+              <div key={idx} className="border-2 border-[#CBD8F5] rounded-xl overflow-hidden">
                 <button
-                  className="w-full px-6 py-5 flex items-center justify-between text-left hover:bg-[#F1F1E4] transition-colors"
+                  className="w-full px-6 py-5 flex items-center justify-between text-left hover:bg-[#EEF2FE] transition-colors"
                   onClick={() => setOpenFaq(openFaq === idx ? null : idx)}
                 >
                   <span className="text-lg pr-4">{faq.question}</span>
                   <ChevronDown 
-                    className={`w-5 h-5 text-[#83835B] flex-shrink-0 transition-transform ${openFaq === idx ? 'rotate-180' : ''}`}
+                    className={`w-5 h-5 text-[#A8BEEB] flex-shrink-0 transition-transform ${openFaq === idx ? 'rotate-180' : ''}`}
                   />
                 </button>
                 {openFaq === idx && (
@@ -414,14 +420,14 @@ export function IVFTreatmentInfo({ onBack, onSearchClinics, onTakeQuiz, scrollTo
         </div>
 
         {/* CTA Section */}
-        <div className="bg-gradient-to-r from-[#83835B] to-[#60603b] rounded-2xl p-8 md:p-12 text-center text-white">
+        <div className="bg-gradient-to-r from-[#A8BEEB] to-[#6B7FC7] rounded-2xl p-8 md:p-12 text-center text-white">
           <h2 className="text-3xl md:text-4xl mb-4">Ready to Start Your IVF Journey?</h2>
           <p className="text-xl mb-8 text-white/90 max-w-2xl mx-auto">
             Connect with top-rated IVF clinics and take the first step toward building your family
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button 
-              className="bg-white text-[#83835B] hover:bg-white/90"
+              className="bg-white text-[#A8BEEB] hover:bg-white/90"
               onClick={onSearchClinics}
             >
               Search IVF Clinics
