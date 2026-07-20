@@ -14,6 +14,7 @@ import {
 import { ClinicDetailedCostings } from './ClinicDetailedCostings';
 import { AtHomeTestKitsComparison } from './AtHomeTestKitsComparison';
 import { getBudgetBounds } from '../lib/budget';
+import { AGE_BANDS, OUTCOME_BASIS, getOutcome, type AgeBand, type OutcomeRate } from '../lib/outcomes';
 
 interface ClinicCostingsProps {
   serviceType: 'egg-freezing' | 'embryo' | 'ivf' | 'fertility';
@@ -340,6 +341,7 @@ export function ClinicCostings({
   clinic: clinicFilter = 'all',
   budgetRange = 'all',
 }: ClinicCostingsProps) {
+  const [ageBand, setAgeBand] = useState<AgeBand>('35-37');
   const [sortField, setSortField] = useState<keyof ClinicCost>('total');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
   const [selectedClinics, setSelectedClinics] = useState<number[]>([]);
@@ -368,7 +370,10 @@ export function ClinicCostings({
     }
   };
 
-  const allPriced = getServiceData(serviceType);
+  const allPriced = getServiceData(serviceType).map((c) => ({
+    ...c,
+    outcome: getOutcome(c.slug, ageBand),
+  }));
 
   // Hard filters from the search form. Each is skipped when unset so that an
   // untouched form returns everything.
@@ -387,8 +392,10 @@ export function ClinicCostings({
     (location !== 'all' ? 1 : 0) + (clinicFilter !== 'all' ? 1 : 0) + (budget ? 1 : 0);
 
   const sortedData = [...filteredData].sort((a, b) => {
-    const aValue = a[sortField];
-    const bValue = b[sortField];
+    // Success sorts on the rate for the selected age band, not the legacy
+    // clinic-wide scalar, so the column and the ordering always agree.
+    const aValue = sortField === 'successRate' ? a.outcome?.rate ?? null : a[sortField];
+    const bValue = sortField === 'successRate' ? b.outcome?.rate ?? null : b[sortField];
 
     // Clinics without a complete quote always sort last, whichever direction.
     if (aValue === null && bValue === null) return 0;
@@ -407,6 +414,12 @@ export function ClinicCostings({
 
     return 0;
   });
+
+  // Best published outcome among the clinics currently matching, for the
+  // selected age band — not a clinic-wide figure across all ages.
+  const bestOutcome = sortedData
+    .filter((c) => c.outcome)
+    .sort((a, b) => b.outcome!.rate - a.outcome!.rate)[0];
 
   const quotedTotals = sortedData
     .map((c) => c.total)
@@ -497,8 +510,12 @@ export function ClinicCostings({
         </div>
         <div className="glass p-4 rounded-xl">
           <div className="text-sm text-[#5B6AA5] mb-1">Highest Success Rate</div>
-          <div className="text-2xl">{Math.max(...mockClinicData.map(c => c.successRate))}%</div>
-          <div className="text-sm text-gray-500 mt-1">Boston IVF</div>
+          <div className="text-2xl">{bestOutcome ? `${bestOutcome.outcome!.rate}%` : '—'}</div>
+          <div className="text-sm text-gray-500 mt-1">
+            {bestOutcome
+              ? `${bestOutcome.clinicName}, age ${AGE_BANDS.find((b) => b.id === ageBand)?.label.toLowerCase()}`
+              : 'No published outcomes'}
+          </div>
         </div>
         <div className="glass p-4 rounded-xl">
           <div className="text-sm text-[#5B6AA5] mb-1">Clinics Compared</div>
@@ -506,6 +523,36 @@ export function ClinicCostings({
           <div className="text-sm text-gray-500 mt-1">In your search</div>
         </div>
       </div>
+
+      {/* Age band — success rates are meaningless without it */}
+      <div className="glass rounded-2xl p-5 flex flex-col lg:flex-row lg:items-center gap-4 lg:gap-6">
+        <div className="lg:max-w-xs">
+          <div className="text-sm font-semibold text-[#2F3440] mb-1">Success rates for age</div>
+          <p className="text-xs text-[#5C6478] leading-relaxed">
+            Outcomes vary sharply with age. Pick your band to see comparable figures.
+          </p>
+        </div>
+        <div className="flex flex-wrap gap-2">
+          {AGE_BANDS.map((b) => (
+            <button
+              key={b.id}
+              onClick={() => setAgeBand(b.id)}
+              className={`grain text-sm font-medium px-4 py-2 rounded-full transition-all ${
+                ageBand === b.id
+                  ? 'bg-[#2F3440] text-white'
+                  : 'bg-white/60 text-[#2F3440] hover:bg-white/80'
+              }`}
+            >
+              {b.label}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <p className="text-xs text-[#5C6478] -mt-2">
+        Showing <strong className="font-semibold text-[#2F3440]">{OUTCOME_BASIS.outcomeType}</strong>{' '}
+        {OUTCOME_BASIS.denominatorType}, {OUTCOME_BASIS.year}. Source: {OUTCOME_BASIS.source}.
+      </p>
 
       {/* No results */}
       {sortedData.length === 0 && (
@@ -654,15 +701,27 @@ export function ClinicCostings({
                     <TableCell>${clinic.embryoTransfer.toLocaleString()}</TableCell>
                     <TableCell>${clinic.medications.toLocaleString()}</TableCell>
                     <TableCell>
-                      <div className="flex items-center gap-2">
-                        <div className="flex-1 bg-gray-200 rounded-full h-2">
-                          <div 
-                            className="bg-[#A8BEEB] h-2 rounded-full"
-                            style={{ width: `${clinic.successRate}%` }}
-                          />
+                      {clinic.outcome ? (
+                        <div>
+                          <div className="flex items-center gap-2">
+                            <div className="flex-1 bg-gray-200 rounded-full h-2 min-w-[48px]">
+                              <div
+                                className="bg-[#A8BEEB] h-2 rounded-full"
+                                style={{ width: `${clinic.outcome.rate}%` }}
+                              />
+                            </div>
+                            <span className="text-sm whitespace-nowrap">{clinic.outcome.rate}%</span>
+                          </div>
+                          <div className="text-[11px] text-[#5C6478] mt-1 whitespace-nowrap">
+                            {clinic.outcome.liveBirths}/{clinic.outcome.cyclesStarted} cycles
+                            {clinic.outcome.lowSample && (
+                              <span className="text-[#B4762F]"> · small sample</span>
+                            )}
+                          </div>
                         </div>
-                        <span className="text-sm">{clinic.successRate}%</span>
-                      </div>
+                      ) : (
+                        <span className="text-sm text-[#5C6478]">Not published</span>
+                      )}
                     </TableCell>
                     <TableCell className="text-[#5B6AA5]">
                       {clinic.total !== null ? (
