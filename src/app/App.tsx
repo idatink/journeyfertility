@@ -390,10 +390,10 @@ export default function App() {
                     <SelectItem value="mylab-box">myLAB Box</SelectItem>
                     
                     {/* Local Testing Centers */}
-                    <SelectItem value="reproductive-health">Reproductive Health Center - New York</SelectItem>
-                    <SelectItem value="boston-ivf">Boston IVF Testing Center</SelectItem>
-                    <SelectItem value="pacific-fertility">Pacific Fertility Lab - San Francisco</SelectItem>
-                    <SelectItem value="memorial-bahcelievler">Memorial Hospital Testing - Istanbul</SelectItem>
+                    <SelectItem value="hudson-reproductive">Hudson Reproductive Centre - New York</SelectItem>
+                    <SelectItem value="charles-river-fertility">Charles River Fertility Testing Center</SelectItem>
+                    <SelectItem value="bayfront-reproductive">Bayfront Reproductive Health Lab - San Francisco</SelectItem>
+                    <SelectItem value="bosphorus-reproductive">Memorial Hospital Testing - Istanbul</SelectItem>
                     <SelectItem value="barcelona-fertility">Barcelona Fertility Clinic</SelectItem>
                   </SelectContent>
                 </Select>
@@ -495,20 +495,20 @@ export default function App() {
                   <SelectItem value="all">All Clinics</SelectItem>
                   
                   {/* United States */}
-                  <SelectItem value="reproductive-health">Reproductive Health Center - New York</SelectItem>
-                  <SelectItem value="fertility-la">Fertility Institute of LA</SelectItem>
-                  <SelectItem value="boston-ivf">Boston IVF</SelectItem>
-                  <SelectItem value="chicago-fertility">Chicago Fertility Center</SelectItem>
-                  <SelectItem value="pacific-fertility">Pacific Fertility - San Francisco</SelectItem>
-                  <SelectItem value="texas-fertility">Texas Fertility Clinic - Austin</SelectItem>
+                  <SelectItem value="hudson-reproductive">Hudson Reproductive Centre - New York</SelectItem>
+                  <SelectItem value="westline-fertility">Westline Fertility Institute</SelectItem>
+                  <SelectItem value="charles-river-fertility">Charles River Fertility</SelectItem>
+                  <SelectItem value="lakeshore-fertility">Lakeshore Fertility Centre</SelectItem>
+                  <SelectItem value="bayfront-reproductive">Bayfront Reproductive Health - San Francisco</SelectItem>
+                  <SelectItem value="hill-country-fertility">Hill Country Fertility - Austin</SelectItem>
                   
                   {/* Istanbul, Turkey */}
-                  <SelectItem value="memorial-bahcelievler">Memorial Bahçelievler IVF - Istanbul</SelectItem>
-                  <SelectItem value="acibadem-maslak">Acıbadem Maslak Hospital - Istanbul</SelectItem>
-                  <SelectItem value="istanbul-fertility">Istanbul Fertility Center</SelectItem>
-                  <SelectItem value="american-hospital-istanbul">American Hospital IVF - Istanbul</SelectItem>
-                  <SelectItem value="jinemed">Jinemed Hospital Women's Health - Istanbul</SelectItem>
-                  <SelectItem value="medipol-mega">Medipol Mega Hospital IVF - Istanbul</SelectItem>
+                  <SelectItem value="bosphorus-reproductive">Bosphorus Reproductive Centre - Istanbul</SelectItem>
+                  <SelectItem value="marmara-ivf">Marmara IVF Institute - Istanbul</SelectItem>
+                  <SelectItem value="anatolia-fertility">Anatolia Fertility Clinic</SelectItem>
+                  <SelectItem value="levent-reproductive">Levent Reproductive Health - Istanbul</SelectItem>
+                  <SelectItem value="galata-womens-fertility">Galata Women's Fertility - Istanbul</SelectItem>
+                  <SelectItem value="uskudar-ivf">Uskudar IVF Centre - Istanbul</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -1094,7 +1094,7 @@ export default function App() {
                   <div className="flex items-start justify-between mb-3">
                     <div>
                       <h4 className="font-semibold mb-1">Egg Freezing</h4>
-                      <p className="text-sm text-gray-600">Full cycle at Jinemed</p>
+                      <p className="text-sm text-gray-600">Full cycle at Bosphorus Reproductive</p>
                     </div>
                     <svg className="w-8 h-8 text-[#A8BEEB]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
@@ -1157,7 +1157,7 @@ export default function App() {
               <div className="flex items-start justify-between mb-3">
                 <div>
                   <h4 className="font-semibold mb-1">Egg Freezing</h4>
-                  <p className="text-sm text-gray-600">Full cycle at Jinemed</p>
+                  <p className="text-sm text-gray-600">Full cycle at Bosphorus Reproductive</p>
                 </div>
                 <svg className="w-8 h-8 text-[#A8BEEB]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />

@@ -64,18 +64,18 @@ export interface Provenance {
  * set looks like this, not like twelve verified partners.
  */
 export const CLINIC_PROVENANCE: Record<string, Provenance> = {
-  'memorial-bahcelievler': { source: 'partner', lastVerified: '2026-07-02' },
-  'acibadem-maslak': { source: 'partner', lastVerified: '2026-06-24' },
-  'istanbul-fertility': { source: 'partner', lastVerified: '2026-07-11' },
-  'boston-ivf': { source: 'published', lastVerified: '2026-05-19' },
-  'reproductive-health': { source: 'published', lastVerified: '2026-06-08' },
-  'pacific-fertility': { source: 'published', lastVerified: '2026-04-27' },
-  'chicago-fertility': { source: 'published', lastVerified: '2026-03-15' },
-  'american-hospital-istanbul': { source: 'published', lastVerified: '2026-06-30' },
-  'jinemed': { source: 'patient_reported', lastVerified: '2026-05-02' },
-  'medipol-mega': { source: 'patient_reported', lastVerified: '2026-04-11' },
-  'fertility-la': { source: 'unverified', lastVerified: '2025-11-20' },
-  'texas-fertility': { source: 'unverified', lastVerified: '2025-10-06' },
+  'bosphorus-reproductive': { source: 'partner', lastVerified: '2026-07-02' },
+  'marmara-ivf': { source: 'partner', lastVerified: '2026-06-24' },
+  'anatolia-fertility': { source: 'partner', lastVerified: '2026-07-11' },
+  'charles-river-fertility': { source: 'published', lastVerified: '2026-05-19' },
+  'hudson-reproductive': { source: 'published', lastVerified: '2026-06-08' },
+  'bayfront-reproductive': { source: 'published', lastVerified: '2026-04-27' },
+  'lakeshore-fertility': { source: 'published', lastVerified: '2026-03-15' },
+  'levent-reproductive': { source: 'published', lastVerified: '2026-06-30' },
+  'galata-womens-fertility': { source: 'patient_reported', lastVerified: '2026-05-02' },
+  'uskudar-ivf': { source: 'patient_reported', lastVerified: '2026-04-11' },
+  'westline-fertility': { source: 'unverified', lastVerified: '2025-11-20' },
+  'hill-country-fertility': { source: 'unverified', lastVerified: '2025-10-06' },
 };
 
 /** Prices older than this are shown as stale regardless of source. */

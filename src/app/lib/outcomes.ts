@@ -31,84 +31,84 @@ export const OUTCOME_BASIS = {
 } as const;
 
 export const CLINIC_OUTCOMES: Record<string, Record<AgeBand, [number, number]>> = {
-  "reproductive-health": {
+  "hudson-reproductive": {
     "under-35": [49, 118],
     "35-37": [33, 101],
     "38-40": [24, 109],
     "41-42": [7, 59],
     "43-plus": [2, 34],
   },
-  "fertility-la": {
+  "westline-fertility": {
     "under-35": [63, 143],
     "35-37": [42, 122],
     "38-40": [31, 133],
     "41-42": [9, 71],
     "43-plus": [2, 41],
   },
-  "boston-ivf": {
+  "charles-river-fertility": {
     "under-35": [70, 179],
     "35-37": [47, 154],
     "38-40": [34, 166],
     "41-42": [10, 90],
     "43-plus": [2, 51],
   },
-  "chicago-fertility": {
+  "lakeshore-fertility": {
     "under-35": [39, 106],
     "35-37": [26, 91],
     "38-40": [19, 99],
     "41-42": [5, 53],
     "43-plus": [1, 30],
   },
-  "pacific-fertility": {
+  "bayfront-reproductive": {
     "under-35": [61, 132],
     "35-37": [40, 113],
     "38-40": [29, 122],
     "41-42": [8, 66],
     "43-plus": [2, 38],
   },
-  "texas-fertility": {
+  "hill-country-fertility": {
     "under-35": [29, 84],
     "35-37": [19, 72],
     "38-40": [14, 78],
     "41-42": [4, 42],
     "43-plus": [1, 24],
   },
-  "memorial-bahcelievler": {
+  "bosphorus-reproductive": {
     "under-35": [94, 246],
     "35-37": [63, 211],
     "38-40": [46, 229],
     "41-42": [13, 123],
     "43-plus": [3, 70],
   },
-  "acibadem-maslak": {
+  "marmara-ivf": {
     "under-35": [87, 213],
     "35-37": [58, 182],
     "38-40": [42, 198],
     "41-42": [12, 106],
     "43-plus": [3, 61],
   },
-  "istanbul-fertility": {
+  "anatolia-fertility": {
     "under-35": [54, 151],
     "35-37": [36, 130],
     "38-40": [26, 140],
     "41-42": [7, 76],
     "43-plus": [2, 43],
   },
-  "american-hospital-istanbul": {
+  "levent-reproductive": {
     "under-35": [74, 174],
     "35-37": [49, 149],
     "38-40": [36, 161],
     "41-42": [10, 87],
     "43-plus": [2, 50],
   },
-  "jinemed": {
+  "galata-womens-fertility": {
     "under-35": [78, 196],
     "35-37": [52, 168],
     "38-40": [38, 182],
     "41-42": [11, 98],
     "43-plus": [3, 56],
   },
-  "medipol-mega": {
+  "uskudar-ivf": {
     "under-35": [62, 165],
     "35-37": [41, 142],
     "38-40": [30, 153],

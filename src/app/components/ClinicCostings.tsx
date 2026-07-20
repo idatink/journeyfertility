@@ -69,10 +69,10 @@ interface AtHomeTestKit {
 const mockClinicData: ClinicCost[] = [
   {
     id: 1,
-    slug: "reproductive-health",
+    slug: "hudson-reproductive",
     pricingCompleteness: "full",
     citySlug: "new-york",
-    clinicName: "Reproductive Health Center",
+    clinicName: "Hudson Reproductive Centre",
     location: "New York, NY",
     consultation: 350,
     eggRetrieval: 8500,
@@ -88,10 +88,10 @@ const mockClinicData: ClinicCost[] = [
   },
   {
     id: 2,
-    slug: "fertility-la",
+    slug: "westline-fertility",
     pricingCompleteness: "none",
     citySlug: "los-angeles",
-    clinicName: "Fertility Institute of LA",
+    clinicName: "Westline Fertility Institute",
     location: "Los Angeles, CA",
     consultation: 300,
     eggRetrieval: 9200,
@@ -107,10 +107,10 @@ const mockClinicData: ClinicCost[] = [
   },
   {
     id: 3,
-    slug: "boston-ivf",
+    slug: "charles-river-fertility",
     pricingCompleteness: "full",
     citySlug: "boston",
-    clinicName: "Boston IVF",
+    clinicName: "Charles River Fertility",
     location: "Boston, MA",
     consultation: 400,
     eggRetrieval: 8000,
@@ -126,10 +126,10 @@ const mockClinicData: ClinicCost[] = [
   },
   {
     id: 4,
-    slug: "chicago-fertility",
+    slug: "lakeshore-fertility",
     pricingCompleteness: "partial",
     citySlug: "chicago",
-    clinicName: "Chicago Fertility Center",
+    clinicName: "Lakeshore Fertility Centre",
     location: "Chicago, IL",
     consultation: 325,
     eggRetrieval: 7800,
@@ -145,10 +145,10 @@ const mockClinicData: ClinicCost[] = [
   },
   {
     id: 5,
-    slug: "pacific-fertility",
+    slug: "bayfront-reproductive",
     pricingCompleteness: "full",
     citySlug: "san-francisco",
-    clinicName: "Pacific Fertility",
+    clinicName: "Bayfront Reproductive Health",
     location: "San Francisco, CA",
     consultation: 450,
     eggRetrieval: 10000,
@@ -164,10 +164,10 @@ const mockClinicData: ClinicCost[] = [
   },
   {
     id: 6,
-    slug: "texas-fertility",
+    slug: "hill-country-fertility",
     pricingCompleteness: "none",
     citySlug: "austin",
-    clinicName: "Texas Fertility Clinic",
+    clinicName: "Hill Country Fertility",
     location: "Austin, TX",
     consultation: 275,
     eggRetrieval: 7200,
@@ -183,10 +183,10 @@ const mockClinicData: ClinicCost[] = [
   },
   {
     id: 7,
-    slug: "memorial-bahcelievler",
+    slug: "bosphorus-reproductive",
     pricingCompleteness: "full",
     citySlug: "istanbul",
-    clinicName: "Memorial Bahçelievler IVF Center",
+    clinicName: "Bosphorus Reproductive Centre",
     location: "Istanbul, Turkey",
     consultation: 150,
     eggRetrieval: 3200,
@@ -202,10 +202,10 @@ const mockClinicData: ClinicCost[] = [
   },
   {
     id: 8,
-    slug: "acibadem-maslak",
+    slug: "marmara-ivf",
     pricingCompleteness: "full",
     citySlug: "istanbul",
-    clinicName: "Acıbadem Maslak Hospital IVF",
+    clinicName: "Marmara IVF Institute",
     location: "Istanbul, Turkey",
     consultation: 200,
     eggRetrieval: 3500,
@@ -221,10 +221,10 @@ const mockClinicData: ClinicCost[] = [
   },
   {
     id: 9,
-    slug: "istanbul-fertility",
+    slug: "anatolia-fertility",
     pricingCompleteness: "full",
     citySlug: "istanbul",
-    clinicName: "Istanbul Fertility Center",
+    clinicName: "Anatolia Fertility Clinic",
     location: "Istanbul, Turkey",
     consultation: 120,
     eggRetrieval: 2800,
@@ -240,10 +240,10 @@ const mockClinicData: ClinicCost[] = [
   },
   {
     id: 10,
-    slug: "american-hospital-istanbul",
+    slug: "levent-reproductive",
     pricingCompleteness: "partial",
     citySlug: "istanbul",
-    clinicName: "American Hospital IVF Clinic",
+    clinicName: "Levent Reproductive Health",
     location: "Istanbul, Turkey",
     consultation: 250,
     eggRetrieval: 4000,
@@ -259,10 +259,10 @@ const mockClinicData: ClinicCost[] = [
   },
   {
     id: 11,
-    slug: "jinemed",
+    slug: "galata-womens-fertility",
     pricingCompleteness: "partial",
     citySlug: "istanbul",
-    clinicName: "Jinemed Hospital Women's Health",
+    clinicName: "Galata Women's Fertility",
     location: "Istanbul, Turkey",
     consultation: 180,
     eggRetrieval: 3400,
@@ -278,10 +278,10 @@ const mockClinicData: ClinicCost[] = [
   },
   {
     id: 12,
-    slug: "medipol-mega",
+    slug: "uskudar-ivf",
     pricingCompleteness: "partial",
     citySlug: "istanbul",
-    clinicName: "Medipol Mega Hospital IVF",
+    clinicName: "Uskudar IVF Centre",
     location: "Istanbul, Turkey",
     consultation: 160,
     eggRetrieval: 3100,
@@ -527,7 +527,7 @@ export function ClinicCostings({
         <div className="bg-[#DEE8FF]/50 p-4 rounded-lg border-l-4 border border-[#A8BEEB]/60 border-l-[#5B6AA5]">
           <div className="text-sm text-[#5B6AA5] mb-1">Lowest Total Cost</div>
           <div className="text-2xl">${Math.min(...mockClinicData.map(c => c.total)).toLocaleString()}</div>
-          <div className="text-sm text-gray-500 mt-1">Memorial Bahçelievler</div>
+          <div className="text-sm text-gray-500 mt-1">Bosphorus Reproductive Centre</div>
         </div>
         <div className="glass p-4 rounded-xl">
           <div className="text-sm text-[#5B6AA5] mb-1">Average Cost</div>
@@ -579,6 +579,13 @@ export function ClinicCostings({
         Showing <strong className="font-semibold text-[#2F3440]">{OUTCOME_BASIS.outcomeType}</strong>{' '}
         {OUTCOME_BASIS.denominatorType}, {OUTCOME_BASIS.year}. Source: {OUTCOME_BASIS.source}.
       </p>
+
+      {/* Sample data notice — remove once real listings are ingested */}
+      <div className="glass rounded-2xl p-4 text-xs text-[#5C6478] leading-relaxed">
+        <span className="font-semibold text-[#B4762F]">Sample data.</span> These clinics are
+        fictional and their prices and outcomes are illustrative, used to build and test the
+        comparison. No figure here describes a real clinic.
+      </div>
 
       {/* Refine */}
       <div className="glass rounded-2xl p-5 flex flex-wrap items-end gap-x-8 gap-y-4">
