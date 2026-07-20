@@ -29,8 +29,8 @@ what actually happens, and be updated whenever that changes.
 | Categories of personal data | Name, email, phone (optional), preferred contact method, treatment timing, funding route, optional free-text message |
 | Special category data | Yes — data concerning health, Article 9(1). An enquiry reveals the person is seeking fertility care |
 | Lawful basis | Article 6(1)(a) consent; Article 9(2)(a) explicit consent |
-| Recipients | The clinic named at the point of consent; hosting provider as processor |
-| Transfers outside the UK | **[CONFIRM]** hosting region. None to clinics — UK only listings |
+| Recipients | The clinic named at the point of consent; Vercel as processor (hosting and storage) |
+| Transfers outside the UK | Storage is a Vercel Blob store in London (UK). **[CONFIRM]** function execution region — see DPIA §6. None to clinics — UK only listings |
 | Retention | 12 months from submission, then automatic erasure. Erasure on request at any time |
 | Security measures | See §3 |
 
@@ -50,17 +50,16 @@ Implemented in code and verified:
 - Explicit consent enforced server side; unticked by default
 - Server-authoritative validation, allow-listed enums, bounded lengths
 - Records built field by field, so unknown payload fields cannot reach storage
-- CORS restricted to an allow-list
+- API served same-origin, so the browser's same-origin policy blocks cross-site requests; no permissive CORS headers are sent
 - Rate limiting on all public endpoints
 - Idempotency keys required and replayed
 - Enquiry references redacted from logs; request bodies never logged
-- Per-clinic authentication with ownership checks
 - Lookups require reference and email together, with identical responses for
   unknown reference and wrong email
 - Automated retention sweep, erasure confirmed by read-back
 
 **[CONFIRM]** encryption at rest and in transit, and access control on the
-hosting project.
+Vercel project and Blob store.
 
 ## 4. Not processed
 

@@ -4,7 +4,7 @@
 **Version:** 0.1
 **Date:** 20 July 2026
 **Scope:** The clinic enquiry funnel and the data it creates
-**Prepared from:** the implemented system (`src/app/lib/enquiry.ts`, `src/app/components/EnquiryFlow.tsx`, `src/app/supabase/functions/server/`)
+**Prepared from:** the implemented system (`src/app/lib/enquiry.ts`, `src/app/components/EnquiryFlow.tsx`, `src/server/`, `api/`)
 
 > **This is a draft, not legal advice.** It was written from the behaviour of the
 > implemented code, so it describes the system accurately, but it has not been
@@ -125,7 +125,7 @@ a decision recorded either way.
 | Recipient | What they receive | Basis |
 |---|---|---|
 | The selected clinic | Contact details, timing, funding route, message | Explicit consent, named at the point of consent |
-| Supabase (processor) | All stored data, as hosting provider | **[CONFIRM]** processor agreement under Article 28 |
+| Vercel (processor) | All stored data, as hosting and storage provider | **[CONFIRM]** Data Processing Addendum accepted under Article 28 |
 | **[CONFIRM]** email provider | Reference and status emails | **[CONFIRM]** Article 28 agreement |
 
 The clinic is named in the consent text, so consent is specific rather than
@@ -143,9 +143,14 @@ The MVP is **UK only**, so no routine transfer outside the UK is expected.
 
 Two live risks:
 
-1. **[CONFIRM]** Supabase project region. If data is hosted outside the UK, a
-   transfer mechanism is required (UK IDTA, or the Addendum to the EU SCCs) plus
-   a transfer risk assessment.
+1. **Storage** is a Vercel Blob store created in the **London (lhr1)** region,
+   so enquiries are held in the UK. The region is fixed at creation and cannot
+   be changed afterwards.
+   **[CONFIRM]** that **function execution** is also London. `vercel.json`
+   requests `lhr1`, but region pinning may be restricted on the Hobby plan; if
+   functions run in a US region they process UK health data abroad, and a
+   transfer mechanism is required (UK IDTA, or the Addendum to the EU SCCs)
+   plus a transfer risk assessment. Verify in the deployment before go-live.
 2. **If international clinics are reintroduced** — the product previously listed
    clinics in Turkey, and the site still describes treatment abroad — sending an
    enquiry to a clinic outside the UK is a restricted transfer requiring its own
@@ -169,7 +174,7 @@ deletion is never reported as success.
 |---|---|
 | DPO / privacy counsel | **Not yet consulted — required before go-live** |
 | Data subjects | **[CONFIRM]** — Article 35(9) expects the controller to seek the views of data subjects where appropriate. Consider testing the consent wording with prospective users |
-| Processors | **[CONFIRM]** Supabase Article 28 terms reviewed |
+| Processors | **[CONFIRM]** Vercel Data Processing Addendum reviewed and accepted |
 | Clinics | **[CONFIRM]** data sharing terms agreed |
 
 ## 5. Necessity and proportionality
@@ -250,7 +255,7 @@ Organisational, **outstanding**:
 - Record of Processing Activities under Article 30
 - Staff training and access control
 - **[CONFIRM]** encryption at rest and in transit, and access controls on the
-  Supabase project
+  Vercel project and Blob store
 
 ## 8. Residual risks accepted
 

@@ -19,34 +19,40 @@ for a visitor.
 
 ## 1. Blockers to clear first
 
-### 1.1 The site is set to `noindex`
+### 1.1 The site is indexable — done
 
-`index.html` line 10:
+The `noindex, nofollow` meta tag has been removed from `index.html`, so search
+engines may now list the site. Nothing else depends on it.
 
-```html
-<meta name="robots" content="noindex, nofollow" />
+Worth knowing what that means alongside §1.3: whatever is published gets
+indexed, placeholders included.
+
+### 1.2 Create the Blob store — two settings are permanent
+
+Storage is Vercel Blob. In the project: **Storage → Create Database → Blob**.
+
+| Setting | Value | Why it cannot be fixed later |
+|---|---|---|
+| Access | **Private** | Public means anyone with the URL reads the blob. These are fertility enquiries |
+| Region | **London (lhr1)** | This is what lets the privacy notice say the data stays in the UK |
+
+Neither can be changed after the store is created. Getting either wrong means
+migrating every enquiry to a new store.
+
+Creating it adds `BLOB_READ_WRITE_TOKEN` to the project automatically.
+
+Then set, in project settings:
+
+```
+ADMIN_KEY=<long random value>     # operator endpoints
+CRON_SECRET=<long random value>   # authenticates the daily retention sweep
 ```
 
-While this is present, Google will not list the site. That is correct for a
-staging URL and wrong for a launch. **Decide deliberately** — leaving it is a
-legitimate choice for a soft launch, but it should be a choice.
-
-To go public, delete that line. Nothing else depends on it.
-
-### 1.2 CORS must name the real origin
-
-The enquiry endpoint allow-lists origins; it does not accept a wildcard, because
-a wildcard would let any site post health data from a visitor's browser.
-
-Until the production origin is added, **the enquiry form will fail on the live
-domain** while working perfectly in development. Set on the Supabase edge
-function (not in the client bundle):
-
-```
-ALLOWED_ORIGINS=https://journeyfertility.com,https://www.journeyfertility.com
-```
-
-Include both. A visitor arriving on `www` posts from the `www` origin.
+**CORS is no longer a concern.** The API is served from `/api` on the same
+origin as the site, so the browser's same-origin policy does the work and there
+is no allow-list to misconfigure. This replaced an `ALLOWED_ORIGINS` variable
+that, if forgotten, broke every enquiry in production while working in
+development.
 
 ### 1.3 Placeholders that become public claims
 
@@ -71,12 +77,16 @@ data controller undermines the consent it is there to support.
 3. Add the environment variable, for Production:
 
    ```
-   VITE_ENQUIRY_ENDPOINT=https://<project>.supabase.co/functions/v1/make-server-bb5634ef/enquiries
+   VITE_ENQUIRY_ENDPOINT=/api/enquiries
    ```
 
-   `VITE_`-prefixed variables are compiled into the client bundle and are public.
-   That is fine for this URL. Never put `ADMIN_KEY` or any secret behind a
-   `VITE_` prefix.
+   `VITE_`-prefixed variables are compiled into the client bundle and are
+   public. That is fine for a relative path. Never put `ADMIN_KEY`,
+   `CRON_SECRET` or `BLOB_READ_WRITE_TOKEN` behind a `VITE_` prefix.
+
+   **Leave this unset for the first deploy.** The form then says plainly that
+   nothing was sent, instead of showing a confirmation for an enquiry that
+   failed. Set it once the Blob store exists and you have tested the endpoint.
 4. Deploy, then open the `*.vercel.app` URL and check the site properly before
    touching DNS.
 
@@ -126,7 +136,9 @@ curl -sI https://journeyfertility.com | head -1
 
 - [ ] `https://journeyfertility.com` and the `www` form both load and redirect to one canonical host
 - [ ] Certificate valid, no mixed-content warnings
-- [ ] Submit a real enquiry end to end — this is what §1.2 protects
+- [ ] Submit a real enquiry end to end, then delete it via the erasure endpoint and confirm it is gone
+- [ ] Trigger the retention sweep by hand with `ADMIN_KEY` and check it reports `ok: true`
+- [ ] Confirm in the deployment which region the Functions actually ran in — see DPIA §6
 - [ ] Network tab shows **no third-party requests**. The font and all photography are self-hosted, and that promise is made explicitly in the privacy notice
 - [ ] Check on a phone; the hero and founder cards are the layouts most likely to shift
 

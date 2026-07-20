@@ -205,7 +205,7 @@ export async function submitEnquiry(enquiry: Enquiry): Promise<SubmitResult> {
 
 /**
  * Must match RETENTION_MONTHS in
- * src/app/supabase/functions/server/retention-core.ts, which is what the
+ * src/server/retention-core.ts, which is what the
  * sweep actually enforces. The two live in different runtimes so they cannot
  * share a module; if you change one, change the other.
  */
