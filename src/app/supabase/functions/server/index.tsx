@@ -20,6 +20,10 @@ import {
   type BillingResidue,
   type StoredEnquiry,
 } from "./retention-core.ts";
+import {
+  listForClinic,
+  type StoredEnquiry as ClinicStoredEnquiry,
+} from "./clinic-core.ts";
 
 const app = new Hono();
 const BASE = "/make-server-bb5634ef";
@@ -208,6 +212,41 @@ app.post(`${BASE}/enquiries/:reference/status`, async (c) => {
   await kv.set(`audit:${reference}`, [...audit, { status, at: now, by: clinicSlug }]);
 
   return c.json({ ok: true, reference, status });
+});
+
+// ------------------------------------------------------- clinic retrieval
+/**
+ * How a clinic actually receives its enquiries.
+ *
+ * Pull rather than push: it needs no infrastructure at the clinic's end and has
+ * no delivery-failure states to reconcile. Enquiry contents are never emailed —
+ * email is not a controlled channel and this is health data.
+ *
+ * Returns open enquiries oldest first, so the one closest to breaching the
+ * acknowledgement window is at the top of the queue.
+ */
+app.get(`${BASE}/clinic/enquiries`, async (c) => {
+  const clinicSlug = clinicForKey(
+    c.req.header("Authorization")?.replace(/^Bearer\s+/i, ""),
+    Deno.env.get("CLINIC_API_KEYS"),
+  );
+  if (!clinicSlug) return c.json({ error: "Unauthorized" }, 401);
+
+  const ip = c.req.header("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown";
+  if (await overRateLimit(ip)) return c.json({ error: "Too many requests" }, 429);
+
+  const limitParam = Number(c.req.query("limit"));
+  const records = ((await kv.getByPrefix("enquiry:")) as ClinicStoredEnquiry[] | null) ?? [];
+
+  // Ownership and projection both live in listForClinic, so there is one place
+  // where "this clinic sees only its own, and only these fields" is decided.
+  const { enquiries, total, truncated } = listForClinic(records, clinicSlug, {
+    status: c.req.query("status") ?? null,
+    since: c.req.query("since") ?? null,
+    limit: Number.isFinite(limitParam) ? limitParam : null,
+  });
+
+  return c.json({ enquiries, returned: enquiries.length, total, truncated });
 });
 
 // ------------------------------------------------------ retention & erasure

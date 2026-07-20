@@ -10,8 +10,8 @@
 > qualified counsel before use. Items marked **[LEGAL]** need a lawyer's
 > decision; items marked **[CONFIRM]** need facts from the business.
 >
-> **Not yet implemented:** there is currently no mechanism by which a clinic
-> receives an enquiry (see §3). These terms define what must be built.
+> **Delivery is implemented** as the authenticated pull endpoint in §3. Option A
+> was chosen and built; the webhook and email options remain unimplemented.
 
 ---
 
@@ -47,24 +47,37 @@ Consequences:
 
 ## 3. How enquiries are delivered
 
-**To be implemented.** The agreement must name one method. Recommended:
+Delivery is by **authenticated pull**. The clinic polls for its own open
+enquiries; JourneyFertility does not push them anywhere. This needs no
+infrastructure at the clinic's end and has no delivery-failure states to
+reconcile.
 
-| Option | Mechanism | Notes |
+**Enquiry contents are never sent in the body of an email.** Email is not a
+controlled channel and this is health data.
+
+### Endpoints
+
+| Endpoint | Purpose |
+|---|---|
+| `GET /clinic/enquiries` | Retrieve the clinic's open enquiries, oldest first |
+| `POST /enquiries/:reference/status` | Advance an enquiry, per Schedule B |
+
+Both authenticate with the clinic's own bearer token and are scoped to that
+clinic. A clinic cannot see or act on another clinic's enquiries.
+
+`GET /clinic/enquiries` accepts:
+
+| Parameter | Default | Notes |
 |---|---|---|
-| **A — Pull (recommended to start)** | Clinic polls an authenticated endpoint for its open enquiries | Simplest, no clinic infrastructure required, no delivery-failure states |
-| B — Webhook | JourneyFertility POSTs to a clinic endpoint, signed and retried | Faster, but requires the clinic to host and secure an endpoint |
-| C — Email | Notification only, with details retrieved by logging in | Never send the enquiry contents by unencrypted email |
+| `status` | open only | `submitted`, `acknowledged`, `responded`, `booked`, `declined`, `expired`, `withdrawn` |
+| `since` | none | ISO 8601; returns enquiries created after this. Use for incremental polling |
+| `limit` | 50 | Capped at 200. `truncated: true` indicates more are waiting |
 
-**Whichever is chosen, enquiry contents must not be sent in the body of an
-email.** Email is not a controlled channel and this is health data.
+Enquiries that reached an outcome, or were withdrawn, are excluded by default so
+a withdrawn enquiry stops appearing in the clinic's working list.
 
-Existing clinic-facing endpoint:
-
-- `POST /enquiries/:reference/status` — clinic advances the enquiry. Authenticated
-  per clinic; a clinic can only act on enquiries where the clinic matches its own
-  key.
-
-Still required: a retrieval endpoint, and the delivery method above.
+**[CONFIRM]** polling frequency. Once every few minutes is expected; the endpoint
+is rate limited.
 
 ## 4. What is shared
 
@@ -215,7 +228,9 @@ confirm in writing. API credentials are revoked on termination.
 | Field | Type | Notes |
 |---|---|---|
 | `reference` | string | Patient-facing enquiry reference |
+| `status` | enum | Current workflow state, per Schedule B |
 | `createdAt` | ISO 8601 | Submission time |
+| `updatedAt` | ISO 8601 or null | Last status change |
 | `contact.fullName` | string | |
 | `contact.email` | string | Normalised to lower case |
 | `contact.phone` | string or null | Only if given |
