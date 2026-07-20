@@ -20,6 +20,7 @@ interface EnquiryFlowProps {
   serviceType: string;
   surface?: string;
   onClose: () => void;
+  onShowPrivacy: () => void;
 }
 
 const STEPS = ['Your details', 'Your enquiry', 'Consent'];
@@ -36,6 +37,7 @@ export function EnquiryFlow({
   serviceType,
   surface = 'search-results',
   onClose,
+  onShowPrivacy,
 }: EnquiryFlowProps) {
   const [step, setStep] = useState(0);
   const [draft, setDraft] = useState<EnquiryDraft>(EMPTY_DRAFT);
@@ -320,7 +322,17 @@ export function EnquiryFlow({
                   </label>
 
                   {errorText(errors.consent)}
-                  <p className="text-xs text-[#5C6478] leading-relaxed">{RETENTION_NOTICE}</p>
+                  <p className="text-xs text-[#5C6478] leading-relaxed">
+                    {RETENTION_NOTICE}{' '}
+                    <button
+                      type="button"
+                      onClick={onShowPrivacy}
+                      className="font-semibold text-[#5B6AA5] hover:underline"
+                    >
+                      Read how we handle your information
+                    </button>
+                    .
+                  </p>
 
                   {result && !result.ok && (
                     <div className="glass rounded-xl p-4 flex gap-3">

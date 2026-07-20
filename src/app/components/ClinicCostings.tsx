@@ -27,6 +27,7 @@ interface ClinicCostingsProps {
   clinic?: string;
   /** budget bracket id from the search form, or 'all' / 'flexible' */
   budgetRange?: string;
+  onShowPrivacy?: () => void;
 }
 
 // Budget bounds come from the shared bracket table so the form options and the
@@ -369,6 +370,7 @@ export function ClinicCostings({
   location = 'all',
   clinic: clinicFilter = 'all',
   budgetRange = 'all',
+  onShowPrivacy = () => {},
 }: ClinicCostingsProps) {
   const [ageBand, setAgeBand] = useState<AgeBand>('35-37');
   const [transparencyOnly, setTransparencyOnly] = useState(false);
@@ -992,6 +994,7 @@ export function ClinicCostings({
           clinicName={enquiring.name}
           serviceType={serviceType}
           surface="clinic-costings"
+          onShowPrivacy={onShowPrivacy}
           onClose={() => setEnquiring(null)}
         />
       )}

@@ -18,6 +18,7 @@ import { MarketingAssets } from './components/MarketingAssets';
 import { Resources } from './components/Resources';
 import { BUDGET_BRACKETS } from './lib/budget';
 import { About } from './components/About';
+import { PrivacyNotice } from './components/PrivacyNotice';
 import { TestimonialModal } from './components/TestimonialModal';
 import eggFreezingImage from 'figma:asset/837faeedfcc3fc383751b333377e75ebb80b8527.png';
 import heroImage from '../assets/hero.jpg';
@@ -100,7 +101,7 @@ function RotatingWord() {
 export default function App() {
   const [serviceType, setServiceType] = useState('egg-freezing');
   const [showFAQ, setShowFAQ] = useState<Record<number, boolean>>({});
-  const [viewMode, setViewMode] = useState<'home' | 'costings' | 'egg-freezing-info' | 'embryo-info' | 'ivf-info' | 'fertility-info' | 'marketing' | 'resources' | 'about'>('home');
+  const [viewMode, setViewMode] = useState<'home' | 'costings' | 'egg-freezing-info' | 'embryo-info' | 'ivf-info' | 'fertility-info' | 'marketing' | 'resources' | 'about' | 'privacy'>('home');
   const [resourcesCategory, setResourcesCategory] = useState('All');
   const [searchMode, setSearchMode] = useState('clinic-costings');
   const [location, setLocation] = useState('all');
@@ -551,6 +552,10 @@ export default function App() {
               location={location}
               clinic={clinic}
               budgetRange={budgetRange}
+              onShowPrivacy={() => {
+                setViewMode('privacy');
+                window.scrollTo(0, 0);
+              }}
             />
           </div>
         )}
@@ -564,6 +569,9 @@ export default function App() {
         {viewMode === 'resources' && (
           <Resources onBack={() => setViewMode('home')} initialCategory={resourcesCategory} />
         )}
+
+        {/* Privacy notice */}
+        {viewMode === 'privacy' && <PrivacyNotice onBack={() => setViewMode('home')} />}
 
         {/* About */}
         {viewMode === 'about' && (
@@ -1244,7 +1252,17 @@ export default function App() {
             <div>
               <h3 className="mb-4">Legal</h3>
               <ul className="space-y-2 text-gray-300">
-                <li><a href="#" className="hover:text-white">Privacy policy</a></li>
+                <li>
+                  <button
+                    onClick={() => {
+                      setViewMode('privacy');
+                      window.scrollTo(0, 0);
+                    }}
+                    className="hover:text-white transition-colors text-left"
+                  >
+                    Privacy policy
+                  </button>
+                </li>
                 <li><a href="#" className="hover:text-white">Terms of service</a></li>
                 <li><a href="#" className="hover:text-white">Company details</a></li>
               </ul>
