@@ -64,9 +64,9 @@ export function PrivacyNotice({ onBack }: PrivacyNoticeProps) {
             on our servers.
           </p>
           <p>
-            Two things do load from other companies, which means those companies can see your IP
-            address: our typeface comes from Google Fonts, and some photographs come from Unsplash.
-            Neither receives anything about your search.
+            We serve our own typeface rather than loading it from a font service, so no third party
+            sees you simply for visiting. Some photographs are still loaded from Unsplash, which
+            means Unsplash can see your IP address; it receives nothing about your search.
           </p>
         </section>
 
