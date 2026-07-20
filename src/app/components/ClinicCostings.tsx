@@ -14,7 +14,8 @@ import {
 import { ClinicDetailedCostings } from './ClinicDetailedCostings';
 import { AtHomeTestKitsComparison } from './AtHomeTestKitsComparison';
 import { getBudgetBounds } from '../lib/budget';
-import { AGE_BANDS, OUTCOME_BASIS, getOutcome, type AgeBand, type OutcomeRate } from '../lib/outcomes';
+import { AGE_BANDS, OUTCOME_BASIS, getOutcome, type AgeBand } from '../lib/outcomes';
+import { PRICE_SOURCES, getProvenance } from '../lib/provenance';
 
 interface ClinicCostingsProps {
   serviceType: 'egg-freezing' | 'embryo' | 'ivf' | 'fertility';
@@ -373,6 +374,7 @@ export function ClinicCostings({
   const allPriced = getServiceData(serviceType).map((c) => ({
     ...c,
     outcome: getOutcome(c.slug, ageBand),
+    provenance: getProvenance(c.slug),
   }));
 
   // Hard filters from the search form. Each is skipped when unset so that an
@@ -554,6 +556,29 @@ export function ClinicCostings({
         {OUTCOME_BASIS.denominatorType}, {OUTCOME_BASIS.year}. Source: {OUTCOME_BASIS.source}.
       </p>
 
+      {/* Where the prices come from */}
+      <div className="glass rounded-2xl p-5">
+        <div className="text-sm font-semibold text-[#2F3440] mb-3">Where these prices come from</div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-3">
+          {(Object.keys(PRICE_SOURCES) as (keyof typeof PRICE_SOURCES)[]).map((key) => (
+            <div key={key} className="flex gap-2.5 text-xs leading-relaxed">
+              <span
+                className={`font-semibold whitespace-nowrap ${
+                  key === 'partner'
+                    ? 'text-[#4F7A52]'
+                    : key === 'unverified'
+                    ? 'text-[#B4762F]'
+                    : 'text-[#5C6478]'
+                }`}
+              >
+                {PRICE_SOURCES[key].short}
+              </span>
+              <span className="text-[#5C6478]">{PRICE_SOURCES[key].description}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
       {/* No results */}
       {sortedData.length === 0 && (
         <div className="glass rounded-2xl p-10 text-center">
@@ -728,6 +753,28 @@ export function ClinicCostings({
                         `$${clinic.total.toLocaleString()}`
                       ) : (
                         <span className="text-[#5C6478] text-sm">Not quoted</span>
+                      )}
+                      {clinic.provenance && (
+                        <div
+                          className="text-[11px] mt-1 whitespace-nowrap"
+                          title={`${clinic.provenance.meta.label} — ${clinic.provenance.meta.description}`}
+                        >
+                          <span
+                            className={
+                              clinic.provenance.source === 'partner'
+                                ? 'text-[#4F7A52]'
+                                : clinic.provenance.source === 'unverified'
+                                ? 'text-[#B4762F]'
+                                : 'text-[#5C6478]'
+                            }
+                          >
+                            {clinic.provenance.meta.short}
+                          </span>
+                          <span className="text-[#5C6478]">
+                            {' '}· {clinic.provenance.verifiedLabel}
+                            {clinic.provenance.isStale && ' · stale'}
+                          </span>
+                        </div>
                       )}
                     </TableCell>
                   </TableRow>
