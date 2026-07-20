@@ -32,6 +32,8 @@ import img_161763843604076505e75940f from '../assets/photos/photo-1617638436040-
 import img_1633379204542430941769df3 from '../assets/photos/photo-1633379204542-430941769df3.jpg';
 import img_17573473982067425300ef990 from '../assets/photos/photo-1757347398206-7425300ef990.jpg';
 import img_1758518727888ffa196002e59 from '../assets/photos/photo-1758518727888-ffa196002e59.jpg';
+import eggFreezingCard from '../assets/photos/egg-freezing-card.jpg';
+import fertilityTestingCard from '../assets/photos/fertility-testing-card.jpg';
 
 const CONFIDENCE_WORDS = ['clarity', 'confidence', 'calm', 'control', 'certainty', 'support'];
 
@@ -742,9 +744,9 @@ export default function App() {
                 onClick={() => setViewMode('egg-freezing-info')}
               >
                 <img
-                  src={eggFreezingImage}
-                  alt="Egg freezing"
-                  className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                  src={eggFreezingCard}
+                  alt=""
+                  className="w-full h-full object-cover object-[50%_42%] transition-transform duration-300 group-hover:scale-105"
                 />
                 <div className={`absolute inset-0 bg-gradient-to-r from-black/70 to-black/40 flex items-center justify-between px-6 ${serviceType === 'egg-freezing' ? 'ring-4 ring-[#F8AD7C]' : ''}`}>
                   <div>
@@ -805,9 +807,9 @@ export default function App() {
                 onClick={() => setViewMode('fertility-info')}
               >
                 <ImageWithFallback
-                  src={img_15796843851271ef15d508118}
-                  alt="Fertility testing"
-                  className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                  src={fertilityTestingCard}
+                  alt=""
+                  className="w-full h-full object-cover object-[50%_34%] transition-transform duration-300 group-hover:scale-105"
                 />
                 <div className={`absolute inset-0 bg-gradient-to-r from-black/70 to-black/40 flex items-center justify-between px-6 ${serviceType === 'fertility' ? 'ring-4 ring-[#F8AD7C]' : ''}`}>
                   <div>

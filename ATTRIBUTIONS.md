@@ -22,6 +22,13 @@ from our own domain rather than Unsplash's CDN, for the same privacy reason.
 > suggests they endorse this service. See `docs/DPIA.md` and the note in
 > `App.tsx` above the testimonials data.
 
+## Card photography
+
+`egg-freezing-card.jpg` and `fertility-testing-card.jpg` were supplied by the
+project owner. **[CONFIRM]** their source and licence, and record it here before
+launch. If either is stock, the licence terms and any restriction on depicting a
+person must be noted as above.
+
 ## Components
 
 UI components from [shadcn/ui](https://ui.shadcn.com/), used under the
