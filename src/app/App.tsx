@@ -19,21 +19,19 @@ import { Resources } from './components/Resources';
 import { BUDGET_BRACKETS } from './lib/budget';
 import { About } from './components/About';
 import { PrivacyNotice } from './components/PrivacyNotice';
-import eggFreezingImage from 'figma:asset/837faeedfcc3fc383751b333377e75ebb80b8527.png';
 import heroImage from '../assets/hero.jpg';
 import eggFreezingBanner from '../assets/SOMEDAYBANNER.jpg';
 import embryoBanner from '../assets/EMBRYOFREEZINGBANNER.jpg';
 import ivfBanner from '../assets/IVFBANNER.jpg';
 import testingBanner from '../assets/TESTINGBANNER.jpg';
 import img_149389447389110fc1e5dbd22 from '../assets/photos/photo-1493894473891-10fc1e5dbd22.jpg';
-import img_15796843851271ef15d508118 from '../assets/photos/photo-1579684385127-1ef15d508118.jpg';
 import img_1609220136736443140cffec6 from '../assets/photos/photo-1609220136736-443140cffec6.jpg';
-import img_161763843604076505e75940f from '../assets/photos/photo-1617638436040-76505e75940f.jpg';
-import img_1633379204542430941769df3 from '../assets/photos/photo-1633379204542-430941769df3.jpg';
-import img_17573473982067425300ef990 from '../assets/photos/photo-1757347398206-7425300ef990.jpg';
-import img_1758518727888ffa196002e59 from '../assets/photos/photo-1758518727888-ffa196002e59.jpg';
 import eggFreezingCard from '../assets/photos/egg-freezing-card.jpg';
 import fertilityTestingCard from '../assets/photos/fertility-testing-card.jpg';
+import story1 from '../assets/photos/story-1.jpg';
+import story2 from '../assets/photos/story-2.jpg';
+import story3 from '../assets/photos/story-3.jpg';
+import story4 from '../assets/photos/story-4.jpg';
 
 const CONFIDENCE_WORDS = ['clarity', 'confidence', 'calm', 'control', 'certainty', 'support'];
 
@@ -139,22 +137,22 @@ export default function App() {
     {
       label: 'Thinking about freezing your eggs',
       category: 'Egg Freezing',
-      image: img_1633379204542430941769df3,
+      image: story1,
     },
     {
       label: 'Understanding your fertility',
       category: 'Fertility Testing',
-      image: img_1758518727888ffa196002e59,
+      image: story2,
     },
     {
       label: 'Considering IVF',
       category: 'IVF',
-      image: img_17573473982067425300ef990,
+      image: story3,
     },
     {
       label: 'Working out what it costs',
       category: 'Costs & Planning',
-      image: img_161763843604076505e75940f,
+      image: story4,
     },
   ];
 
