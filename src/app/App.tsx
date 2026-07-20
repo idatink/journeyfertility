@@ -19,7 +19,6 @@ import { Resources } from './components/Resources';
 import { BUDGET_BRACKETS } from './lib/budget';
 import { About } from './components/About';
 import { PrivacyNotice } from './components/PrivacyNotice';
-import { TestimonialModal } from './components/TestimonialModal';
 import eggFreezingImage from 'figma:asset/837faeedfcc3fc383751b333377e75ebb80b8527.png';
 import heroImage from '../assets/hero.jpg';
 import eggFreezingBanner from '../assets/SOMEDAYBANNER.jpg';
@@ -124,62 +123,37 @@ export default function App() {
   const [showChat, setShowChat] = useState(false);
   const [showQuiz, setShowQuiz] = useState(false);
   const [scrollToClinics, setScrollToClinics] = useState(false);
-  const [testimonialIndex, setTestimonialIndex] = useState(0);
+  const [topicIndex, setTopicIndex] = useState(0);
   const [atHomeOnly, setAtHomeOnly] = useState(false);
   const [travelPackageIndex, setTravelPackageIndex] = useState(0);
   const [selectedStage, setSelectedStage] = useState<string | null>(null);
-  const [selectedTestimonial, setSelectedTestimonial] = useState<{
-    name: string;
-    image: string;
-    tags: string[];
-    quote: string;
-    service: string;
-  } | null>(null);
 
   /**
-   * PLACEHOLDER — must not ship as-is.
-   *
-   * These names, quotes and health tags are invented, and each is attached to a
-   * stock photograph of a real, identifiable person. Published, that states that
-   * a named individual is a fertility patient with a particular condition and
-   * that they endorsed this service — none of which is true of the people in
-   * these photographs.
-   *
-   * The Unsplash License covers the photograph, not the likeness of the person
-   * in it, and the CAP Code requires testimonials to be genuine and documented.
-   *
-   * Before launch, either use real testimonials with written consent, or drop
-   * the names, quotes and conditions and present the images as illustrative.
+   * Entry points into the guides. Deliberately makes no claim about the people
+   * in the photographs: no names, no quotes, no conditions. The images are
+   * illustrative and are labelled as such in the UI.
    */
-  const testimonials = [
+  const journeyTopics = [
     {
-      name: 'Frankie',
+      label: 'Thinking about freezing your eggs',
+      category: 'Egg Freezing',
       image: img_1633379204542430941769df3,
-      tags: ['Fertility', 'Family planning', 'Trying to conceive', 'Pregnancy'],
-      quote: 'We could never afford 2 cycles in the UK',
-      service: 'IVF Treatment Abroad - Spain'
     },
     {
-      name: 'Dearbhla',
+      label: 'Understanding your fertility',
+      category: 'Fertility Testing',
       image: img_1758518727888ffa196002e59,
-      tags: ['Perimenopause', 'Egg Freezing', 'Low AMH', 'Egg Reserve'],
-      quote: 'Going abroad for treatment gave me options I never thought possible. The care was exceptional and affordable.',
-      service: 'Egg Freezing - Prague'
     },
     {
-      name: 'Sravya',
+      label: 'Considering IVF',
+      category: 'IVF',
       image: img_17573473982067425300ef990,
-      tags: ['PCOS', 'Family planning'],
-      quote: 'JourneyFertility helped me find world-class treatment at half the price. Our journey to parenthood is now possible.',
-      service: 'IVF Treatment - Istanbul'
     },
     {
-      name: 'Elaine',
+      label: 'Working out what it costs',
+      category: 'Costs & Planning',
       image: img_161763843604076505e75940f,
-      tags: ['Trying to conceive', 'Fertility', 'Pregnancy', 'Family planning'],
-      quote: 'Traveling abroad for IVF was the best decision we made. Professional care, amazing results, and we saved thousands.',
-      service: 'IVF Treatment - Barcelona'
-    }
+    },
   ];
 
   const toggleFAQ = (index: number) => {
@@ -875,24 +849,24 @@ export default function App() {
           <div className="flex flex-col md:flex-row md:items-center justify-between mb-6 gap-4">
             <div>
               <h2 className="text-2xl md:text-4xl font-semibold tracking-tight text-[#2F3440] mb-2">
-                Stories from people who have been here
+                Read up before you decide
               </h2>
               <p className="text-[#5C6478] text-sm md:text-base">
-                From working out what they could afford to finding the right clinic — how others
-                navigated the same decisions you are facing now.
+                Plain-language guides to each option, what the numbers mean, and what it actually
+                costs — so you can ask better questions.
               </p>
             </div>
             <div className="hidden md:flex gap-2">
               <button
-                onClick={() => setTestimonialIndex(Math.max(0, testimonialIndex - 1))}
-                disabled={testimonialIndex === 0}
+                onClick={() => setTopicIndex(Math.max(0, topicIndex - 1))}
+                disabled={topicIndex === 0}
                 className="w-12 h-12 rounded-full bg-[#E2E2E2] hover:bg-[#DADADA] disabled:opacity-30 disabled:cursor-not-allowed flex items-center justify-center transition-colors"
               >
                 <ChevronLeft className="w-5 h-5" />
               </button>
               <button
-                onClick={() => setTestimonialIndex(Math.min(3, testimonialIndex + 1))}
-                disabled={testimonialIndex >= 3}
+                onClick={() => setTopicIndex(Math.min(3, topicIndex + 1))}
+                disabled={topicIndex >= 3}
                 className="w-12 h-12 rounded-full bg-[#2F3440] hover:bg-[#434A5C] disabled:opacity-30 disabled:cursor-not-allowed flex items-center justify-center transition-colors"
               >
                 <ChevronRight className="w-5 h-5 text-white" />
@@ -903,55 +877,48 @@ export default function App() {
           <div className="relative overflow-hidden">
             <div
               className="flex gap-4 transition-transform duration-500 ease-out"
-              style={{ transform: `translateX(-${testimonialIndex * 100}%)` }}
+              style={{ transform: `translateX(-${topicIndex * 100}%)` }}
             >
-              {testimonials.map((testimonial, idx) => (
-                <div 
-                  key={idx} 
-                  className="relative flex-shrink-0 w-full md:w-[calc(25%-12px)] rounded-2xl overflow-hidden h-[400px] md:h-[400px] group cursor-pointer"
-                  onClick={() => setSelectedTestimonial(testimonial)}
+              {journeyTopics.map((topic, idx) => (
+                <button
+                  key={idx}
+                  className="relative flex-shrink-0 w-full md:w-[calc(25%-12px)] rounded-2xl overflow-hidden h-[400px] md:h-[400px] group text-left"
+                  onClick={() => {
+                    setResourcesCategory(topic.category);
+                    setViewMode('resources');
+                    window.scrollTo(0, 0);
+                  }}
                 >
                   <ImageWithFallback
-                    src={testimonial.image}
-                    alt={testimonial.name}
-                    className="w-full h-full object-cover"
+                    src={topic.image}
+                    alt=""
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
-                  
-                  {/* Tags */}
-                  <div className="absolute top-4 left-4 right-4 flex flex-wrap gap-2">
-                    {testimonial.tags.map((tag, tagIdx) => (
-                      <span
-                        key={tagIdx}
-                        className="px-3 py-1 bg-white/20 backdrop-blur-sm text-white text-sm rounded-full"
-                      >
-                        {tag}
-                      </span>
-                    ))}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/25 to-transparent" />
+
+                  <div className="absolute bottom-4 left-4 right-4">
+                    <div className="text-white/80 text-xs font-semibold uppercase tracking-wide mb-2">
+                      {topic.category}
+                    </div>
+                    <h3 className="text-white text-xl leading-snug mb-3">{topic.label}</h3>
+                    <span className="inline-flex items-center gap-1.5 text-white text-sm font-semibold">
+                      Read the guides
+                      <ChevronRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5" />
+                    </span>
                   </div>
-                  
-                  {/* Name */}
-                  <div className="absolute bottom-16 left-4 right-4">
-                    <h3 className="text-white text-3xl">{testimonial.name}</h3>
-                  </div>
-                  
-                  {/* Plus button */}
-                  <button className="absolute bottom-4 right-4 w-12 h-12 rounded-full bg-white hover:bg-gray-100 flex items-center justify-center transition-colors">
-                    <Plus className="w-6 h-6" />
-                  </button>
-                </div>
+                </button>
               ))}
             </div>
           </div>
 
           {/* Mobile Navigation Dots */}
           <div className="flex md:hidden justify-center gap-2 mt-4">
-            {testimonials.map((_, idx) => (
+            {journeyTopics.map((_, idx) => (
               <button
                 key={idx}
-                onClick={() => setTestimonialIndex(idx)}
+                onClick={() => setTopicIndex(idx)}
                 className={`w-2 h-2 rounded-full transition-colors ${
-                  testimonialIndex === idx ? 'bg-[#2F3440]' : 'bg-[#DADADA]'
+                  topicIndex === idx ? 'bg-[#2F3440]' : 'bg-[#DADADA]'
                 }`}
               />
             ))}
@@ -1252,12 +1219,6 @@ export default function App() {
       {showQuiz && serviceType === 'fertility' && <FertilityTestingQuiz onClose={() => setShowQuiz(false)} />}
 
       {/* Testimonial Modal */}
-      {selectedTestimonial && (
-        <TestimonialModal 
-          testimonial={selectedTestimonial} 
-          onClose={() => setSelectedTestimonial(null)} 
-        />
-      )}
 
       {/* Footer */}
       <footer className="bg-[#2F3440] text-[#F7F8FC] mt-20">
