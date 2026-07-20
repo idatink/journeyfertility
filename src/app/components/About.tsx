@@ -1,4 +1,4 @@
-import { ArrowLeft, Search, Scale, ShieldCheck, HeartHandshake } from 'lucide-react';
+import { ArrowLeft, Search, Scale, ShieldCheck, HeartHandshake, UserRound } from 'lucide-react';
 import { Button } from './ui/button';
 
 interface AboutProps {
@@ -27,6 +27,44 @@ const PRINCIPLES = [
     icon: HeartHandshake,
     title: 'No pressure, ever',
     body: 'We are a comparison service, not a clinic. We do not sell treatment, and nothing here is designed to rush a decision that deserves time.',
+  },
+];
+
+/**
+ * Placeholder identities, deliberately.
+ *
+ * An About page naming three founders is read as fact by users, press and
+ * investors, so these are scaffolding for the real team rather than invented
+ * people. `photo: null` renders the brand monogram; point it at an imported
+ * portrait once there is one.
+ *
+ * Each `bio` describes the role rather than the person, so it stays true
+ * whoever fills it. Anything personal — including how a founder describes her
+ * own identity — belongs to her to write, not to us to assign.
+ */
+const FOUNDERS: {
+  name: string;
+  role: string;
+  bio: string;
+  photo: string | null;
+}[] = [
+  {
+    name: '[Founder name]',
+    role: 'Marketing',
+    bio: 'Leads how JourneyFertility talks about fertility — plainly, without the urgency and overclaiming the category is known for. Owns the promise that nothing here is written to rush a decision.',
+    photo: null,
+  },
+  {
+    name: '[Founder name]',
+    role: 'Design',
+    bio: 'Responsible for how the comparison feels to use at a difficult moment: legible pricing, honest empty states, and an interface that never pressures. Owns the design system and the accessibility standard.',
+    photo: null,
+  },
+  {
+    name: '[Founder name]',
+    role: 'Engineering',
+    bio: 'Builds the search, the cost model and the enquiry pipeline — including the data protection that health data demands. Owns the rule that we never show a price we cannot source.',
+    photo: null,
   },
 ];
 
@@ -137,6 +175,50 @@ export function About({ onBack, onExplore, onResources }: AboutProps) {
               </div>
             );
           })}
+        </div>
+      </div>
+
+      {/* Founders */}
+      <div className="mb-16 md:mb-24">
+        <h2 className="text-2xl md:text-3xl font-semibold tracking-tight text-[#2F3440] mb-4">
+          Who&rsquo;s behind this
+        </h2>
+        <p className="text-[#5C6478] leading-relaxed max-w-2xl mb-8">
+          Three founders, building the service we wanted when we were doing this research ourselves.
+        </p>
+
+        <div className="glass rounded-2xl p-5 mb-8 text-sm text-[#5C6478] leading-relaxed max-w-2xl">
+          <span className="font-semibold text-[#B4762F]">Before publishing:</span> replace the
+          placeholder names, biographies and portraits below with the real founding team. Naming
+          people who do not exist on an About page is a claim, not copy.
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+          {FOUNDERS.map((f) => (
+            <div key={f.role} className="glass rounded-2xl p-6">
+              {f.photo ? (
+                <img
+                  src={f.photo}
+                  alt={`${f.name}, ${f.role}`}
+                  className="w-20 h-20 rounded-full object-cover mb-5"
+                  loading="lazy"
+                />
+              ) : (
+                /* Brand-styled stand-in so an unfilled slot reads as intentional, not broken. */
+                <div
+                  className="grain relative w-20 h-20 rounded-full overflow-hidden mb-5 flex items-center justify-center bg-gradient-to-br from-[#DEE8FF] via-[#E7E2F0] to-[#F8AD7C]"
+                  aria-hidden="true"
+                >
+                  <UserRound className="w-8 h-8 text-white/90" strokeWidth={1.5} />
+                </div>
+              )}
+              <h3 className="text-lg font-semibold text-[#2F3440]">{f.name}</h3>
+              <div className="text-xs font-semibold uppercase tracking-[0.14em] text-[#5B6AA5] mt-1 mb-3">
+                {f.role}
+              </div>
+              <p className="text-sm text-[#5C6478] leading-relaxed">{f.bio}</p>
+            </div>
+          ))}
         </div>
       </div>
 
