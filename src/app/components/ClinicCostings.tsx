@@ -14,6 +14,7 @@ import {
 import { ClinicDetailedCostings } from './ClinicDetailedCostings';
 import { AtHomeTestKitsComparison } from './AtHomeTestKitsComparison';
 import { getBudgetBounds } from '../lib/budget';
+import { EnquiryFlow } from './EnquiryFlow';
 import { AGE_BANDS, OUTCOME_BASIS, getOutcome, type AgeBand } from '../lib/outcomes';
 import { PRICE_SOURCES, getProvenance } from '../lib/provenance';
 
@@ -372,6 +373,7 @@ export function ClinicCostings({
   const [ageBand, setAgeBand] = useState<AgeBand>('35-37');
   const [transparencyOnly, setTransparencyOnly] = useState(false);
   const [funding, setFunding] = useState<'all' | 'nhs' | 'private'>('all');
+  const [enquiring, setEnquiring] = useState<{ slug: string; name: string } | null>(null);
   const [minSuccess, setMinSuccess] = useState<number | null>(null);
   const [sortField, setSortField] = useState<keyof ClinicCost>('total');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
@@ -468,6 +470,13 @@ export function ClinicCostings({
     .filter((t): t is number => t !== null);
   const lowestTotal = quotedTotals.length ? Math.min(...quotedTotals) : null;
 
+  // Summary cards describe the clinics currently matching, using computed
+  // service totals — not the raw record, whose total is only a placeholder.
+  const cheapest = sortedData.find((c) => c.total === lowestTotal) ?? null;
+  const averageTotal = quotedTotals.length
+    ? Math.round(quotedTotals.reduce((a, b) => a + b, 0) / quotedTotals.length)
+    : null;
+
   const toggleClinicSelection = (id: number) => {
     setSelectedClinics(prev => 
       prev.includes(id) ? prev.filter(clinicId => clinicId !== id) : [...prev, id]
@@ -542,13 +551,21 @@ export function ClinicCostings({
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <div className="bg-[#DEE8FF]/50 p-4 rounded-lg border-l-4 border border-[#A8BEEB]/60 border-l-[#5B6AA5]">
           <div className="text-sm text-[#5B6AA5] mb-1">Lowest Total Cost</div>
-          <div className="text-2xl">£{Math.min(...mockClinicData.map(c => c.total)).toLocaleString()}</div>
-          <div className="text-sm text-gray-500 mt-1">Bosphorus Reproductive Centre</div>
+          <div className="text-2xl">
+            {cheapest ? `£${cheapest.total!.toLocaleString()}` : '—'}
+          </div>
+          <div className="text-sm text-gray-500 mt-1">
+            {cheapest ? cheapest.clinicName : 'No quoted prices'}
+          </div>
         </div>
         <div className="glass p-4 rounded-xl">
           <div className="text-sm text-[#5B6AA5] mb-1">Average Cost</div>
-          <div className="text-2xl">£{Math.round(mockClinicData.reduce((acc, c) => acc + c.total, 0) / mockClinicData.length).toLocaleString()}</div>
-          <div className="text-sm text-gray-500 mt-1">Across all clinics</div>
+          <div className="text-2xl">
+            {averageTotal !== null ? `£${averageTotal.toLocaleString()}` : '—'}
+          </div>
+          <div className="text-sm text-gray-500 mt-1">
+            {averageTotal !== null ? `Across ${quotedTotals.length} quoted clinics` : 'No quoted prices'}
+          </div>
         </div>
         <div className="glass p-4 rounded-xl">
           <div className="text-sm text-[#5B6AA5] mb-1">Highest Success Rate</div>
@@ -931,7 +948,15 @@ export function ClinicCostings({
                           <div className="border-t pt-4">
                             <div className="flex gap-3 justify-end">
                               <Button variant="outline" size="sm">View Full Details</Button>
-                              <Button variant="outline" size="sm">Book Consultation</Button>
+                              <Button
+                                size="sm"
+                                className="bg-[#F8AD7C] hover:bg-[#F2955F] text-[#2F3440] font-semibold"
+                                onClick={() =>
+                                  setEnquiring({ slug: clinic.slug, name: clinic.clinicName })
+                                }
+                              >
+                                Request consultation
+                              </Button>
                               <Button className="bg-[#2F3440] hover:bg-[#5B6AA5]" size="sm" onClick={() => handleViewDetails(clinic)}>
                                 See clinic costings
                               </Button>
@@ -959,6 +984,16 @@ export function ClinicCostings({
             <Button size="sm">Contact Selected Clinics</Button>
           </div>
         </div>
+      )}
+
+      {enquiring && (
+        <EnquiryFlow
+          clinicSlug={enquiring.slug}
+          clinicName={enquiring.name}
+          serviceType={serviceType}
+          surface="clinic-costings"
+          onClose={() => setEnquiring(null)}
+        />
       )}
     </div>
   );
