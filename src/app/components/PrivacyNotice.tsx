@@ -139,9 +139,8 @@ export function PrivacyNotice({ onBack }: PrivacyNoticeProps) {
             rather than relying on someone remembering.
           </p>
           <p>
-            When your enquiry is deleted we keep a record with no personal information in it — which
-            clinic, which treatment, how far the enquiry got and on what dates — because that is how
-            we invoice the clinic. It cannot be traced back to you.
+            When your enquiry is deleted, all of it goes. We keep only a dated note that an enquiry
+            existed and how it ended, with nothing in it that could identify you.
           </p>
         </section>
 

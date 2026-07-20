@@ -10,8 +10,10 @@
 > qualified counsel before use. Items marked **[LEGAL]** need a lawyer's
 > decision; items marked **[CONFIRM]** need facts from the business.
 >
-> **Delivery is implemented** as the authenticated pull endpoint in §3. Option A
-> was chosen and built; the webhook and email options remain unimplemented.
+> **Not needed yet.** The MVP has no clinic integration: an operator reads
+> enquiries from the admin endpoint and forwards them to the clinic by hand.
+> These terms are required before any clinic receives data systematically, and
+> §3 describes delivery options for when that happens. Nothing in §3 is built.
 
 ---
 
@@ -47,37 +49,16 @@ Consequences:
 
 ## 3. How enquiries are delivered
 
-Delivery is by **authenticated pull**. The clinic polls for its own open
-enquiries; JourneyFertility does not push them anywhere. This needs no
-infrastructure at the clinic's end and has no delivery-failure states to
-reconcile.
+**Not built.** For the MVP an operator forwards each enquiry by hand from the
+admin view. When volume justifies integration, the options are:
 
-**Enquiry contents are never sent in the body of an email.** Email is not a
-controlled channel and this is health data.
-
-### Endpoints
-
-| Endpoint | Purpose |
-|---|---|
-| `GET /clinic/enquiries` | Retrieve the clinic's open enquiries, oldest first |
-| `POST /enquiries/:reference/status` | Advance an enquiry, per Schedule B |
-
-Both authenticate with the clinic's own bearer token and are scoped to that
-clinic. A clinic cannot see or act on another clinic's enquiries.
-
-`GET /clinic/enquiries` accepts:
-
-| Parameter | Default | Notes |
+| Option | Mechanism | Notes |
 |---|---|---|
-| `status` | open only | `submitted`, `acknowledged`, `responded`, `booked`, `declined`, `expired`, `withdrawn` |
-| `since` | none | ISO 8601; returns enquiries created after this. Use for incremental polling |
-| `limit` | 50 | Capped at 200. `truncated: true` indicates more are waiting |
+| **A — Pull (recommended)** | Clinic polls an authenticated endpoint | No infrastructure needed at the clinic, no delivery-failure states |
+| B — Webhook | We POST to a clinic endpoint, signed and retried | Faster, but the clinic must host and secure an endpoint |
 
-Enquiries that reached an outcome, or were withdrawn, are excluded by default so
-a withdrawn enquiry stops appearing in the clinic's working list.
-
-**[CONFIRM]** polling frequency. Once every few minutes is expected; the endpoint
-is rate limited.
+**Enquiry contents must never be sent in the body of an email**, whichever is
+chosen. Email is not a controlled channel and this is health data.
 
 ## 4. What is shared
 

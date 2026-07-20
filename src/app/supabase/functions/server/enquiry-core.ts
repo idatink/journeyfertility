@@ -62,20 +62,6 @@ export function hasRequiredConsent(body: EnquiryPayload): boolean {
   return body.consent?.processEnquiry === true && body.consent?.shareWithClinic === true;
 }
 
-export const TRANSITIONS: Record<string, string[]> = {
-  submitted: ['acknowledged', 'expired'],
-  acknowledged: ['responded', 'expired'],
-  responded: ['booked', 'declined'],
-  booked: [],
-  declined: [],
-  expired: [],
-  withdrawn: [],
-};
-
-export function canTransition(from: string, to: string): boolean {
-  return TRANSITIONS[from]?.includes(to) ?? false;
-}
-
 /**
  * Build the stored record. Deliberately narrow: the contact details a clinic
  * needs to make contact, the enquiry context, and consent with the time it was
@@ -120,21 +106,20 @@ export function buildRecord(
   };
 }
 
+/**
+ * Operator-driven statuses. For the MVP an enquiry is forwarded to the clinic by
+ * hand, so there is no clinic integration and no state machine to police — just
+ * the three states an operator actually moves an enquiry through.
+ */
+export const ENQUIRY_STATUSES = ['submitted', 'forwarded', 'closed'] as const;
+export type EnquiryStatus = (typeof ENQUIRY_STATUSES)[number];
+
+export function isValidStatus(value: unknown): value is EnquiryStatus {
+  return typeof value === 'string' && (ENQUIRY_STATUSES as readonly string[]).includes(value);
+}
+
 /** Strips enquiry references out of log lines before they reach stdout. */
 export function redactPath(message: string): string {
   return message.replace(/\/enquiries\/[A-Z0-9-]+/gi, '/enquiries/[redacted]');
 }
 
-export function clinicForKey(
-  apiKey: string | undefined,
-  keysJson: string | undefined
-): string | null {
-  if (!apiKey) return null;
-  try {
-    const keys = JSON.parse(keysJson ?? '{}') as Record<string, string>;
-    const match = Object.entries(keys).find(([, key]) => key === apiKey);
-    return match ? match[0] : null;
-  } catch {
-    return null;
-  }
-}

@@ -34,16 +34,7 @@ what actually happens, and be updated whenever that changes.
 | Retention | 12 months from submission, then automatic erasure. Erasure on request at any time |
 | Security measures | See §3 |
 
-### 2.2 Referral billing records
-
-| Field | Value |
-|---|---|
-| Purpose | Evidencing that a booking originated from JourneyFertility, to invoice the clinic |
-| Categories of personal data | **None.** Clinic, service type, final status, dates and an enquiry reference only |
-| Lawful basis | Article 6(1)(f) legitimate interests. Article 9 does not apply as no personal data is retained |
-| Retention | **[CONFIRM]** aligned to the limitation period for contractual claims and accounting requirements |
-
-### 2.3 Optional marketing
+### 2.2 Optional marketing
 
 | Field | Value |
 |---|---|

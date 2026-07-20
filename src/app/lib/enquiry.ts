@@ -21,37 +21,18 @@
  *      patient is in their care.
  */
 
-export type EnquiryStatus =
-  | 'draft'
-  | 'submitted'
-  | 'acknowledged'
-  | 'responded'
-  | 'booked'
-  | 'declined'
-  | 'expired'
-  | 'withdrawn';
+/**
+ * For the MVP an operator forwards each enquiry to the clinic by hand, so these
+ * are the only states an enquiry moves through. There is no clinic integration,
+ * and so no transition machine to police.
+ */
+export type EnquiryStatus = 'draft' | 'submitted' | 'forwarded' | 'closed' | 'withdrawn';
 
 /**
- * Allowed transitions. Enquiries move forward only, apart from withdrawal,
- * which the patient can do at any point before an outcome is recorded.
+ * How quickly we aim to pass an enquiry on. This is our own commitment: no
+ * clinic has agreed a response time, so we must not imply one.
  */
-const TRANSITIONS: Record<EnquiryStatus, EnquiryStatus[]> = {
-  draft: ['submitted', 'withdrawn'],
-  submitted: ['acknowledged', 'expired', 'withdrawn'],
-  acknowledged: ['responded', 'expired', 'withdrawn'],
-  responded: ['booked', 'declined', 'withdrawn'],
-  booked: [],
-  declined: [],
-  expired: [],
-  withdrawn: [],
-};
-
-export function canTransition(from: EnquiryStatus, to: EnquiryStatus): boolean {
-  return TRANSITIONS[from].includes(to);
-}
-
-/** Clinics are expected to acknowledge within this window. */
-export const ACKNOWLEDGE_SLA_HOURS = 48;
+export const FORWARDING_SLA_HOURS = 24;
 
 export type ContactMethod = 'email' | 'phone';
 export type EnquiryTiming = 'asap' | 'within-3-months' | 'within-6-months' | 'just-researching';

@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { X, ArrowLeft, ArrowRight, Check, AlertCircle, ShieldCheck } from 'lucide-react';
 import { Button } from './ui/button';
 import {
-  ACKNOWLEDGE_SLA_HOURS,
+  FORWARDING_SLA_HOURS,
   EMPTY_DRAFT,
   RETENTION_NOTICE,
   TIMING_OPTIONS,
@@ -120,9 +120,9 @@ export function EnquiryFlow({
                   <span className="font-semibold">{result.reference}</span>
                 </p>
                 <p className="text-sm text-[#5C6478] leading-relaxed">
-                  {clinicName} aims to acknowledge within {ACKNOWLEDGE_SLA_HOURS} hours. We will
-                  email you when they respond. This is an enquiry, not a confirmed appointment —
-                  the clinic will confirm any date with you directly.
+                  We will pass this to {clinicName} within {FORWARDING_SLA_HOURS} hours and email
+                  you when they reply. This is an enquiry, not a confirmed appointment — any date
+                  is arranged with the clinic directly.
                 </p>
               </div>
               <p className="text-xs text-[#5C6478] leading-relaxed">{RETENTION_NOTICE}</p>

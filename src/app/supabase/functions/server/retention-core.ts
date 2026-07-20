@@ -6,16 +6,10 @@
  * is decorative, and an unkept retention promise is worse than none: it is a
  * statement to the data subject about how their health data is handled.
  *
- * Two obligations meet here and pull in opposite directions:
- *
- *   Erasure — personal data must go, on request or when the window expires.
- *   Attribution — we need to evidence that a booking came from us, potentially
- *   long after, in order to be paid and to settle disputes.
- *
- * They are reconciled by separating the record. The enquiry holds the personal
- * data and is destroyed. What survives is a financial residue carrying no
- * personal data at all: which clinic, which service, how far it got, and when.
- * That is enough to bill on and cannot identify anyone.
+ * The audit trail is what survives. It holds status changes and timestamps
+ * only, no personal data, so erasure destroys the enquiry without destroying
+ * the record that it existed and how it ended. That is enough for the MVP;
+ * there are no referral fees to evidence yet.
  *
  * Keep RETENTION_MONTHS in step with RETENTION_NOTICE in src/app/lib/enquiry.ts,
  * which is what the patient is actually shown.
@@ -37,18 +31,6 @@ export interface StoredEnquiry {
   };
 }
 
-/** What survives erasure. Deliberately contains nothing that identifies a person. */
-export interface BillingResidue {
-  reference: string;
-  clinicSlug: string | null;
-  serviceType: string | null;
-  /** the furthest the enquiry got, which is what a fee is claimed against */
-  finalStatus: string;
-  createdAt: string;
-  erasedAt: string;
-  reason: 'expired' | 'withdrawn' | 'erasure-request';
-}
-
 export function addMonths(iso: string, months: number): Date {
   const date = new Date(iso);
   const shifted = new Date(date);
@@ -60,26 +42,6 @@ export function isExpired(createdAt: string, now: Date, months = RETENTION_MONTH
   const created = new Date(createdAt);
   if (Number.isNaN(created.getTime())) return false;
   return addMonths(createdAt, months).getTime() <= now.getTime();
-}
-
-/**
- * Build the residue. Reads only the non-identifying fields, so it cannot leak
- * personal data even if the stored record later gains new fields.
- */
-export function toBillingResidue(
-  record: StoredEnquiry,
-  reason: BillingResidue['reason'],
-  now: Date
-): BillingResidue {
-  return {
-    reference: record.reference,
-    clinicSlug: record.attribution?.clinicSlug ?? null,
-    serviceType: record.attribution?.serviceType ?? null,
-    finalStatus: record.status,
-    createdAt: record.createdAt,
-    erasedAt: now.toISOString(),
-    reason,
-  };
 }
 
 /**
