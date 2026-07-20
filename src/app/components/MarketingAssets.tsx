@@ -2,6 +2,10 @@ import React from 'react';
 import { Button } from './ui/button';
 import { Download, ChevronLeft, Image as ImageIcon, Share2 } from 'lucide-react';
 import { ImageWithFallback } from './figma/ImageWithFallback';
+import img_1586489250068a288824b3438 from '../../assets/photos/photo-1586489250068-a288824b3438.jpg';
+import img_16169966913564659297f4baf from '../../assets/photos/photo-1616996691356-4659297f4baf.jpg';
+import img_1679496124845ac6957c8bffd from '../../assets/photos/photo-1679496124845-ac6957c8bffd.jpg';
+import img_1760861715390d85bd4eb617e from '../../assets/photos/photo-1760861715390-d85bd4eb617e.jpg';
 
 interface MarketingAssetsProps {
   onBack: () => void;
@@ -13,28 +17,28 @@ export function MarketingAssets({ onBack }: MarketingAssetsProps) {
       id: 1,
       title: 'Modern Fertility Lab Environment',
       description: 'High-resolution image of our state-of-the-art laboratory facilities.',
-      url: 'https://images.unsplash.com/photo-1616996691356-4659297f4baf?w=550&h=344&fit=crop',
+      url: img_16169966913564659297f4baf,
       category: 'Clinical'
     },
     {
       id: 2,
       title: 'Microscopy and Embryology',
       description: 'Close-up detail of clinical embryology procedures and equipment.',
-      url: 'https://images.unsplash.com/photo-1679496124845-ac6957c8bffd?w=550&h=344&fit=crop',
+      url: img_1679496124845ac6957c8bffd,
       category: 'Clinical'
     },
     {
       id: 3,
       title: 'Expert Consultation',
       description: 'Patient-centric care and consultation atmosphere in our partner clinics.',
-      url: 'https://images.unsplash.com/photo-1586489250068-a288824b3438?w=550&h=344&fit=crop',
+      url: img_1586489250068a288824b3438,
       category: 'Lifestyle'
     },
     {
       id: 4,
       title: 'Laboratory Precision',
       description: 'The precision and care taken in every step of the fertility journey.',
-      url: 'https://images.unsplash.com/photo-1760861715390-d85bd4eb617e?w=550&h=344&fit=crop',
+      url: img_1760861715390d85bd4eb617e,
       category: 'Clinical'
     }
   ];

@@ -64,9 +64,9 @@ export function PrivacyNotice({ onBack }: PrivacyNoticeProps) {
             on our servers.
           </p>
           <p>
-            We serve our own typeface rather than loading it from a font service, so no third party
-            sees you simply for visiting. Some photographs are still loaded from Unsplash, which
-            means Unsplash can see your IP address; it receives nothing about your search.
+            Everything on the page — the typeface, the images, the code — is served from us. No
+            third party is contacted when you browse, so nobody else learns that you visited a
+            fertility site.
           </p>
         </section>
 

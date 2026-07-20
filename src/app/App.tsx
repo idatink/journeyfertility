@@ -26,6 +26,13 @@ import eggFreezingBanner from '../assets/SOMEDAYBANNER.jpg';
 import embryoBanner from '../assets/EMBRYOFREEZINGBANNER.jpg';
 import ivfBanner from '../assets/IVFBANNER.jpg';
 import testingBanner from '../assets/TESTINGBANNER.jpg';
+import img_149389447389110fc1e5dbd22 from '../assets/photos/photo-1493894473891-10fc1e5dbd22.jpg';
+import img_15796843851271ef15d508118 from '../assets/photos/photo-1579684385127-1ef15d508118.jpg';
+import img_1609220136736443140cffec6 from '../assets/photos/photo-1609220136736-443140cffec6.jpg';
+import img_161763843604076505e75940f from '../assets/photos/photo-1617638436040-76505e75940f.jpg';
+import img_1633379204542430941769df3 from '../assets/photos/photo-1633379204542-430941769df3.jpg';
+import img_17573473982067425300ef990 from '../assets/photos/photo-1757347398206-7425300ef990.jpg';
+import img_1758518727888ffa196002e59 from '../assets/photos/photo-1758518727888-ffa196002e59.jpg';
 
 const CONFIDENCE_WORDS = ['clarity', 'confidence', 'calm', 'control', 'certainty', 'support'];
 
@@ -129,31 +136,46 @@ export default function App() {
     service: string;
   } | null>(null);
 
+  /**
+   * PLACEHOLDER — must not ship as-is.
+   *
+   * These names, quotes and health tags are invented, and each is attached to a
+   * stock photograph of a real, identifiable person. Published, that states that
+   * a named individual is a fertility patient with a particular condition and
+   * that they endorsed this service — none of which is true of the people in
+   * these photographs.
+   *
+   * The Unsplash License covers the photograph, not the likeness of the person
+   * in it, and the CAP Code requires testimonials to be genuine and documented.
+   *
+   * Before launch, either use real testimonials with written consent, or drop
+   * the names, quotes and conditions and present the images as illustrative.
+   */
   const testimonials = [
     {
       name: 'Frankie',
-      image: 'https://images.unsplash.com/photo-1633379204542-430941769df3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx3b21hbiUyMG1vdGhlciUyMGJhYnklMjBzbWlsaW5nfGVufDF8fHx8MTc2NTIwMDM4M3ww&ixlib=rb-4.1.0&q=80&w=1080',
+      image: img_1633379204542430941769df3,
       tags: ['Fertility', 'Family planning', 'Trying to conceive', 'Pregnancy'],
       quote: 'We could never afford 2 cycles in the UK',
       service: 'IVF Treatment Abroad - Spain'
     },
     {
       name: 'Dearbhla',
-      image: 'https://images.unsplash.com/photo-1758518727888-ffa196002e59?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx3b21hbiUyMGNvbmZpZGVudCUyMHByb2Zlc3Npb25hbCUyMHBvcnRyYWl0fGVufDF8fHx8MTc2NTIwMDM4M3ww&ixlib=rb-4.1.0&q=80&w=1080',
+      image: img_1758518727888ffa196002e59,
       tags: ['Perimenopause', 'Egg Freezing', 'Low AMH', 'Egg Reserve'],
       quote: 'Going abroad for treatment gave me options I never thought possible. The care was exceptional and affordable.',
       service: 'Egg Freezing - Prague'
     },
     {
       name: 'Sravya',
-      image: 'https://images.unsplash.com/photo-1757347398206-7425300ef990?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx3b21hbiUyMHNtaWxpbmclMjBvdXRkb29yJTIwcG9ydHJhaXR8ZW58MXx8fHwxNzY1MjAwMzgzfDA&ixlib=rb-4.1.0&q=80&w=1080',
+      image: img_17573473982067425300ef990,
       tags: ['PCOS', 'Family planning'],
       quote: 'JourneyFertility helped me find world-class treatment at half the price. Our journey to parenthood is now possible.',
       service: 'IVF Treatment - Istanbul'
     },
     {
       name: 'Elaine',
-      image: 'https://images.unsplash.com/photo-1617638436040-76505e75940f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx3b21hbiUyMHBvcnRyYWl0JTIwaGFwcHklMjBmYW1pbHl8ZW58MXx8fHwxNzY1MjAwMzgyfDA&ixlib=rb-4.1.0&q=80&w=1080',
+      image: img_161763843604076505e75940f,
       tags: ['Trying to conceive', 'Fertility', 'Pregnancy', 'Family planning'],
       quote: 'Traveling abroad for IVF was the best decision we made. Professional care, amazing results, and we saved thousands.',
       service: 'IVF Treatment - Barcelona'
@@ -767,7 +789,7 @@ export default function App() {
                 onClick={() => setViewMode('ivf-info')}
               >
                 <ImageWithFallback
-                  src="https://images.unsplash.com/photo-1609220136736-443140cffec6?w=800&q=80"
+                  src={img_1609220136736443140cffec6}
                   alt="IVF treatment"
                   className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                 />
@@ -788,7 +810,7 @@ export default function App() {
                 onClick={() => setViewMode('embryo-info')}
               >
                 <ImageWithFallback
-                  src="https://images.unsplash.com/photo-1493894473891-10fc1e5dbd22?w=800&q=80"
+                  src={img_149389447389110fc1e5dbd22}
                   alt="Embryo freezing"
                   className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                 />
@@ -809,7 +831,7 @@ export default function App() {
                 onClick={() => setViewMode('fertility-info')}
               >
                 <ImageWithFallback
-                  src="https://images.unsplash.com/photo-1579684385127-1ef15d508118?w=800&q=80"
+                  src={img_15796843851271ef15d508118}
                   alt="Fertility testing"
                   className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                 />

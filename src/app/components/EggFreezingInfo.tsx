@@ -3,6 +3,12 @@ import { Button } from './ui/button';
 import { useState, useEffect, useRef } from 'react';
 import { ImageWithFallback } from './figma/ImageWithFallback';
 import eggFreezingImage from '../../assets/eggfreezinghero.jpg';
+import img_151949402689280bbd2d6fd0d from '../../assets/photos/photo-1519494026892-80bbd2d6fd0d.jpg';
+import img_1538108149393fbbd81895907 from '../../assets/photos/photo-1538108149393-fbbd81895907.jpg';
+import img_1551076805e1869033e561 from '../../assets/photos/photo-1551076805-e1869033e561.jpg';
+import img_1586773860418d37222d8fce3 from '../../assets/photos/photo-1586773860418-d37222d8fce3.jpg';
+import img_15873510217593e566b6af7cc from '../../assets/photos/photo-1587351021759-3e566b6af7cc.jpg';
+import img_1632833239869a37e3a5806d2 from '../../assets/photos/photo-1632833239869-a37e3a5806d2.jpg';
 
 interface EggFreezingInfoProps {
   onBack: () => void;
@@ -31,7 +37,7 @@ export function EggFreezingInfo({ onBack, onSearchClinics, onTakeQuiz, scrollToC
       id: 1,
       name: 'Reproductive Health Center',
       city: 'New York',
-      image: 'https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?w=800&q=80',
+      image: img_151949402689280bbd2d6fd0d,
       rating: 4.8,
       reviews: 342,
       distance: '1.2 miles from center',
@@ -44,7 +50,7 @@ export function EggFreezingInfo({ onBack, onSearchClinics, onTakeQuiz, scrollToC
       id: 2,
       name: 'Pacific Fertility Center',
       city: 'San Francisco',
-      image: 'https://images.unsplash.com/photo-1632833239869-a37e3a5806d2?w=800&q=80',
+      image: img_1632833239869a37e3a5806d2,
       rating: 4.9,
       reviews: 456,
       distance: '0.8 miles from center',
@@ -57,7 +63,7 @@ export function EggFreezingInfo({ onBack, onSearchClinics, onTakeQuiz, scrollToC
       id: 3,
       name: 'Boston IVF - Egg Freezing',
       city: 'Boston',
-      image: 'https://images.unsplash.com/photo-1551076805-e1869033e561?w=800&q=80',
+      image: img_1551076805e1869033e561,
       rating: 4.7,
       reviews: 289,
       distance: '2.1 miles from center',
@@ -70,7 +76,7 @@ export function EggFreezingInfo({ onBack, onSearchClinics, onTakeQuiz, scrollToC
       id: 4,
       name: 'Barcelona IVF',
       city: 'Barcelona',
-      image: 'https://images.unsplash.com/photo-1538108149393-fbbd81895907?w=800&q=80',
+      image: img_1538108149393fbbd81895907,
       rating: 4.9,
       reviews: 523,
       distance: '1.5 km from center',
@@ -83,7 +89,7 @@ export function EggFreezingInfo({ onBack, onSearchClinics, onTakeQuiz, scrollToC
       id: 5,
       name: 'Jinemed Hospital',
       city: 'Istanbul',
-      image: 'https://images.unsplash.com/photo-1587351021759-3e566b6af7cc?w=800&q=80',
+      image: img_15873510217593e566b6af7cc,
       rating: 4.8,
       reviews: 612,
       distance: '3.2 km from center',
@@ -96,7 +102,7 @@ export function EggFreezingInfo({ onBack, onSearchClinics, onTakeQuiz, scrollToC
       id: 6,
       name: 'Chicago Fertility Clinic',
       city: 'Chicago',
-      image: 'https://images.unsplash.com/photo-1586773860418-d37222d8fce3?w=800&q=80',
+      image: img_1586773860418d37222d8fce3,
       rating: 4.6,
       reviews: 198,
       distance: '1.8 miles from center',

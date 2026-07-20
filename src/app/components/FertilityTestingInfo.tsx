@@ -3,6 +3,12 @@ import { Button } from './ui/button';
 import { useState, useEffect, useRef } from 'react';
 import { ImageWithFallback } from './figma/ImageWithFallback';
 import testingHeroImage from '../../assets/fertlitytestshero.jpg';
+import img_153049761024594d3c16cda28 from '../../assets/photos/photo-1530497610245-94d3c16cda28.jpg';
+import img_15791654667417f35e4755660 from '../../assets/photos/photo-1579165466741-7f35e4755660.jpg';
+import img_15796843851271ef15d508118 from '../../assets/photos/photo-1579684385127-1ef15d508118.jpg';
+import img_1581594693702fbdc51b2763b from '../../assets/photos/photo-1581594693702-fbdc51b2763b.jpg';
+import img_1582750433449648ed127bb54 from '../../assets/photos/photo-1582750433449-648ed127bb54.jpg';
+import img_1631815588090d4bfec5b1ccb from '../../assets/photos/photo-1631815588090-d4bfec5b1ccb.jpg';
 
 interface FertilityTestingInfoProps {
   onBack: () => void;
@@ -31,7 +37,7 @@ export function FertilityTestingInfo({ onBack, onSearchClinics, onTakeQuiz, scro
       id: 1,
       name: 'Advanced Fertility Testing Center',
       city: 'New York',
-      image: 'https://images.unsplash.com/photo-1579684385127-1ef15d508118?w=800&q=80',
+      image: img_15796843851271ef15d508118,
       rating: 4.8,
       reviews: 234,
       distance: '1.2 miles from center',
@@ -44,7 +50,7 @@ export function FertilityTestingInfo({ onBack, onSearchClinics, onTakeQuiz, scro
       id: 2,
       name: 'Bay Area Reproductive Lab',
       city: 'San Francisco',
-      image: 'https://images.unsplash.com/photo-1631815588090-d4bfec5b1ccb?w=800&q=80',
+      image: img_1631815588090d4bfec5b1ccb,
       rating: 4.9,
       reviews: 312,
       distance: '0.8 miles from center',
@@ -57,7 +63,7 @@ export function FertilityTestingInfo({ onBack, onSearchClinics, onTakeQuiz, scro
       id: 3,
       name: 'Boston Fertility Diagnostics',
       city: 'Boston',
-      image: 'https://images.unsplash.com/photo-1581594693702-fbdc51b2763b?w=800&q=80',
+      image: img_1581594693702fbdc51b2763b,
       rating: 4.7,
       reviews: 189,
       distance: '2.1 miles from center',
@@ -70,7 +76,7 @@ export function FertilityTestingInfo({ onBack, onSearchClinics, onTakeQuiz, scro
       id: 4,
       name: 'Barcelona Fertility Labs',
       city: 'Barcelona',
-      image: 'https://images.unsplash.com/photo-1579165466741-7f35e4755660?w=800&q=80',
+      image: img_15791654667417f35e4755660,
       rating: 4.8,
       reviews: 276,
       distance: '1.5 km from center',
@@ -83,7 +89,7 @@ export function FertilityTestingInfo({ onBack, onSearchClinics, onTakeQuiz, scro
       id: 5,
       name: 'Istanbul Diagnostic Center',
       city: 'Istanbul',
-      image: 'https://images.unsplash.com/photo-1582750433449-648ed127bb54?w=800&q=80',
+      image: img_1582750433449648ed127bb54,
       rating: 4.7,
       reviews: 198,
       distance: '3.2 km from center',
@@ -96,7 +102,7 @@ export function FertilityTestingInfo({ onBack, onSearchClinics, onTakeQuiz, scro
       id: 6,
       name: 'Chicago Reproductive Testing',
       city: 'Chicago',
-      image: 'https://images.unsplash.com/photo-1530497610245-94d3c16cda28?w=800&q=80',
+      image: img_153049761024594d3c16cda28,
       rating: 4.6,
       reviews: 156,
       distance: '1.8 miles from center',
