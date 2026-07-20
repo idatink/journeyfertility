@@ -34,7 +34,8 @@ interface ClinicCostingsProps {
 interface ClinicCost {
   id: number;
   slug: string;
-  citySlug: string;
+  regionSlug: string;
+  fundingRoutes: ("nhs" | "private")[];
   /** how much of its price list the clinic publishes */
   pricingCompleteness: "full" | "partial" | "none";
   clinicName: string;
@@ -69,231 +70,243 @@ interface AtHomeTestKit {
 const mockClinicData: ClinicCost[] = [
   {
     id: 1,
-    slug: "hudson-reproductive",
+    slug: "thames-fertility",
+    regionSlug: "london",
     pricingCompleteness: "full",
-    citySlug: "new-york",
-    clinicName: "Hudson Reproductive Centre",
-    location: "New York, NY",
-    consultation: 350,
-    eggRetrieval: 8500,
-    ivfCycle: 12000,
-    embryoTransfer: 4500,
-    medications: 4500,
-    storagePerYear: 800,
-    geneticTesting: 3500,
-    embryoFreezing: 4200,
-    fertilityTestPanel: 650,
-    successRate: 68,
-    total: 34150
+    fundingRoutes: ["nhs", "private"],
+    clinicName: "Thames Fertility Centre",
+    location: "London",
+    consultation: 200,
+    eggRetrieval: 3200,
+    ivfCycle: 4500,
+    embryoTransfer: 1400,
+    medications: 1500,
+    storagePerYear: 350,
+    geneticTesting: 2800,
+    embryoFreezing: 1100,
+    fertilityTestPanel: 250,
+    successRate: 0,
+    total: 0
   },
   {
     id: 2,
-    slug: "westline-fertility",
-    pricingCompleteness: "none",
-    citySlug: "los-angeles",
-    clinicName: "Westline Fertility Institute",
-    location: "Los Angeles, CA",
-    consultation: 300,
-    eggRetrieval: 9200,
-    ivfCycle: 13500,
-    embryoTransfer: 5000,
-    medications: 5200,
-    storagePerYear: 950,
-    geneticTesting: 4000,
-    embryoFreezing: 4600,
-    fertilityTestPanel: 720,
-    successRate: 71,
-    total: 38150
+    slug: "southbank-reproductive",
+    regionSlug: "london",
+    pricingCompleteness: "full",
+    fundingRoutes: ["private"],
+    clinicName: "Southbank Reproductive Health",
+    location: "London",
+    consultation: 250,
+    eggRetrieval: 3600,
+    ivfCycle: 5200,
+    embryoTransfer: 1600,
+    medications: 1800,
+    storagePerYear: 420,
+    geneticTesting: 3200,
+    embryoFreezing: 1300,
+    fertilityTestPanel: 320,
+    successRate: 0,
+    total: 0
   },
   {
     id: 3,
-    slug: "charles-river-fertility",
-    pricingCompleteness: "full",
-    citySlug: "boston",
-    clinicName: "Charles River Fertility",
-    location: "Boston, MA",
-    consultation: 400,
-    eggRetrieval: 8000,
-    ivfCycle: 11500,
-    embryoTransfer: 4200,
-    medications: 4000,
-    storagePerYear: 750,
-    geneticTesting: 3200,
-    embryoFreezing: 3900,
-    fertilityTestPanel: 600,
-    successRate: 65,
-    total: 32050
+    slug: "camden-ivf",
+    regionSlug: "london",
+    pricingCompleteness: "partial",
+    fundingRoutes: ["nhs", "private"],
+    clinicName: "Camden IVF Clinic",
+    location: "London",
+    consultation: 220,
+    eggRetrieval: 3400,
+    ivfCycle: 4800,
+    embryoTransfer: 1500,
+    medications: 1650,
+    storagePerYear: 380,
+    geneticTesting: 3000,
+    embryoFreezing: 1200,
+    fertilityTestPanel: 280,
+    successRate: 0,
+    total: 0
   },
   {
     id: 4,
-    slug: "lakeshore-fertility",
-    pricingCompleteness: "partial",
-    citySlug: "chicago",
-    clinicName: "Lakeshore Fertility Centre",
-    location: "Chicago, IL",
-    consultation: 325,
-    eggRetrieval: 7800,
-    ivfCycle: 10800,
-    embryoTransfer: 3900,
-    medications: 3800,
-    storagePerYear: 700,
-    geneticTesting: 3000,
-    embryoFreezing: 3600,
-    fertilityTestPanel: 540,
-    successRate: 62,
-    total: 30325
+    slug: "mersey-fertility",
+    regionSlug: "north-west",
+    pricingCompleteness: "full",
+    fundingRoutes: ["nhs", "private"],
+    clinicName: "Mersey Fertility Institute",
+    location: "Liverpool",
+    consultation: 150,
+    eggRetrieval: 2700,
+    ivfCycle: 3800,
+    embryoTransfer: 1150,
+    medications: 1250,
+    storagePerYear: 270,
+    geneticTesting: 2300,
+    embryoFreezing: 900,
+    fertilityTestPanel: 190,
+    successRate: 0,
+    total: 0
   },
   {
     id: 5,
-    slug: "bayfront-reproductive",
+    slug: "pennine-reproductive",
+    regionSlug: "north-west",
     pricingCompleteness: "full",
-    citySlug: "san-francisco",
-    clinicName: "Bayfront Reproductive Health",
-    location: "San Francisco, CA",
-    consultation: 450,
-    eggRetrieval: 10000,
-    ivfCycle: 14500,
-    embryoTransfer: 5500,
-    medications: 5800,
-    storagePerYear: 1000,
-    geneticTesting: 4500,
-    embryoFreezing: 5000,
-    fertilityTestPanel: 850,
-    successRate: 73,
-    total: 41750
+    fundingRoutes: ["nhs", "private"],
+    clinicName: "Pennine Reproductive Centre",
+    location: "Manchester",
+    consultation: 165,
+    eggRetrieval: 2900,
+    ivfCycle: 4100,
+    embryoTransfer: 1250,
+    medications: 1350,
+    storagePerYear: 290,
+    geneticTesting: 2500,
+    embryoFreezing: 980,
+    fertilityTestPanel: 210,
+    successRate: 0,
+    total: 0
   },
   {
     id: 6,
-    slug: "hill-country-fertility",
-    pricingCompleteness: "none",
-    citySlug: "austin",
-    clinicName: "Hill Country Fertility",
-    location: "Austin, TX",
-    consultation: 275,
-    eggRetrieval: 7200,
-    ivfCycle: 10000,
-    embryoTransfer: 3600,
-    medications: 3500,
-    storagePerYear: 650,
-    geneticTesting: 2800,
-    embryoFreezing: 3300,
-    fertilityTestPanel: 480,
-    successRate: 59,
-    total: 28025
+    slug: "northern-lights-fertility",
+    regionSlug: "scotland",
+    pricingCompleteness: "full",
+    fundingRoutes: ["nhs", "private"],
+    clinicName: "Northern Lights Fertility",
+    location: "Edinburgh",
+    consultation: 160,
+    eggRetrieval: 2800,
+    ivfCycle: 4000,
+    embryoTransfer: 1200,
+    medications: 1300,
+    storagePerYear: 280,
+    geneticTesting: 2400,
+    embryoFreezing: 950,
+    fertilityTestPanel: 200,
+    successRate: 0,
+    total: 0
   },
   {
     id: 7,
-    slug: "bosphorus-reproductive",
-    pricingCompleteness: "full",
-    citySlug: "istanbul",
-    clinicName: "Bosphorus Reproductive Centre",
-    location: "Istanbul, Turkey",
-    consultation: 150,
-    eggRetrieval: 3200,
-    ivfCycle: 4500,
-    embryoTransfer: 1800,
-    medications: 2000,
-    storagePerYear: 400,
-    geneticTesting: 1500,
-    embryoFreezing: 1500,
-    fertilityTestPanel: 260,
-    successRate: 64,
-    total: 13550
+    slug: "clyde-reproductive",
+    regionSlug: "scotland",
+    pricingCompleteness: "partial",
+    fundingRoutes: ["nhs"],
+    clinicName: "Clyde Reproductive Health",
+    location: "Glasgow",
+    consultation: 145,
+    eggRetrieval: 2650,
+    ivfCycle: 3700,
+    embryoTransfer: 1100,
+    medications: 1200,
+    storagePerYear: 260,
+    geneticTesting: 2250,
+    embryoFreezing: 880,
+    fertilityTestPanel: 180,
+    successRate: 0,
+    total: 0
   },
   {
     id: 8,
-    slug: "marmara-ivf",
-    pricingCompleteness: "full",
-    citySlug: "istanbul",
-    clinicName: "Marmara IVF Institute",
-    location: "Istanbul, Turkey",
-    consultation: 200,
-    eggRetrieval: 3500,
-    ivfCycle: 5000,
-    embryoTransfer: 2000,
-    medications: 2200,
-    storagePerYear: 450,
-    geneticTesting: 1800,
-    embryoFreezing: 1750,
-    fertilityTestPanel: 310,
-    successRate: 67,
-    total: 15150
+    slug: "severn-fertility",
+    regionSlug: "south-west",
+    pricingCompleteness: "none",
+    fundingRoutes: ["private"],
+    clinicName: "Severn Fertility Clinic",
+    location: "Bristol",
+    consultation: 190,
+    eggRetrieval: 3100,
+    ivfCycle: 4400,
+    embryoTransfer: 1350,
+    medications: 1450,
+    storagePerYear: 330,
+    geneticTesting: 2700,
+    embryoFreezing: 1050,
+    fertilityTestPanel: 240,
+    successRate: 0,
+    total: 0
   },
   {
     id: 9,
-    slug: "anatolia-fertility",
+    slug: "midlands-fertility",
+    regionSlug: "west-midlands",
     pricingCompleteness: "full",
-    citySlug: "istanbul",
-    clinicName: "Anatolia Fertility Clinic",
-    location: "Istanbul, Turkey",
-    consultation: 120,
-    eggRetrieval: 2800,
+    fundingRoutes: ["nhs", "private"],
+    clinicName: "Midlands Fertility Institute",
+    location: "Birmingham",
+    consultation: 170,
+    eggRetrieval: 2950,
     ivfCycle: 4200,
-    embryoTransfer: 1600,
-    medications: 1800,
-    storagePerYear: 350,
-    geneticTesting: 1400,
-    embryoFreezing: 1300,
-    fertilityTestPanel: 210,
-    successRate: 61,
-    total: 12270
+    embryoTransfer: 1280,
+    medications: 1380,
+    storagePerYear: 300,
+    geneticTesting: 2550,
+    embryoFreezing: 1000,
+    fertilityTestPanel: 215,
+    successRate: 0,
+    total: 0
   },
   {
     id: 10,
-    slug: "levent-reproductive",
+    slug: "wharfedale-reproductive",
+    regionSlug: "yorkshire",
     pricingCompleteness: "partial",
-    citySlug: "istanbul",
-    clinicName: "Levent Reproductive Health",
-    location: "Istanbul, Turkey",
-    consultation: 250,
-    eggRetrieval: 4000,
-    ivfCycle: 5500,
-    embryoTransfer: 2200,
-    medications: 2400,
-    storagePerYear: 500,
-    geneticTesting: 2000,
-    embryoFreezing: 1950,
-    fertilityTestPanel: 380,
-    successRate: 69,
-    total: 16850
+    fundingRoutes: ["nhs", "private"],
+    clinicName: "Wharfedale Reproductive Centre",
+    location: "Leeds",
+    consultation: 155,
+    eggRetrieval: 2750,
+    ivfCycle: 3900,
+    embryoTransfer: 1180,
+    medications: 1280,
+    storagePerYear: 275,
+    geneticTesting: 2350,
+    embryoFreezing: 920,
+    fertilityTestPanel: 195,
+    successRate: 0,
+    total: 0
   },
   {
     id: 11,
-    slug: "galata-womens-fertility",
-    pricingCompleteness: "partial",
-    citySlug: "istanbul",
-    clinicName: "Galata Women's Fertility",
-    location: "Istanbul, Turkey",
-    consultation: 180,
-    eggRetrieval: 3400,
-    ivfCycle: 4800,
-    embryoTransfer: 1900,
-    medications: 2100,
-    storagePerYear: 420,
-    geneticTesting: 1600,
-    embryoFreezing: 1600,
-    fertilityTestPanel: 290,
-    successRate: 66,
-    total: 14400
+    slug: "cardiff-bay-fertility",
+    regionSlug: "wales",
+    pricingCompleteness: "full",
+    fundingRoutes: ["nhs", "private"],
+    clinicName: "Cardiff Bay Fertility",
+    location: "Cardiff",
+    consultation: 150,
+    eggRetrieval: 2700,
+    ivfCycle: 3850,
+    embryoTransfer: 1150,
+    medications: 1240,
+    storagePerYear: 265,
+    geneticTesting: 2300,
+    embryoFreezing: 900,
+    fertilityTestPanel: 185,
+    successRate: 0,
+    total: 0
   },
   {
     id: 12,
-    slug: "uskudar-ivf",
-    pricingCompleteness: "partial",
-    citySlug: "istanbul",
-    clinicName: "Uskudar IVF Centre",
-    location: "Istanbul, Turkey",
-    consultation: 160,
-    eggRetrieval: 3100,
-    ivfCycle: 4400,
-    embryoTransfer: 1700,
-    medications: 1900,
-    storagePerYear: 380,
-    geneticTesting: 1500,
-    embryoFreezing: 1450,
-    fertilityTestPanel: 240,
-    successRate: 63,
-    total: 13140
+    slug: "lagan-fertility",
+    regionSlug: "northern-ireland",
+    pricingCompleteness: "none",
+    fundingRoutes: ["private"],
+    clinicName: "Lagan Fertility Centre",
+    location: "Belfast",
+    consultation: 175,
+    eggRetrieval: 3000,
+    ivfCycle: 4250,
+    embryoTransfer: 1300,
+    medications: 1400,
+    storagePerYear: 310,
+    geneticTesting: 2600,
+    embryoFreezing: 1020,
+    fertilityTestPanel: 225,
+    successRate: 0,
+    total: 0
   }
 ];
 
@@ -358,6 +371,7 @@ export function ClinicCostings({
 }: ClinicCostingsProps) {
   const [ageBand, setAgeBand] = useState<AgeBand>('35-37');
   const [transparencyOnly, setTransparencyOnly] = useState(false);
+  const [funding, setFunding] = useState<'all' | 'nhs' | 'private'>('all');
   const [minSuccess, setMinSuccess] = useState<number | null>(null);
   const [sortField, setSortField] = useState<keyof ClinicCost>('total');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
@@ -397,13 +411,14 @@ export function ClinicCostings({
   // untouched form returns everything.
   const budget = getBudgetBounds(serviceType, budgetRange);
   const filteredData = allPriced.filter((c) => {
-    if (location !== 'all' && c.citySlug !== location) return false;
+    if (location !== 'all' && c.regionSlug !== location) return false;
     if (clinicFilter !== 'all' && c.slug !== clinicFilter) return false;
     if (budget) {
       if (c.total === null) return false;
       if (c.total < budget.min || c.total >= budget.max) return false;
     }
     if (transparencyOnly && c.pricingCompleteness !== 'full') return false;
+    if (funding !== 'all' && !c.fundingRoutes.includes(funding)) return false;
     // Only exclude on evidence: a clinic with no published figure for this age
     // band is not the same as one that published a low figure.
     if (minSuccess !== null && c.outcome && c.outcome.rate < minSuccess) return false;
@@ -415,6 +430,7 @@ export function ClinicCostings({
     (clinicFilter !== 'all' ? 1 : 0) +
     (budget ? 1 : 0) +
     (transparencyOnly ? 1 : 0) +
+    (funding !== 'all' ? 1 : 0) +
     (minSuccess !== null ? 1 : 0);
 
   const sortedData = [...filteredData].sort((a, b) => {
@@ -526,12 +542,12 @@ export function ClinicCostings({
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <div className="bg-[#DEE8FF]/50 p-4 rounded-lg border-l-4 border border-[#A8BEEB]/60 border-l-[#5B6AA5]">
           <div className="text-sm text-[#5B6AA5] mb-1">Lowest Total Cost</div>
-          <div className="text-2xl">${Math.min(...mockClinicData.map(c => c.total)).toLocaleString()}</div>
+          <div className="text-2xl">£{Math.min(...mockClinicData.map(c => c.total)).toLocaleString()}</div>
           <div className="text-sm text-gray-500 mt-1">Bosphorus Reproductive Centre</div>
         </div>
         <div className="glass p-4 rounded-xl">
           <div className="text-sm text-[#5B6AA5] mb-1">Average Cost</div>
-          <div className="text-2xl">${Math.round(mockClinicData.reduce((acc, c) => acc + c.total, 0) / mockClinicData.length).toLocaleString()}</div>
+          <div className="text-2xl">£{Math.round(mockClinicData.reduce((acc, c) => acc + c.total, 0) / mockClinicData.length).toLocaleString()}</div>
           <div className="text-sm text-gray-500 mt-1">Across all clinics</div>
         </div>
         <div className="glass p-4 rounded-xl">
@@ -605,6 +621,27 @@ export function ClinicCostings({
                 }`}
               >
                 {v === null ? 'Any' : `${v}%+`}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div>
+          <div className="text-xs font-semibold uppercase tracking-wide text-[#5C6478] mb-2">
+            Funding route
+          </div>
+          <div className="flex flex-wrap gap-2">
+            {([['all','Any'],['nhs','NHS funded'],['private','Private']] as const).map(([id,label]) => (
+              <button
+                key={id}
+                onClick={() => setFunding(id)}
+                className={`grain text-sm font-medium px-3.5 py-1.5 rounded-full transition-all ${
+                  funding === id
+                    ? 'bg-[#2F3440] text-white'
+                    : 'bg-white/60 text-[#2F3440] hover:bg-white/80'
+                }`}
+              >
+                {label}
               </button>
             ))}
           </div>
@@ -799,11 +836,11 @@ export function ClinicCostings({
                         <div className="text-xs text-gray-500">{clinic.location}</div>
                       </div>
                     </TableCell>
-                    <TableCell>${clinic.consultation.toLocaleString()}</TableCell>
-                    <TableCell>${clinic.eggRetrieval.toLocaleString()}</TableCell>
-                    <TableCell>${clinic.ivfCycle.toLocaleString()}</TableCell>
-                    <TableCell>${clinic.embryoTransfer.toLocaleString()}</TableCell>
-                    <TableCell>${clinic.medications.toLocaleString()}</TableCell>
+                    <TableCell>£{clinic.consultation.toLocaleString()}</TableCell>
+                    <TableCell>£{clinic.eggRetrieval.toLocaleString()}</TableCell>
+                    <TableCell>£{clinic.ivfCycle.toLocaleString()}</TableCell>
+                    <TableCell>£{clinic.embryoTransfer.toLocaleString()}</TableCell>
+                    <TableCell>£{clinic.medications.toLocaleString()}</TableCell>
                     <TableCell>
                       {clinic.outcome ? (
                         <div>
@@ -829,7 +866,7 @@ export function ClinicCostings({
                     </TableCell>
                     <TableCell className="text-[#5B6AA5]">
                       {clinic.total !== null ? (
-                        `$${clinic.total.toLocaleString()}`
+                        `£${clinic.total.toLocaleString()}`
                       ) : (
                         <span className="text-[#5C6478] text-sm">Not quoted</span>
                       )}
@@ -868,11 +905,11 @@ export function ClinicCostings({
                               <div className="space-y-2 text-sm">
                                 <div className="flex justify-between">
                                   <span className="text-gray-600">Storage (per year):</span>
-                                  <span>${clinic.storagePerYear.toLocaleString()}</span>
+                                  <span>£{clinic.storagePerYear.toLocaleString()}</span>
                                 </div>
                                 <div className="flex justify-between">
                                   <span className="text-gray-600">Genetic Testing:</span>
-                                  <span>${clinic.geneticTesting.toLocaleString()}</span>
+                                  <span>£{clinic.geneticTesting.toLocaleString()}</span>
                                 </div>
                               </div>
                             </div>

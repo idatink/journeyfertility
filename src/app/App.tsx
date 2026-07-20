@@ -352,25 +352,23 @@ export default function App() {
                 <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 z-10 pointer-events-none" />
                 <Select value={location} onValueChange={setLocation}>
                   <SelectTrigger className="pl-10 bg-white">
-                    <SelectValue placeholder="Testing Location" />
+                    <SelectValue placeholder="Region" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="all">All Locations</SelectItem>
-                    <SelectItem value="at-home">At-Home Test Kits</SelectItem>
-                    
-                    {/* United States */}
-                    <SelectItem value="new-york">New York, NY, USA</SelectItem>
-                    <SelectItem value="los-angeles">Los Angeles, CA, USA</SelectItem>
-                    <SelectItem value="san-francisco">San Francisco, CA, USA</SelectItem>
-                    <SelectItem value="boston">Boston, MA, USA</SelectItem>
-                    <SelectItem value="chicago">Chicago, IL, USA</SelectItem>
-                    <SelectItem value="austin">Austin, TX, USA</SelectItem>
-                    
-                    {/* Europe */}
-                    <SelectItem value="barcelona">Barcelona, Spain</SelectItem>
-                    <SelectItem value="istanbul">Istanbul, Turkey</SelectItem>
-                    <SelectItem value="london">London, UK</SelectItem>
-                  </SelectContent>
+                                      <SelectItem value="all">All UK regions</SelectItem>
+                  <SelectItem value="london">London</SelectItem>
+                  <SelectItem value="south-east">South East</SelectItem>
+                  <SelectItem value="south-west">South West</SelectItem>
+                  <SelectItem value="east-of-england">East of England</SelectItem>
+                  <SelectItem value="west-midlands">West Midlands</SelectItem>
+                  <SelectItem value="east-midlands">East Midlands</SelectItem>
+                  <SelectItem value="north-west">North West</SelectItem>
+                  <SelectItem value="north-east">North East</SelectItem>
+                  <SelectItem value="yorkshire">Yorkshire and the Humber</SelectItem>
+                  <SelectItem value="scotland">Scotland</SelectItem>
+                  <SelectItem value="wales">Wales</SelectItem>
+                  <SelectItem value="northern-ireland">Northern Ireland</SelectItem>
+                </SelectContent>
                 </Select>
               </div>
 
@@ -423,64 +421,22 @@ export default function App() {
               <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 z-10 pointer-events-none" />
               <Select value={location} onValueChange={setLocation}>
                 <SelectTrigger className="pl-10 bg-white">
-                  <SelectValue placeholder="Location (City)" />
+                  <SelectValue placeholder="Region" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">All Locations</SelectItem>
-                  
-                  {/* United States */}
-                  <SelectItem value="new-york">New York, NY, USA</SelectItem>
-                  <SelectItem value="los-angeles">Los Angeles, CA, USA</SelectItem>
-                  <SelectItem value="san-francisco">San Francisco, CA, USA</SelectItem>
-                  <SelectItem value="boston">Boston, MA, USA</SelectItem>
-                  <SelectItem value="chicago">Chicago, IL, USA</SelectItem>
-                  <SelectItem value="austin">Austin, TX, USA</SelectItem>
-                  <SelectItem value="miami">Miami, FL, USA</SelectItem>
-                  <SelectItem value="seattle">Seattle, WA, USA</SelectItem>
-                  
-                  {/* Europe */}
-                  <SelectItem value="barcelona">Barcelona, Spain</SelectItem>
-                  <SelectItem value="madrid">Madrid, Spain</SelectItem>
-                  <SelectItem value="prague">Prague, Czech Republic</SelectItem>
-                  <SelectItem value="athens">Athens, Greece</SelectItem>
-                  <SelectItem value="copenhagen">Copenhagen, Denmark</SelectItem>
-                  <SelectItem value="london">London, UK</SelectItem>
-                  <SelectItem value="manchester">Manchester, UK</SelectItem>
-                  <SelectItem value="brussels">Brussels, Belgium</SelectItem>
-                  <SelectItem value="amsterdam">Amsterdam, Netherlands</SelectItem>
-                  <SelectItem value="vienna">Vienna, Austria</SelectItem>
-                  <SelectItem value="istanbul">Istanbul, Turkey</SelectItem>
-                  <SelectItem value="lisbon">Lisbon, Portugal</SelectItem>
-                  
-                  {/* Middle East */}
-                  <SelectItem value="tel-aviv">Tel Aviv, Israel</SelectItem>
-                  <SelectItem value="dubai">Dubai, UAE</SelectItem>
-                  
-                  {/* Asia */}
-                  <SelectItem value="bangkok">Bangkok, Thailand</SelectItem>
-                  <SelectItem value="singapore">Singapore</SelectItem>
-                  <SelectItem value="mumbai">Mumbai, India</SelectItem>
-                  <SelectItem value="new-delhi">New Delhi, India</SelectItem>
-                  <SelectItem value="tokyo">Tokyo, Japan</SelectItem>
-                  
-                  {/* Canada */}
-                  <SelectItem value="toronto">Toronto, Canada</SelectItem>
-                  <SelectItem value="vancouver">Vancouver, Canada</SelectItem>
-                  <SelectItem value="montreal">Montreal, Canada</SelectItem>
-                  
-                  {/* Latin America */}
-                  <SelectItem value="mexico-city">Mexico City, Mexico</SelectItem>
-                  <SelectItem value="cancun">Cancun, Mexico</SelectItem>
-                  <SelectItem value="buenos-aires">Buenos Aires, Argentina</SelectItem>
-                  <SelectItem value="bogota">Bogotá, Colombia</SelectItem>
-                  
-                  {/* Oceania */}
-                  <SelectItem value="sydney">Sydney, Australia</SelectItem>
-                  <SelectItem value="melbourne">Melbourne, Australia</SelectItem>
-                  <SelectItem value="auckland">Auckland, New Zealand</SelectItem>
-                  
-                  {/* Africa */}
-                  <SelectItem value="cape-town">Cape Town, South Africa</SelectItem>
+                                    <SelectItem value="all">All UK regions</SelectItem>
+                  <SelectItem value="london">London</SelectItem>
+                  <SelectItem value="south-east">South East</SelectItem>
+                  <SelectItem value="south-west">South West</SelectItem>
+                  <SelectItem value="east-of-england">East of England</SelectItem>
+                  <SelectItem value="west-midlands">West Midlands</SelectItem>
+                  <SelectItem value="east-midlands">East Midlands</SelectItem>
+                  <SelectItem value="north-west">North West</SelectItem>
+                  <SelectItem value="north-east">North East</SelectItem>
+                  <SelectItem value="yorkshire">Yorkshire and the Humber</SelectItem>
+                  <SelectItem value="scotland">Scotland</SelectItem>
+                  <SelectItem value="wales">Wales</SelectItem>
+                  <SelectItem value="northern-ireland">Northern Ireland</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -492,23 +448,19 @@ export default function App() {
                   <SelectValue placeholder="Preferred Clinic" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">All Clinics</SelectItem>
-                  
-                  {/* United States */}
-                  <SelectItem value="hudson-reproductive">Hudson Reproductive Centre - New York</SelectItem>
-                  <SelectItem value="westline-fertility">Westline Fertility Institute</SelectItem>
-                  <SelectItem value="charles-river-fertility">Charles River Fertility</SelectItem>
-                  <SelectItem value="lakeshore-fertility">Lakeshore Fertility Centre</SelectItem>
-                  <SelectItem value="bayfront-reproductive">Bayfront Reproductive Health - San Francisco</SelectItem>
-                  <SelectItem value="hill-country-fertility">Hill Country Fertility - Austin</SelectItem>
-                  
-                  {/* Istanbul, Turkey */}
-                  <SelectItem value="bosphorus-reproductive">Bosphorus Reproductive Centre - Istanbul</SelectItem>
-                  <SelectItem value="marmara-ivf">Marmara IVF Institute - Istanbul</SelectItem>
-                  <SelectItem value="anatolia-fertility">Anatolia Fertility Clinic</SelectItem>
-                  <SelectItem value="levent-reproductive">Levent Reproductive Health - Istanbul</SelectItem>
-                  <SelectItem value="galata-womens-fertility">Galata Women's Fertility - Istanbul</SelectItem>
-                  <SelectItem value="uskudar-ivf">Uskudar IVF Centre - Istanbul</SelectItem>
+                                    <SelectItem value="all">All Clinics</SelectItem>
+                  <SelectItem value="thames-fertility">Thames Fertility Centre — London</SelectItem>
+                  <SelectItem value="southbank-reproductive">Southbank Reproductive Health — London</SelectItem>
+                  <SelectItem value="camden-ivf">Camden IVF Clinic — London</SelectItem>
+                  <SelectItem value="mersey-fertility">Mersey Fertility Institute — Liverpool</SelectItem>
+                  <SelectItem value="pennine-reproductive">Pennine Reproductive Centre — Manchester</SelectItem>
+                  <SelectItem value="northern-lights-fertility">Northern Lights Fertility — Edinburgh</SelectItem>
+                  <SelectItem value="clyde-reproductive">Clyde Reproductive Health — Glasgow</SelectItem>
+                  <SelectItem value="severn-fertility">Severn Fertility Clinic — Bristol</SelectItem>
+                  <SelectItem value="midlands-fertility">Midlands Fertility Institute — Birmingham</SelectItem>
+                  <SelectItem value="wharfedale-reproductive">Wharfedale Reproductive Centre — Leeds</SelectItem>
+                  <SelectItem value="cardiff-bay-fertility">Cardiff Bay Fertility — Cardiff</SelectItem>
+                  <SelectItem value="lagan-fertility">Lagan Fertility Centre — Belfast</SelectItem>
                 </SelectContent>
               </Select>
             </div>

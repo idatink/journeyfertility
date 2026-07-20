@@ -64,18 +64,18 @@ export interface Provenance {
  * set looks like this, not like twelve verified partners.
  */
 export const CLINIC_PROVENANCE: Record<string, Provenance> = {
-  'bosphorus-reproductive': { source: 'partner', lastVerified: '2026-07-02' },
-  'marmara-ivf': { source: 'partner', lastVerified: '2026-06-24' },
-  'anatolia-fertility': { source: 'partner', lastVerified: '2026-07-11' },
-  'charles-river-fertility': { source: 'published', lastVerified: '2026-05-19' },
-  'hudson-reproductive': { source: 'published', lastVerified: '2026-06-08' },
-  'bayfront-reproductive': { source: 'published', lastVerified: '2026-04-27' },
-  'lakeshore-fertility': { source: 'published', lastVerified: '2026-03-15' },
-  'levent-reproductive': { source: 'published', lastVerified: '2026-06-30' },
-  'galata-womens-fertility': { source: 'patient_reported', lastVerified: '2026-05-02' },
-  'uskudar-ivf': { source: 'patient_reported', lastVerified: '2026-04-11' },
-  'westline-fertility': { source: 'unverified', lastVerified: '2025-11-20' },
-  'hill-country-fertility': { source: 'unverified', lastVerified: '2025-10-06' },
+  'thames-fertility': { source: 'partner', lastVerified: '2026-07-02' },
+  'southbank-reproductive': { source: 'partner', lastVerified: '2026-06-24' },
+  'camden-ivf': { source: 'published', lastVerified: '2026-07-11' },
+  'mersey-fertility': { source: 'published', lastVerified: '2026-05-19' },
+  'pennine-reproductive': { source: 'partner', lastVerified: '2026-06-08' },
+  'northern-lights-fertility': { source: 'published', lastVerified: '2026-04-27' },
+  'clyde-reproductive': { source: 'published', lastVerified: '2026-03-15' },
+  'severn-fertility': { source: 'unverified', lastVerified: '2025-11-20' },
+  'midlands-fertility': { source: 'published', lastVerified: '2026-06-30' },
+  'wharfedale-reproductive': { source: 'patient_reported', lastVerified: '2026-05-02' },
+  'cardiff-bay-fertility': { source: 'published', lastVerified: '2026-06-12' },
+  'lagan-fertility': { source: 'unverified', lastVerified: '2025-10-06' },
 };
 
 /** Prices older than this are shown as stale regardless of source. */

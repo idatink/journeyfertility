@@ -20,30 +20,28 @@ export interface BudgetBracket {
  */
 export const BUDGET_BRACKETS: Record<ServiceType, BudgetBracket[]> = {
   'egg-freezing': [
-    { id: 'ef-under-7500', label: 'Under $7,500', min: 0, max: 7500 },
-    { id: 'ef-7500-12500', label: '$7,500 – $12,500', min: 7500, max: 12500 },
-    { id: 'ef-12500-15000', label: '$12,500 – $15,000', min: 12500, max: 15000 },
-    { id: 'ef-over-15000', label: 'Over $15,000', min: 15000, max: Infinity },
+    { id: 'ef-under-4500', label: 'Under £4,500', min: 0, max: 4500 },
+    { id: 'ef-4500-5500', label: '£4,500 – £5,500', min: 4500, max: 5500 },
+    { id: 'ef-5500-6500', label: '£5,500 – £6,500', min: 5500, max: 6500 },
+    { id: 'ef-over-6500', label: 'Over £6,500', min: 6500, max: Infinity },
   ],
   embryo: [
-    { id: 'em-under-10k', label: 'Under $10,000', min: 0, max: 10000 },
-    { id: 'em-10k-15k', label: '$10,000 – $15,000', min: 10000, max: 15000 },
-    { id: 'em-15k-20k', label: '$15,000 – $20,000', min: 15000, max: 20000 },
-    { id: 'em-over-20k', label: 'Over $20,000', min: 20000, max: Infinity },
+    { id: 'em-under-5500', label: 'Under £5,500', min: 0, max: 5500 },
+    { id: 'em-5500-6500', label: '£5,500 – £6,500', min: 5500, max: 6500 },
+    { id: 'em-6500-7500', label: '£6,500 – £7,500', min: 6500, max: 7500 },
+    { id: 'em-over-7500', label: 'Over £7,500', min: 7500, max: Infinity },
   ],
   ivf: [
-    { id: 'ivf-under-15k', label: 'Under $15,000', min: 0, max: 15000 },
-    { id: 'ivf-15k-25k', label: '$15,000 – $25,000', min: 15000, max: 25000 },
-    { id: 'ivf-25k-35k', label: '$25,000 – $35,000', min: 25000, max: 35000 },
-    { id: 'ivf-over-35k', label: 'Over $35,000', min: 35000, max: Infinity },
+    { id: 'ivf-under-9000', label: 'Under £9,000', min: 0, max: 9000 },
+    { id: 'ivf-9000-10500', label: '£9,000 – £10,500', min: 9000, max: 10500 },
+    { id: 'ivf-10500-12000', label: '£10,500 – £12,000', min: 10500, max: 12000 },
+    { id: 'ivf-over-12000', label: 'Over £12,000', min: 12000, max: Infinity },
   ],
-  // Clinic test panels, not at-home kits — those are a separate comparison
-  // reached via the "at-home test kits only" checkbox and are not budget filtered.
   fertility: [
-    { id: 'ft-under-500', label: 'Under $500', min: 0, max: 500 },
-    { id: 'ft-500-800', label: '$500 – $800', min: 500, max: 800 },
-    { id: 'ft-800-1100', label: '$800 – $1,100', min: 800, max: 1100 },
-    { id: 'ft-over-1100', label: 'Over $1,100', min: 1100, max: Infinity },
+    { id: 'ft-under-350', label: 'Under £350', min: 0, max: 350 },
+    { id: 'ft-350-450', label: '£350 – £450', min: 350, max: 450 },
+    { id: 'ft-450-550', label: '£450 – £550', min: 450, max: 550 },
+    { id: 'ft-over-550', label: 'Over £550', min: 550, max: Infinity },
   ],
 };
 
