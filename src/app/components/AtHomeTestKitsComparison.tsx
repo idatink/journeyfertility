@@ -1,257 +1,320 @@
 import { useState } from 'react';
-import { Check, Star, Clock, DollarSign } from 'lucide-react';
+import { ExternalLink, Clock, Stethoscope, Home, Building2, AlertCircle } from 'lucide-react';
 import { Button } from './ui/button';
+import {
+  BIOMARKERS,
+  COLLECTION_LABELS,
+  DEFAULT_TEST_FILTERS,
+  FERTILITY_TESTS,
+  applyTestFilters,
+  formatPrice,
+  isSourced,
+  sourcingProgress,
+  type Biomarker,
+  type Collection,
+  type TestFilters,
+} from '../lib/tests';
 
-interface AtHomeTestKit {
-  id: number;
-  name: string;
-  provider: string;
-  price: number;
-  testsIncluded: string[];
-  turnaroundTime: string;
-  hsaEligible: boolean;
-  nurseConsult: boolean;
-  rating: number;
-  reviews: number;
-  badge?: string;
-}
+const COLLECTION_OPTIONS: { id: Collection | 'all'; label: string }[] = [
+  { id: 'all', label: 'Any' },
+  { id: 'at-home', label: 'At-home' },
+  { id: 'clinic', label: 'Clinic draw' },
+];
 
-const testKits: AtHomeTestKit[] = [
-  {
-    id: 1,
-    name: 'Modern Fertility Hormone Test',
-    provider: 'Modern Fertility',
-    price: 159,
-    testsIncluded: ['AMH', 'FSH', 'TSH', 'LH', 'E2', 'Prolactin', 'fT4', 'T3', 'Testosterone'],
-    turnaroundTime: '7-10 days',
-    hsaEligible: true,
-    nurseConsult: true,
-    rating: 4.8,
-    reviews: 12453,
-    badge: 'Most Popular'
-  },
-  {
-    id: 2,
-    name: "Everlywell Women's Fertility Test",
-    provider: 'Everlywell',
-    price: 149,
-    testsIncluded: ['AMH', 'TSH', 'fT4', 'Cortisol', 'DHEA-S'],
-    turnaroundTime: '5-7 days',
-    hsaEligible: true,
-    nurseConsult: false,
-    rating: 4.6,
-    reviews: 8742,
-    badge: 'Best Value'
-  },
-  {
-    id: 3,
-    name: 'LetsGetChecked Ovarian Reserve Test',
-    provider: 'LetsGetChecked',
-    price: 139,
-    testsIncluded: ['AMH'],
-    turnaroundTime: '2-5 days',
-    hsaEligible: true,
-    nurseConsult: true,
-    rating: 4.7,
-    reviews: 5621,
-    badge: 'Fastest Results'
-  },
-  {
-    id: 4,
-    name: 'myLAB Box At Home Fertility Test',
-    provider: 'myLAB Box',
-    price: 179,
-    testsIncluded: ['AMH', 'FSH', 'LH', 'E2', 'Progesterone'],
-    turnaroundTime: '2-5 days',
-    hsaEligible: true,
-    nurseConsult: true,
-    rating: 4.5,
-    reviews: 4329,
-    badge: 'Most Comprehensive'
-  }
+const TURNAROUND_OPTIONS: { id: number | null; label: string }[] = [
+  { id: null, label: 'Any' },
+  { id: 3, label: 'Within 3 days' },
+  { id: 7, label: 'Within 7 days' },
+  { id: 14, label: 'Within 14 days' },
 ];
 
 export function AtHomeTestKitsComparison() {
-  const [selectedKits, setSelectedKits] = useState<number[]>([]);
+  const [filters, setFilters] = useState<TestFilters>(DEFAULT_TEST_FILTERS);
+  const [sort, setSort] = useState<'price' | 'panel'>('price');
 
-  const toggleKitSelection = (id: number) => {
-    setSelectedKits(prev =>
-      prev.includes(id) ? prev.filter(kitId => kitId !== id) : [...prev, id]
-    );
-  };
+  const providers = ['all', ...Array.from(new Set(FERTILITY_TESTS.map((t) => t.provider)))];
+  const progress = sourcingProgress(FERTILITY_TESTS);
+
+  const filtered = applyTestFilters(FERTILITY_TESTS, filters);
+
+  const sorted = [...filtered].sort((a, b) => {
+    // Unsourced entries always sit last so an empty record never outranks a
+    // real one on a null value.
+    if (sort === 'price') {
+      if (a.price === null && b.price === null) return 0;
+      if (a.price === null) return 1;
+      if (b.price === null) return -1;
+      return a.price - b.price;
+    }
+    return b.biomarkers.length - a.biomarkers.length;
+  });
+
+  const toggleBiomarker = (b: Biomarker) =>
+    setFilters((f) => ({
+      ...f,
+      biomarkers: f.biomarkers.includes(b)
+        ? f.biomarkers.filter((x) => x !== b)
+        : [...f.biomarkers, b],
+    }));
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h2 className="text-3xl mb-2">At-Home Fertility Test Kits</h2>
-          <p className="text-gray-600">Compare {testKits.length} popular at-home test options</p>
-        </div>
+      <div>
+        <h2 className="text-3xl font-semibold tracking-tight text-[#2F3440] mb-2">
+          Compare fertility tests
+        </h2>
+        <p className="text-[#5C6478]">
+          {sorted.length} of {FERTILITY_TESTS.length} providers
+        </p>
       </div>
 
-      {/* Summary Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div className="bg-[#EEF2FE] p-4 rounded-lg border border-[#CBD8F5]">
-          <div className="text-sm text-[#5B6AA5] mb-1">Lowest Price</div>
-          <div className="text-2xl">${Math.min(...testKits.map(k => k.price))}</div>
-          <div className="text-sm text-gray-500 mt-1">LetsGetChecked</div>
-        </div>
-        <div className="bg-[#EEF2FE] p-4 rounded-lg border border-[#CBD8F5]">
-          <div className="text-sm text-[#5B6AA5] mb-1">Average Price</div>
-          <div className="text-2xl">${Math.round(testKits.reduce((acc, k) => acc + k.price, 0) / testKits.length)}</div>
-          <div className="text-sm text-gray-500 mt-1">Across all kits</div>
-        </div>
-        <div className="bg-[#EEF2FE] p-4 rounded-lg border border-[#CBD8F5]">
-          <div className="text-sm text-[#5B6AA5] mb-1">Fastest Results</div>
-          <div className="text-2xl">2-5 days</div>
-          <div className="text-sm text-gray-500 mt-1">LetsGetChecked</div>
-        </div>
-        <div className="bg-[#EEF2FE] p-4 rounded-lg border border-[#CBD8F5]">
-          <div className="text-sm text-[#5B6AA5] mb-1">All HSA/FSA</div>
-          <div className="text-2xl">100%</div>
-          <div className="text-sm text-gray-500 mt-1">Eligible</div>
-        </div>
-      </div>
-
-      {/* Test Kits Grid */}
-      <div className="grid md:grid-cols-2 gap-6">
-        {testKits.map((kit) => (
-          <div
-            key={kit.id}
-            className={`border-2 rounded-xl p-6 transition-all ${
-              selectedKits.includes(kit.id)
-                ? 'border-[#A8BEEB] bg-[#EEF2FE]'
-                : 'border-gray-200 hover:border-gray-300'
-            }`}
-          >
-            {/* Header with badge */}
-            <div className="flex items-start justify-between mb-4">
-              <div className="flex-1">
-                <h3 className="text-xl mb-1">{kit.name}</h3>
-                <p className="text-sm text-gray-600">{kit.provider}</p>
-              </div>
-              {kit.badge && (
-                <span className="bg-[#A8BEEB] text-white px-3 py-1 rounded-full text-sm">
-                  {kit.badge}
-                </span>
-              )}
-            </div>
-
-            {/* Price */}
-            <div className="mb-4">
-              <div className="text-3xl text-[#A8BEEB]">${kit.price}</div>
-              {kit.hsaEligible && (
-                <p className="text-sm text-gray-600 mt-1">HSA/FSA eligible</p>
-              )}
-            </div>
-
-            {/* Rating */}
-            <div className="flex items-center gap-2 mb-4">
-              <div className="flex items-center gap-1">
-                <Star className="w-4 h-4 fill-[#A8BEEB] text-[#A8BEEB]" />
-                <span>{kit.rating}</span>
-              </div>
-              <span className="text-sm text-gray-600">
-                ({kit.reviews.toLocaleString()} reviews)
-              </span>
-            </div>
-
-            {/* Details */}
-            <div className="space-y-3 mb-4">
-              <div className="flex items-start gap-2">
-                <Clock className="w-5 h-5 text-[#A8BEEB] flex-shrink-0 mt-0.5" />
-                <div>
-                  <p className="text-sm">Turnaround Time</p>
-                  <p className="text-sm text-gray-600">{kit.turnaroundTime}</p>
-                </div>
-              </div>
-
-              {kit.nurseConsult && (
-                <div className="flex items-start gap-2">
-                  <Check className="w-5 h-5 text-[#A8BEEB] flex-shrink-0 mt-0.5" />
-                  <p className="text-sm">Free nurse consultation included</p>
-                </div>
-              )}
-            </div>
-
-            {/* Tests Included */}
-            <div className="mb-4">
-              <p className="text-sm mb-2">Tests Included:</p>
-              <div className="flex flex-wrap gap-2">
-                {kit.testsIncluded.map((test, idx) => (
-                  <span
-                    key={idx}
-                    className="px-2 py-1 bg-white border border-gray-200 rounded text-xs"
-                  >
-                    {test}
-                  </span>
-                ))}
-              </div>
-            </div>
-
-            {/* Actions */}
-            <div className="flex gap-3">
-              <Button
-                variant="outline"
-                className="flex-1"
-                onClick={() => toggleKitSelection(kit.id)}
-              >
-                {selectedKits.includes(kit.id) ? 'Selected' : 'Select to Compare'}
-              </Button>
-              <Button className="flex-1 bg-[#2F3440] hover:bg-[#434A5C]">
-                Order Now
-              </Button>
-            </div>
-          </div>
-        ))}
-      </div>
-
-      {/* Info Banner */}
-      <div className="bg-gradient-to-br from-[#E7EDFD] to-[#EEF2FE] rounded-xl p-6">
-        <h3 className="text-xl mb-3">Why Choose At-Home Testing?</h3>
-        <div className="grid md:grid-cols-3 gap-4 text-sm">
-          <div className="flex items-start gap-2">
-            <Check className="w-5 h-5 text-[#A8BEEB] flex-shrink-0 mt-0.5" />
-            <div>
-              <p><strong>Convenient</strong></p>
-              <p className="text-gray-600">Test from home, no appointment needed</p>
-            </div>
-          </div>
-          <div className="flex items-start gap-2">
-            <Check className="w-5 h-5 text-[#A8BEEB] flex-shrink-0 mt-0.5" />
-            <div>
-              <p><strong>Affordable</strong></p>
-              <p className="text-gray-600">$139-$179 vs $500-$1,000 at clinics</p>
-            </div>
-          </div>
-          <div className="flex items-start gap-2">
-            <Check className="w-5 h-5 text-[#A8BEEB] flex-shrink-0 mt-0.5" />
-            <div>
-              <p><strong>Accurate</strong></p>
-              <p className="text-gray-600">CLIA-certified labs, same as doctor's office</p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Footer Actions */}
-      {selectedKits.length > 0 && (
-        <div className="flex items-center justify-between p-4 bg-[#EEF2FE] rounded-lg border border-[#CBD8F5]">
-          <div className="text-sm">
-            <span className="text-[#5B6AA5]">
-              {selectedKits.length} kit{selectedKits.length > 1 ? 's' : ''}
+      {/* Sourcing status — visible while the catalogue is being filled in */}
+      {progress.sourced < progress.total && (
+        <div className="glass rounded-2xl p-5 flex gap-3">
+          <AlertCircle className="w-5 h-5 text-[#B4762F] shrink-0 mt-0.5" />
+          <div className="text-sm text-[#5C6478] leading-relaxed">
+            <span className="font-semibold text-[#2F3440]">
+              {progress.sourced} of {progress.total} providers sourced.
             </span>{' '}
-            selected
-          </div>
-          <div className="flex gap-3">
-            <Button variant="outline" size="sm">
-              Compare Selected
-            </Button>
-            <Button size="sm">View Comparison</Button>
+            Prices and panel contents are read from each provider's own published product page.
+            Entries below that have not been sourced yet are shown with their details blank rather
+            than estimated — we would rather show a gap than a number we have not verified.
           </div>
         </div>
       )}
+
+      {/* Filters */}
+      <div className="glass rounded-2xl p-5 space-y-5">
+        <div className="flex flex-wrap gap-6">
+          <div>
+            <div className="text-xs font-semibold uppercase tracking-wide text-[#5C6478] mb-2">
+              Provider
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {providers.map((p) => (
+                <button
+                  key={p}
+                  onClick={() => setFilters((f) => ({ ...f, provider: p }))}
+                  className={`grain text-sm font-medium px-3.5 py-1.5 rounded-full transition-all ${
+                    filters.provider === p
+                      ? 'bg-[#2F3440] text-white'
+                      : 'bg-white/60 text-[#2F3440] hover:bg-white/80'
+                  }`}
+                >
+                  {p === 'all' ? 'All' : p}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div>
+            <div className="text-xs font-semibold uppercase tracking-wide text-[#5C6478] mb-2">
+              Sample
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {COLLECTION_OPTIONS.map((c) => (
+                <button
+                  key={String(c.id)}
+                  onClick={() => setFilters((f) => ({ ...f, collection: c.id }))}
+                  className={`grain text-sm font-medium px-3.5 py-1.5 rounded-full transition-all ${
+                    filters.collection === c.id
+                      ? 'bg-[#2F3440] text-white'
+                      : 'bg-white/60 text-[#2F3440] hover:bg-white/80'
+                  }`}
+                >
+                  {c.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div>
+            <div className="text-xs font-semibold uppercase tracking-wide text-[#5C6478] mb-2">
+              Results back
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {TURNAROUND_OPTIONS.map((t) => (
+                <button
+                  key={String(t.id)}
+                  onClick={() => setFilters((f) => ({ ...f, maxTurnaroundDays: t.id }))}
+                  className={`grain text-sm font-medium px-3.5 py-1.5 rounded-full transition-all ${
+                    filters.maxTurnaroundDays === t.id
+                      ? 'bg-[#2F3440] text-white'
+                      : 'bg-white/60 text-[#2F3440] hover:bg-white/80'
+                  }`}
+                >
+                  {t.label}
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <div className="text-xs font-semibold uppercase tracking-wide text-[#5C6478] mb-2">
+            Must test for
+          </div>
+          <div className="flex flex-wrap gap-2">
+            {BIOMARKERS.map((b) => (
+              <button
+                key={b}
+                onClick={() => toggleBiomarker(b)}
+                className={`grain text-xs font-medium px-3 py-1.5 rounded-full transition-all ${
+                  filters.biomarkers.includes(b)
+                    ? 'bg-[#F8AD7C] text-[#2F3440]'
+                    : 'bg-white/60 text-[#5C6478] hover:bg-white/80'
+                }`}
+              >
+                {b}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div className="flex items-center justify-between flex-wrap gap-3 pt-1">
+          <label className="flex items-center gap-2 text-sm text-[#2F3440] cursor-pointer">
+            <input
+              type="checkbox"
+              checked={filters.clinicianReviewOnly}
+              onChange={(e) =>
+                setFilters((f) => ({ ...f, clinicianReviewOnly: e.target.checked }))
+              }
+              className="accent-[#F8AD7C] w-4 h-4"
+            />
+            Clinician reviews my results
+          </label>
+
+          <div className="flex items-center gap-2">
+            <span className="text-xs text-[#5C6478]">Sort by</span>
+            <button
+              onClick={() => setSort('price')}
+              className={`grain text-sm font-medium px-3.5 py-1.5 rounded-full ${
+                sort === 'price' ? 'bg-[#2F3440] text-white' : 'bg-white/60 text-[#2F3440]'
+              }`}
+            >
+              Price
+            </button>
+            <button
+              onClick={() => setSort('panel')}
+              className={`grain text-sm font-medium px-3.5 py-1.5 rounded-full ${
+                sort === 'panel' ? 'bg-[#2F3440] text-white' : 'bg-white/60 text-[#2F3440]'
+              }`}
+            >
+              Panel size
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Results */}
+      {sorted.length === 0 ? (
+        <div className="glass rounded-2xl p-10 text-center">
+          <h3 className="text-lg font-semibold text-[#2F3440] mb-2">No tests match these filters</h3>
+          <p className="text-[#5C6478] max-w-md mx-auto">
+            Try removing a biomarker requirement or widening the turnaround time.
+          </p>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          {sorted.map((test) => {
+            const sourced = isSourced(test);
+            const price = formatPrice(test);
+
+            return (
+              <div key={test.id} className="glass rounded-2xl p-6 flex flex-col">
+                <div className="flex items-start justify-between gap-4 mb-4">
+                  <div>
+                    <h3 className="text-lg font-semibold text-[#2F3440]">{test.provider}</h3>
+                    <p className="text-sm text-[#5C6478]">
+                      {test.productName ?? (
+                        <span className="italic">Product name not yet sourced</span>
+                      )}
+                    </p>
+                  </div>
+                  <div className="text-right shrink-0">
+                    {price ? (
+                      <div className="text-2xl font-bold text-[#2F3440]">{price}</div>
+                    ) : (
+                      <div className="text-sm text-[#B4762F] font-medium">Price not sourced</div>
+                    )}
+                  </div>
+                </div>
+
+                {sourced ? (
+                  <>
+                    <div className="flex flex-wrap gap-1.5 mb-4">
+                      {test.biomarkers.map((b) => (
+                        <span
+                          key={b}
+                          className="grain text-[11px] font-semibold text-[#5B6AA5] bg-[#DEE8FF]/70 px-2.5 py-1 rounded-full"
+                        >
+                          {b}
+                        </span>
+                      ))}
+                    </div>
+
+                    <div className="flex flex-wrap gap-4 text-xs text-[#5C6478] mb-5">
+                      {test.turnaroundDays !== null && (
+                        <span className="flex items-center gap-1.5">
+                          <Clock className="w-3.5 h-3.5" />
+                          {test.turnaroundDays} day results
+                        </span>
+                      )}
+                      {test.collection && (
+                        <span className="flex items-center gap-1.5">
+                          {test.collection === 'clinic' ? (
+                            <Building2 className="w-3.5 h-3.5" />
+                          ) : (
+                            <Home className="w-3.5 h-3.5" />
+                          )}
+                          {COLLECTION_LABELS[test.collection]}
+                        </span>
+                      )}
+                      {test.clinicianReview && (
+                        <span className="flex items-center gap-1.5">
+                          <Stethoscope className="w-3.5 h-3.5" />
+                          Clinician review
+                        </span>
+                      )}
+                    </div>
+                  </>
+                ) : (
+                  <div className="text-sm text-[#5C6478] leading-relaxed mb-5">
+                    Awaiting sourcing:{' '}
+                    <span className="text-[#2F3440]">{test.needsSourcing.join(', ')}</span>.
+                  </div>
+                )}
+
+                <div className="mt-auto flex items-center justify-between gap-3">
+                  <a
+                    href={test.providerUrl}
+                    target="_blank"
+                    rel="noopener noreferrer nofollow"
+                    className="text-sm font-semibold text-[#5B6AA5] flex items-center gap-1.5 hover:underline"
+                  >
+                    {sourced ? 'Visit provider' : 'Source details'}
+                    <ExternalLink className="w-3.5 h-3.5" />
+                  </a>
+                  {test.lastSourced && (
+                    <span className="text-[11px] text-[#5C6478]">
+                      Checked {new Date(test.lastSourced).toLocaleDateString('en-GB', {
+                        month: 'short',
+                        year: 'numeric',
+                      })}
+                    </span>
+                  )}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
+
+      <p className="text-xs text-[#5C6478] leading-relaxed max-w-3xl">
+        Prices and panel contents are published by each provider and change without notice. Always
+        confirm on the provider's own site before buying. A test result is not a diagnosis — discuss
+        anything unexpected with a qualified clinician.
+      </p>
     </div>
   );
 }
