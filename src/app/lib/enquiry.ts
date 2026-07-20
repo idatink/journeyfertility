@@ -222,5 +222,13 @@ export async function submitEnquiry(enquiry: Enquiry): Promise<SubmitResult> {
   }
 }
 
+/**
+ * Must match RETENTION_MONTHS in
+ * src/app/supabase/functions/server/retention-core.ts, which is what the
+ * sweep actually enforces. The two live in different runtimes so they cannot
+ * share a module; if you change one, change the other.
+ */
+export const RETENTION_MONTHS = 12;
+
 export const RETENTION_NOTICE =
-  'We keep your enquiry for 12 months so we can follow up on the clinic’s response, then delete it. You can ask us to delete it sooner at any time.';
+  `We keep your enquiry for ${RETENTION_MONTHS} months so we can follow up on the clinic’s response, then delete it. You can ask us to delete it sooner at any time.`;

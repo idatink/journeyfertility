@@ -11,6 +11,15 @@ import {
   clinicForKey,
   type EnquiryPayload,
 } from "./enquiry-core.ts";
+import {
+  RETENTION_MONTHS,
+  keysToErase,
+  planRetention,
+  toBillingResidue,
+  verifyErased,
+  type BillingResidue,
+  type StoredEnquiry,
+} from "./retention-core.ts";
 
 const app = new Hono();
 const BASE = "/make-server-bb5634ef";
@@ -199,6 +208,94 @@ app.post(`${BASE}/enquiries/:reference/status`, async (c) => {
   await kv.set(`audit:${reference}`, [...audit, { status, at: now, by: clinicSlug }]);
 
   return c.json({ ok: true, reference, status });
+});
+
+// ------------------------------------------------------ retention & erasure
+/**
+ * Erase one enquiry: destroy the personal data, keep a residue that carries
+ * none. Returns false if anything survived, so a caller never reports success
+ * on a partial deletion.
+ */
+async function eraseEnquiry(
+  record: StoredEnquiry,
+  reason: BillingResidue["reason"],
+  now: Date,
+): Promise<boolean> {
+  const residue = toBillingResidue(record, reason, now);
+  // Written first: a residue without an enquiry is harmless, an enquiry
+  // without a residue loses the billing evidence.
+  await kv.set(`billing:${record.reference}`, residue);
+
+  for (const key of keysToErase(record)) {
+    await kv.del(key);
+  }
+
+  // Trust the read, not the delete call.
+  return verifyErased(await kv.get(`enquiry:${record.reference}`));
+}
+
+/**
+ * The patient's right to erasure, and the "you can ask us to delete it sooner"
+ * promise on the consent screen. Requires the reference and the email it was
+ * submitted with, and answers identically when either is wrong.
+ */
+app.post(`${BASE}/enquiries/:reference/erase`, async (c) => {
+  const ip = c.req.header("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown";
+  if (await overRateLimit(ip)) return c.json({ error: "Too many requests" }, 429);
+
+  const reference = c.req.param("reference");
+  const body = (await c.req.json().catch(() => ({}))) as { email?: string };
+  const record = (await kv.get(`enquiry:${reference}`)) as StoredEnquiry | null;
+
+  if (!record || record.contact?.email !== body.email?.trim().toLowerCase()) {
+    return c.json({ error: "No enquiry found for that reference and email" }, 404);
+  }
+
+  const now = new Date();
+  const audit = ((await kv.get(`audit:${reference}`)) as unknown[] | null) ?? [];
+  await kv.set(`audit:${reference}`, [
+    ...audit,
+    { status: "withdrawn", at: now.toISOString(), by: "patient" },
+  ]);
+
+  const erased = await eraseEnquiry(record, "erasure-request", now);
+  if (!erased) return c.json({ error: "Erasure incomplete, please contact us" }, 500);
+
+  return c.json({ ok: true, erased: true });
+});
+
+/**
+ * Scheduled sweep. Point a cron at this daily.
+ *
+ * Enquiries past the retention window are erased. A record whose createdAt is
+ * unreadable is left alone and reported rather than deleted — losing data to a
+ * parsing bug is not recoverable.
+ */
+app.post(`${BASE}/admin/retention/run`, async (c) => {
+  const adminKey = Deno.env.get("RETENTION_ADMIN_KEY");
+  const provided = c.req.header("Authorization")?.replace(/^Bearer\s+/i, "");
+  if (!adminKey || provided !== adminKey) return c.json({ error: "Unauthorized" }, 401);
+
+  const now = new Date();
+  const records = ((await kv.getByPrefix("enquiry:")) as StoredEnquiry[] | null) ?? [];
+  const { erase, keep } = planRetention(records, now);
+
+  let erased = 0;
+  const failed: string[] = [];
+  for (const record of erase) {
+    if (await eraseEnquiry(record, "expired", now)) erased += 1;
+    else failed.push(record.reference);
+  }
+
+  // References only — no personal data in the response or the logs.
+  return c.json({
+    ok: failed.length === 0,
+    retentionMonths: RETENTION_MONTHS,
+    scanned: records.length,
+    erased,
+    retained: keep.length,
+    failed,
+  });
 });
 
 Deno.serve(app.fetch);
