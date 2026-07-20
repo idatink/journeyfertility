@@ -35,6 +35,8 @@ interface ClinicCost {
   id: number;
   slug: string;
   citySlug: string;
+  /** how much of its price list the clinic publishes */
+  pricingCompleteness: "full" | "partial" | "none";
   clinicName: string;
   location: string;
   consultation: number;
@@ -68,6 +70,7 @@ const mockClinicData: ClinicCost[] = [
   {
     id: 1,
     slug: "reproductive-health",
+    pricingCompleteness: "full",
     citySlug: "new-york",
     clinicName: "Reproductive Health Center",
     location: "New York, NY",
@@ -86,6 +89,7 @@ const mockClinicData: ClinicCost[] = [
   {
     id: 2,
     slug: "fertility-la",
+    pricingCompleteness: "none",
     citySlug: "los-angeles",
     clinicName: "Fertility Institute of LA",
     location: "Los Angeles, CA",
@@ -104,6 +108,7 @@ const mockClinicData: ClinicCost[] = [
   {
     id: 3,
     slug: "boston-ivf",
+    pricingCompleteness: "full",
     citySlug: "boston",
     clinicName: "Boston IVF",
     location: "Boston, MA",
@@ -122,6 +127,7 @@ const mockClinicData: ClinicCost[] = [
   {
     id: 4,
     slug: "chicago-fertility",
+    pricingCompleteness: "partial",
     citySlug: "chicago",
     clinicName: "Chicago Fertility Center",
     location: "Chicago, IL",
@@ -140,6 +146,7 @@ const mockClinicData: ClinicCost[] = [
   {
     id: 5,
     slug: "pacific-fertility",
+    pricingCompleteness: "full",
     citySlug: "san-francisco",
     clinicName: "Pacific Fertility",
     location: "San Francisco, CA",
@@ -158,6 +165,7 @@ const mockClinicData: ClinicCost[] = [
   {
     id: 6,
     slug: "texas-fertility",
+    pricingCompleteness: "none",
     citySlug: "austin",
     clinicName: "Texas Fertility Clinic",
     location: "Austin, TX",
@@ -176,6 +184,7 @@ const mockClinicData: ClinicCost[] = [
   {
     id: 7,
     slug: "memorial-bahcelievler",
+    pricingCompleteness: "full",
     citySlug: "istanbul",
     clinicName: "Memorial Bahçelievler IVF Center",
     location: "Istanbul, Turkey",
@@ -194,6 +203,7 @@ const mockClinicData: ClinicCost[] = [
   {
     id: 8,
     slug: "acibadem-maslak",
+    pricingCompleteness: "full",
     citySlug: "istanbul",
     clinicName: "Acıbadem Maslak Hospital IVF",
     location: "Istanbul, Turkey",
@@ -212,6 +222,7 @@ const mockClinicData: ClinicCost[] = [
   {
     id: 9,
     slug: "istanbul-fertility",
+    pricingCompleteness: "full",
     citySlug: "istanbul",
     clinicName: "Istanbul Fertility Center",
     location: "Istanbul, Turkey",
@@ -230,6 +241,7 @@ const mockClinicData: ClinicCost[] = [
   {
     id: 10,
     slug: "american-hospital-istanbul",
+    pricingCompleteness: "partial",
     citySlug: "istanbul",
     clinicName: "American Hospital IVF Clinic",
     location: "Istanbul, Turkey",
@@ -248,6 +260,7 @@ const mockClinicData: ClinicCost[] = [
   {
     id: 11,
     slug: "jinemed",
+    pricingCompleteness: "partial",
     citySlug: "istanbul",
     clinicName: "Jinemed Hospital Women's Health",
     location: "Istanbul, Turkey",
@@ -266,6 +279,7 @@ const mockClinicData: ClinicCost[] = [
   {
     id: 12,
     slug: "medipol-mega",
+    pricingCompleteness: "partial",
     citySlug: "istanbul",
     clinicName: "Medipol Mega Hospital IVF",
     location: "Istanbul, Turkey",
@@ -343,6 +357,8 @@ export function ClinicCostings({
   budgetRange = 'all',
 }: ClinicCostingsProps) {
   const [ageBand, setAgeBand] = useState<AgeBand>('35-37');
+  const [transparencyOnly, setTransparencyOnly] = useState(false);
+  const [minSuccess, setMinSuccess] = useState<number | null>(null);
   const [sortField, setSortField] = useState<keyof ClinicCost>('total');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
   const [selectedClinics, setSelectedClinics] = useState<number[]>([]);
@@ -387,11 +403,19 @@ export function ClinicCostings({
       if (c.total === null) return false;
       if (c.total < budget.min || c.total >= budget.max) return false;
     }
+    if (transparencyOnly && c.pricingCompleteness !== 'full') return false;
+    // Only exclude on evidence: a clinic with no published figure for this age
+    // band is not the same as one that published a low figure.
+    if (minSuccess !== null && c.outcome && c.outcome.rate < minSuccess) return false;
     return true;
   });
 
   const activeFilterCount =
-    (location !== 'all' ? 1 : 0) + (clinicFilter !== 'all' ? 1 : 0) + (budget ? 1 : 0);
+    (location !== 'all' ? 1 : 0) +
+    (clinicFilter !== 'all' ? 1 : 0) +
+    (budget ? 1 : 0) +
+    (transparencyOnly ? 1 : 0) +
+    (minSuccess !== null ? 1 : 0);
 
   const sortedData = [...filteredData].sort((a, b) => {
     // Success sorts on the rate for the selected age band, not the legacy
@@ -556,6 +580,40 @@ export function ClinicCostings({
         {OUTCOME_BASIS.denominatorType}, {OUTCOME_BASIS.year}. Source: {OUTCOME_BASIS.source}.
       </p>
 
+      {/* Refine */}
+      <div className="glass rounded-2xl p-5 flex flex-wrap items-end gap-x-8 gap-y-4">
+        <div>
+          <div className="text-xs font-semibold uppercase tracking-wide text-[#5C6478] mb-2">
+            Minimum success rate
+          </div>
+          <div className="flex flex-wrap gap-2">
+            {[null, 20, 30, 40].map((v) => (
+              <button
+                key={String(v)}
+                onClick={() => setMinSuccess(v)}
+                className={`grain text-sm font-medium px-3.5 py-1.5 rounded-full transition-all ${
+                  minSuccess === v
+                    ? 'bg-[#2F3440] text-white'
+                    : 'bg-white/60 text-[#2F3440] hover:bg-white/80'
+                }`}
+              >
+                {v === null ? 'Any' : `${v}%+`}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <label className="flex items-center gap-2 text-sm text-[#2F3440] cursor-pointer pb-1.5">
+          <input
+            type="checkbox"
+            checked={transparencyOnly}
+            onChange={(e) => setTransparencyOnly(e.target.checked)}
+            className="accent-[#F8AD7C] w-4 h-4"
+          />
+          Publishes full pricing only
+        </label>
+      </div>
+
       {/* Where the prices come from */}
       <div className="glass rounded-2xl p-5">
         <div className="text-sm font-semibold text-[#2F3440] mb-3">Where these prices come from</div>
@@ -711,6 +769,20 @@ export function ClinicCostings({
                       <div>
                         <div className="flex items-center gap-2">
                           {clinic.clinicName}
+                          {clinic.pricingCompleteness !== 'full' && (
+                            <span
+                              className="grain text-[10px] font-semibold uppercase tracking-wide text-[#B4762F] bg-[#F8AD7C]/20 px-2 py-0.5 rounded-full whitespace-nowrap"
+                              title={
+                                clinic.pricingCompleteness === 'none'
+                                  ? 'This clinic does not publish its prices. Our figures come from other sources.'
+                                  : 'This clinic publishes only part of its price list.'
+                              }
+                            >
+                              {clinic.pricingCompleteness === 'none'
+                                ? 'No published prices'
+                                : 'Partial pricing'}
+                            </span>
+                          )}
                           {clinic.total === lowestTotal && (
                             <span className="grain text-[10px] font-semibold uppercase tracking-wide text-[#5B6AA5] bg-[#DEE8FF]/70 px-2 py-0.5 rounded-full whitespace-nowrap">
                               Best value
