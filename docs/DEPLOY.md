@@ -90,29 +90,32 @@ data controller undermines the consent it is there to support.
 4. Deploy, then open the `*.vercel.app` URL and check the site properly before
    touching DNS.
 
-## 3. Add the domain in Vercel
+## 3. Add the domain in Vercel — done
 
-In the project: **Settings → Domains → Add**, enter `journeyfertility.com` and
-add `www.journeyfertility.com` too. Vercel will then display the exact DNS
-records it wants.
+Both hostnames are added to the **oia → journeyfertility** project, connected to
+Production, with the apex set to redirect to `www` (308). Both read "Invalid
+Configuration" until the GoDaddy DNS below is changed — that is expected.
 
-**Use the values Vercel shows you, not the ones below.** They differ between
-accounts and regions, and Vercel changes them. These are only for recognising
-the shape of what you are entering:
+The exact records Vercel issued for this domain (read from the dashboard on
+20 July 2026):
 
-| Type | Name | Typical value |
-|---|---|---|
-| A | `@` | `76.76.21.21` |
-| CNAME | `www` | `cname.vercel-dns.com` |
+| Host | Type | Name | Value |
+|---|---|---|---|
+| `journeyfertility.com` | A | `@` | `216.198.79.1` |
+| `www.journeyfertility.com` | CNAME | `www` | `afba00a49a189bc7.vercel-dns-017.com.` |
+
+These are per-domain values from Vercel's current IP range. Vercel notes the
+legacy `A @ 76.76.21.21` and `CNAME cname.vercel-dns.com` still work, but use the
+records above. If the dashboard ever shows different values, the dashboard wins.
 
 ## 4. Change the DNS at GoDaddy
 
 GoDaddy → **My Products → journeyfertility.com → DNS → Manage Zones**.
 
-1. **Edit** the existing `A` record for `@` — currently the GoDaddy holding
-   address — to the value Vercel gave you.
-2. **Edit** the `CNAME` for `www` — currently `sites.figma.net` — to the value
-   Vercel gave you.
+1. **Edit** the existing `A` record for `@` — currently `204.69.207.1`, the
+   GoDaddy holding address — to **`216.198.79.1`**.
+2. **Edit** the `CNAME` for `www` — currently `sites.figma.net` — to
+   **`afba00a49a189bc7.vercel-dns-017.com`** (GoDaddy adds the trailing dot).
 
 Two cautions:
 
