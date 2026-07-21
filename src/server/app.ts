@@ -1,6 +1,6 @@
 import { Hono } from 'hono';
 import { logger } from 'hono/logger';
-import { getValue, setValue, delValue, getByPrefix } from './store';
+import { getValue, setValue, delValue, getByPrefix } from './store.js';
 import {
   validate,
   hasRequiredConsent,
@@ -8,14 +8,14 @@ import {
   redactPath,
   isValidStatus,
   type EnquiryPayload,
-} from './enquiry-core';
+} from './enquiry-core.js';
 import {
   RETENTION_MONTHS,
   keysToErase,
   planRetention,
   verifyErased,
   type StoredEnquiry,
-} from './retention-core';
+} from './retention-core.js';
 
 /**
  * Enquiries carry data concerning health, so this service is written
