@@ -5,16 +5,10 @@ import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from '.
 import { Checkbox } from './components/ui/checkbox';
 import { ImageWithFallback } from './components/figma/ImageWithFallback';
 import { ClinicCostings } from './components/ClinicCostings';
-import { FertilityAssistantChat } from './components/FertilityAssistantChat';
 import { SelfAssessmentQuiz } from './components/SelfAssessmentQuiz';
 import { EmbryoFreezingQuiz } from './components/EmbryoFreezingQuiz';
 import { IVFTreatmentQuiz } from './components/IVFTreatmentQuiz';
 import { FertilityTestingQuiz } from './components/FertilityTestingQuiz';
-import { EggFreezingInfo } from './components/EggFreezingInfo';
-import { EmbryoFreezingInfo } from './components/EmbryoFreezingInfo';
-import { IVFTreatmentInfo } from './components/IVFTreatmentInfo';
-import { FertilityTestingInfo } from './components/FertilityTestingInfo';
-import { MarketingAssets } from './components/MarketingAssets';
 import { Resources } from './components/Resources';
 import { BUDGET_BRACKETS } from './lib/budget';
 import { About } from './components/About';
@@ -107,20 +101,20 @@ function RotatingWord() {
 export default function App() {
   const [serviceType, setServiceType] = useState('egg-freezing');
   const [showFAQ, setShowFAQ] = useState<Record<number, boolean>>({});
-  const [viewMode, setViewMode] = useState<'home' | 'costings' | 'egg-freezing-info' | 'embryo-info' | 'ivf-info' | 'fertility-info' | 'marketing' | 'resources' | 'about' | 'privacy'>('home');
+  const [viewMode, setViewMode] = useState<'home' | 'costings' | 'resources' | 'about' | 'privacy'>('home');
   const [resourcesCategory, setResourcesCategory] = useState('All');
-  const [searchMode, setSearchMode] = useState('clinic-costings');
   const [location, setLocation] = useState('all');
   const [clinic, setClinic] = useState('all');
   const [budgetRange, setBudgetRange] = useState('all');
 
-  // Bracket ids are namespaced per service, so a bracket chosen for one service
-  // is meaningless for another. Clear it whenever the service changes rather
-  // than leaving a stale id that silently filters everything out.
+  // Filter ids are namespaced per service — a budget bracket or clinic chosen
+  // for one service is meaningless for another. Clear them whenever the service
+  // changes rather than leaving a stale id that silently filters everything out.
   useEffect(() => {
     setBudgetRange('all');
+    setClinic('all');
+    setLocation('all');
   }, [serviceType]);
-  const [showChat, setShowChat] = useState(false);
   const [showQuiz, setShowQuiz] = useState(false);
   const [scrollToClinics, setScrollToClinics] = useState(false);
   const [topicIndex, setTopicIndex] = useState(0);
@@ -161,9 +155,7 @@ export default function App() {
   };
 
   const handleSearch = () => {
-    if (searchMode === 'clinic-costings') {
-      setViewMode('costings');
-    }
+    setViewMode('costings');
   };
 
   return (
@@ -329,19 +321,6 @@ export default function App() {
 
         {/* Search Form */}
         <div className="glass rounded-2xl p-6 mb-16">
-          <div className="flex items-center gap-2 mb-4">
-            <Select value={searchMode} onValueChange={setSearchMode}>
-              <SelectTrigger className="w-64 bg-white">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="clinic-costings">My clinic costings</SelectItem>
-                <SelectItem value="clinic-comparison">Clinic comparison</SelectItem>
-                <SelectItem value="combined-solutions">Combining 2 clinics - COSTS</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-
           {/* Fertility Testing Search Form */}
           {serviceType === 'fertility' ? (
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
@@ -556,11 +535,6 @@ export default function App() {
           </div>
         )}
 
-        {/* Marketing Assets View */}
-        {viewMode === 'marketing' && (
-          <MarketingAssets onBack={() => setViewMode('home')} />
-        )}
-
         {/* Resources */}
         {viewMode === 'resources' && (
           <Resources onBack={() => setViewMode('home')} initialCategory={resourcesCategory} />
@@ -678,49 +652,6 @@ export default function App() {
           </div>
         </div>
 
-        {/* Category Buttons */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12">
-          <Button 
-            variant="outline" 
-            className="h-16 justify-start bg-white text-[#2F3440] border border-[#A8BEEB]/30 hover:bg-[#DEE8FF]/50 hover:text-[#2F3440]"
-            onClick={() => {
-              setScrollToClinics(true);
-              if (serviceType === 'egg-freezing') setViewMode('egg-freezing-info');
-              else if (serviceType === 'embryo') setViewMode('embryo-info');
-              else if (serviceType === 'ivf') setViewMode('ivf-info');
-              else if (serviceType === 'fertility') setViewMode('fertility-info');
-              setTimeout(() => setScrollToClinics(false), 500);
-            }}
-          >
-            <Heart className="w-5 h-5 mr-2" />
-            {serviceType === 'egg-freezing' && 'Egg Freezing Clinics'}
-            {serviceType === 'embryo' && 'Embryo Storage Clinics'}
-            {serviceType === 'ivf' && 'IVF Clinics'}
-            {serviceType === 'fertility' && 'Testing Centers'}
-          </Button>
-          <Button 
-            variant="outline" 
-            className="h-16 justify-start bg-white text-[#2F3440] border border-[#A8BEEB]/30 hover:bg-[#DEE8FF]/50 hover:text-[#2F3440]"
-          >
-            <MapPin className="w-5 h-5 mr-2" />
-            Find by Location
-          </Button>
-          <Button 
-            variant="outline" 
-            className="h-16 justify-start bg-white text-[#2F3440] border border-[#A8BEEB]/30 hover:bg-[#DEE8FF]/50 hover:text-[#2F3440]"
-          >
-            <Calendar className="w-5 h-5 mr-2" />
-            Book Consultation
-          </Button>
-          <Button 
-            variant="outline" 
-            className="h-16 justify-start bg-white text-[#2F3440] border border-[#A8BEEB]/30 hover:bg-[#DEE8FF]/50 hover:text-[#2F3440]"
-          >
-            <DollarSign className="w-5 h-5 mr-2" />
-            Compare Costs
-          </Button>
-        </div>
-
         {/* Journey Section */}
         <div className="mb-16 bg-[#DEE8FF]/40 rounded-2xl p-8 md:p-12">
           <div className="grid md:grid-cols-2 gap-8 items-center">
@@ -746,9 +677,9 @@ export default function App() {
             {/* Right Content - Service Cards */}
             <div className="space-y-4">
               {/* Egg Freezing Card */}
-              <div 
+              <div
                 className="relative rounded-xl overflow-hidden h-32 group cursor-pointer"
-                onClick={() => setViewMode('egg-freezing-info')}
+                onClick={() => { setServiceType('egg-freezing'); setViewMode('costings'); }}
               >
                 <img
                   src={eggFreezingCard}
@@ -767,9 +698,9 @@ export default function App() {
               </div>
 
               {/* IVF Treatment Card */}
-              <div 
+              <div
                 className="relative rounded-xl overflow-hidden h-32 group cursor-pointer"
-                onClick={() => setViewMode('ivf-info')}
+                onClick={() => { setServiceType('ivf'); setViewMode('costings'); }}
               >
                 <ImageWithFallback
                   src={img_1609220136736443140cffec6}
@@ -788,9 +719,9 @@ export default function App() {
               </div>
 
               {/* Embryo Freezing Card */}
-              <div 
+              <div
                 className="relative rounded-xl overflow-hidden h-32 group cursor-pointer"
-                onClick={() => setViewMode('embryo-info')}
+                onClick={() => { setServiceType('embryo'); setViewMode('costings'); }}
               >
                 <ImageWithFallback
                   src={img_149389447389110fc1e5dbd22}
@@ -809,9 +740,9 @@ export default function App() {
               </div>
 
               {/* Fertility Testing Card */}
-              <div 
+              <div
                 className="relative rounded-xl overflow-hidden h-32 group cursor-pointer"
-                onClick={() => setViewMode('fertility-info')}
+                onClick={() => { setServiceType('fertility'); setViewMode('costings'); }}
               >
                 <ImageWithFallback
                   src={fertilityTestingCard}
@@ -1153,73 +1084,7 @@ export default function App() {
           </>
         )}
 
-        {/* Egg Freezing Info */}
-        {viewMode === 'egg-freezing-info' && (
-          <EggFreezingInfo 
-            onBack={() => setViewMode('home')}
-            onSearchClinics={() => {
-              setServiceType('egg-freezing');
-              setViewMode('home');
-            }}
-            onTakeQuiz={() => {
-              setViewMode('home');
-              setShowQuiz(true);
-            }}
-            scrollToClinics={scrollToClinics}
-          />
-        )}
-
-        {/* Embryo Freezing Info */}
-        {viewMode === 'embryo-info' && (
-          <EmbryoFreezingInfo 
-            onBack={() => setViewMode('home')}
-            onSearchClinics={() => {
-              setServiceType('embryo');
-              setViewMode('home');
-            }}
-            onTakeQuiz={() => {
-              setViewMode('home');
-              setShowQuiz(true);
-            }}
-            scrollToClinics={scrollToClinics}
-          />
-        )}
-
-        {/* IVF Treatment Info */}
-        {viewMode === 'ivf-info' && (
-          <IVFTreatmentInfo 
-            onBack={() => setViewMode('home')}
-            onSearchClinics={() => {
-              setServiceType('ivf');
-              setViewMode('home');
-            }}
-            onTakeQuiz={() => {
-              setViewMode('home');
-              setShowQuiz(true);
-            }}
-            scrollToClinics={scrollToClinics}
-          />
-        )}
-
-        {/* Fertility Testing Info */}
-        {viewMode === 'fertility-info' && (
-          <FertilityTestingInfo 
-            onBack={() => setViewMode('home')}
-            onSearchClinics={() => {
-              setServiceType('fertility');
-              setViewMode('home');
-            }}
-            onTakeQuiz={() => {
-              setViewMode('home');
-              setShowQuiz(true);
-            }}
-            scrollToClinics={scrollToClinics}
-          />
-        )}
       </div>
-
-      {/* AI Assistant Chat */}
-      {showChat && <FertilityAssistantChat onClose={() => setShowChat(false)} />}
 
       {/* Self Assessment Quiz - Different quiz for each service type */}
       {showQuiz && serviceType === 'egg-freezing' && <SelfAssessmentQuiz onClose={() => setShowQuiz(false)} />}
@@ -1275,17 +1140,6 @@ export default function App() {
                 </li>
                 <li><a href="#" className="hover:text-white">Careers</a></li>
                 <li><a href="#" className="hover:text-white">Partner clinics</a></li>
-                <li>
-                  <button 
-                    onClick={() => {
-                      setViewMode('marketing');
-                      window.scrollTo(0, 0);
-                    }} 
-                    className="hover:text-white transition-colors text-left"
-                  >
-                    PR & Marketing Assets
-                  </button>
-                </li>
               </ul>
             </div>
             <div>
