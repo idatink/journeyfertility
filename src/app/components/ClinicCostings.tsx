@@ -1,8 +1,6 @@
 import { useState, Fragment } from 'react';
-import { ArrowUpDown, Download, Filter, ChevronDown, ChevronUp } from 'lucide-react';
+import { ArrowUpDown, ChevronDown, ChevronUp } from 'lucide-react';
 import { Button } from './ui/button';
-import { Input } from './ui/input';
-import { Checkbox } from './ui/checkbox';
 import {
   Table,
   TableBody,
@@ -11,7 +9,6 @@ import {
   TableHeader,
   TableRow,
 } from './ui/table';
-import { ClinicDetailedCostings } from './ClinicDetailedCostings';
 import { AtHomeTestKitsComparison } from './AtHomeTestKitsComparison';
 import { getBudgetBounds } from '../lib/budget';
 import { EnquiryFlow } from './EnquiryFlow';
@@ -379,22 +376,7 @@ export function ClinicCostings({
   const [minSuccess, setMinSuccess] = useState<number | null>(null);
   const [sortField, setSortField] = useState<keyof ClinicCost>('total');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
-  const [selectedClinics, setSelectedClinics] = useState<number[]>([]);
   const [expandedRows, setExpandedRows] = useState<number[]>([]);
-  const [viewingClinicDetails, setViewingClinicDetails] = useState<{ 
-    id: number; 
-    name: string;
-    data: {
-      consultation: number;
-      eggRetrieval: number;
-      ivfCycle: number;
-      embryoTransfer: number;
-      medications: number;
-      storagePerYear: number;
-      geneticTesting: number;
-      total: number;
-    }
-  } | null>(null);
 
   const handleSort = (field: keyof ClinicCost) => {
     if (sortField === field) {
@@ -410,6 +392,12 @@ export function ClinicCostings({
     outcome: getOutcome(c.slug, ageBand),
     provenance: getProvenance(c.slug),
   }));
+
+  // The columns shown are exactly the components summed into the total for this
+  // service, so the line items on screen always reconcile with the Total — a
+  // testing quote never shows an IVF-cycle column, and the visible figures
+  // always add up to the number in the Total column.
+  const columns = PRICED_COMPONENTS[serviceType];
 
   // Hard filters from the search form. Each is skipped when unset so that an
   // untouched form returns everything.
@@ -474,50 +462,17 @@ export function ClinicCostings({
 
   // Summary cards describe the clinics currently matching, using computed
   // service totals — not the raw record, whose total is only a placeholder.
-  const cheapest = sortedData.find((c) => c.total === lowestTotal) ?? null;
+  const cheapest =
+    lowestTotal !== null ? sortedData.find((c) => c.total === lowestTotal) ?? null : null;
   const averageTotal = quotedTotals.length
     ? Math.round(quotedTotals.reduce((a, b) => a + b, 0) / quotedTotals.length)
     : null;
-
-  const toggleClinicSelection = (id: number) => {
-    setSelectedClinics(prev => 
-      prev.includes(id) ? prev.filter(clinicId => clinicId !== id) : [...prev, id]
-    );
-  };
 
   const toggleRowExpansion = (id: number) => {
     setExpandedRows(prev =>
       prev.includes(id) ? prev.filter(rowId => rowId !== id) : [...prev, id]
     );
   };
-
-  const handleViewDetails = (clinic: ClinicCost) => {
-    setViewingClinicDetails({ 
-      id: clinic.id, 
-      name: clinic.clinicName,
-      data: {
-        consultation: clinic.consultation,
-        eggRetrieval: clinic.eggRetrieval,
-        ivfCycle: clinic.ivfCycle,
-        embryoTransfer: clinic.embryoTransfer,
-        medications: clinic.medications,
-        storagePerYear: clinic.storagePerYear,
-        geneticTesting: clinic.geneticTesting,
-        total: clinic.total
-      }
-    });
-  };
-
-  // If viewing detailed costings for a specific clinic, show that view
-  if (viewingClinicDetails) {
-    return (
-      <ClinicDetailedCostings 
-        clinicName={viewingClinicDetails.name}
-        clinicData={viewingClinicDetails.data}
-        onBack={() => setViewingClinicDetails(null)}
-      />
-    );
-  }
 
   // If fertility testing and at-home only selected, show at-home test kits
   if (serviceType === 'fertility' && atHomeOnly) {
@@ -527,26 +482,14 @@ export function ClinicCostings({
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h2 className="text-3xl mb-2">Clinic Cost Comparison</h2>
-          <p className="text-[#5C6478]">
-            {sortedData.length} of {allPriced.length} clinics
-            {activeFilterCount > 0 && (
-              <> · {activeFilterCount} filter{activeFilterCount > 1 ? 's' : ''} applied</>
-            )}
-          </p>
-        </div>
-        <div className="flex gap-3">
-          <Button variant="outline">
-            <Filter className="w-4 h-4 mr-2" />
-            Filter
-          </Button>
-          <Button variant="outline">
-            <Download className="w-4 h-4 mr-2" />
-            Export
-          </Button>
-        </div>
+      <div>
+        <h2 className="text-3xl mb-2">Clinic Cost Comparison</h2>
+        <p className="text-[#5C6478]">
+          {sortedData.length} of {allPriced.length} clinics
+          {activeFilterCount > 0 && (
+            <> · {activeFilterCount} filter{activeFilterCount > 1 ? 's' : ''} applied</>
+          )}
+        </p>
       </div>
 
       {/* Summary Cards */}
@@ -571,17 +514,22 @@ export function ClinicCostings({
         </div>
         <div className="glass p-4 rounded-xl">
           <div className="text-sm text-[#5B6AA5] mb-1">Highest Success Rate</div>
-          <div className="text-2xl">{bestOutcome ? `${bestOutcome.outcome!.rate}%` : '—'}</div>
+          <div className="text-2xl">
+            {bestOutcome ? `${bestOutcome.outcome!.rate}%` : '—'}
+            {bestOutcome?.outcome!.lowSample && (
+              <span className="text-xs font-normal text-[#B4762F]"> · small sample</span>
+            )}
+          </div>
           <div className="text-sm text-gray-500 mt-1">
             {bestOutcome
-              ? `${bestOutcome.clinicName}, age ${AGE_BANDS.find((b) => b.id === ageBand)?.label.toLowerCase()}`
+              ? `${bestOutcome.clinicName} · ${bestOutcome.outcome!.liveBirths}/${bestOutcome.outcome!.cyclesStarted} cycles, age ${AGE_BANDS.find((b) => b.id === ageBand)?.label.toLowerCase()}`
               : 'No published outcomes'}
           </div>
         </div>
         <div className="glass p-4 rounded-xl">
           <div className="text-sm text-[#5B6AA5] mb-1">Clinics Compared</div>
-          <div className="text-2xl">{mockClinicData.length}</div>
-          <div className="text-sm text-gray-500 mt-1">In your search</div>
+          <div className="text-2xl">{sortedData.length}</div>
+          <div className="text-sm text-gray-500 mt-1">Matching your filters</div>
         </div>
       </div>
 
@@ -707,8 +655,9 @@ export function ClinicCostings({
             No clinics match these filters
           </h3>
           <p className="text-[#5C6478] max-w-md mx-auto">
-            We do not yet list a clinic for this combination of location, provider and budget. Try
-            widening the budget or clearing the location to see what else is available.
+            No clinic matches this combination of location, provider, budget, funding route and
+            minimum success rate. Try widening the budget, lowering the minimum success rate, or
+            clearing the location to see what else is available.
           </p>
         </div>
       )}
@@ -719,21 +668,9 @@ export function ClinicCostings({
           <Table>
             <TableHeader>
               <TableRow className="bg-gray-50">
-                <TableHead className="w-12">
-                  <Checkbox 
-                    checked={selectedClinics.length === mockClinicData.length}
-                    onCheckedChange={(checked) => {
-                      if (checked) {
-                        setSelectedClinics(mockClinicData.map(c => c.id));
-                      } else {
-                        setSelectedClinics([]);
-                      }
-                    }}
-                  />
-                </TableHead>
                 <TableHead className="w-12"></TableHead>
                 <TableHead>
-                  <button 
+                  <button
                     onClick={() => handleSort('clinicName')}
                     className="flex items-center gap-1 hover:text-[#5B6AA5]"
                   >
@@ -741,53 +678,19 @@ export function ClinicCostings({
                     <ArrowUpDown className="w-3 h-3" />
                   </button>
                 </TableHead>
+                {columns.map((key) => (
+                  <TableHead key={key}>
+                    <button
+                      onClick={() => handleSort(key)}
+                      className="flex items-center gap-1 hover:text-[#5B6AA5]"
+                    >
+                      {COMPONENT_LABELS[key] ?? key}
+                      <ArrowUpDown className="w-3 h-3" />
+                    </button>
+                  </TableHead>
+                ))}
                 <TableHead>
-                  <button 
-                    onClick={() => handleSort('consultation')}
-                    className="flex items-center gap-1 hover:text-[#5B6AA5]"
-                  >
-                    Consultation
-                    <ArrowUpDown className="w-3 h-3" />
-                  </button>
-                </TableHead>
-                <TableHead>
-                  <button 
-                    onClick={() => handleSort('eggRetrieval')}
-                    className="flex items-center gap-1 hover:text-[#5B6AA5]"
-                  >
-                    Egg Retrieval
-                    <ArrowUpDown className="w-3 h-3" />
-                  </button>
-                </TableHead>
-                <TableHead>
-                  <button 
-                    onClick={() => handleSort('ivfCycle')}
-                    className="flex items-center gap-1 hover:text-[#5B6AA5]"
-                  >
-                    IVF Cycle
-                    <ArrowUpDown className="w-3 h-3" />
-                  </button>
-                </TableHead>
-                <TableHead>
-                  <button 
-                    onClick={() => handleSort('embryoTransfer')}
-                    className="flex items-center gap-1 hover:text-[#5B6AA5]"
-                  >
-                    Embryo Transfer
-                    <ArrowUpDown className="w-3 h-3" />
-                  </button>
-                </TableHead>
-                <TableHead>
-                  <button 
-                    onClick={() => handleSort('medications')}
-                    className="flex items-center gap-1 hover:text-[#5B6AA5]"
-                  >
-                    Medications
-                    <ArrowUpDown className="w-3 h-3" />
-                  </button>
-                </TableHead>
-                <TableHead>
-                  <button 
+                  <button
                     onClick={() => handleSort('successRate')}
                     className="flex items-center gap-1 hover:text-[#5B6AA5]"
                   >
@@ -796,7 +699,7 @@ export function ClinicCostings({
                   </button>
                 </TableHead>
                 <TableHead>
-                  <button 
+                  <button
                     onClick={() => handleSort('total')}
                     className="flex items-center gap-1 hover:text-[#5B6AA5]"
                   >
@@ -809,13 +712,7 @@ export function ClinicCostings({
             <TableBody>
               {sortedData.map((clinic) => (
                 <Fragment key={clinic.id}>
-                  <TableRow className={selectedClinics.includes(clinic.id) ? 'bg-[#EEF2FE]' : clinic.total === lowestTotal ? 'bg-[#DEE8FF]/40' : ''}>
-                    <TableCell>
-                      <Checkbox 
-                        checked={selectedClinics.includes(clinic.id)}
-                        onCheckedChange={() => toggleClinicSelection(clinic.id)}
-                      />
-                    </TableCell>
+                  <TableRow className={lowestTotal !== null && clinic.total === lowestTotal ? 'bg-[#DEE8FF]/40' : ''}>
                     <TableCell>
                       <button
                         onClick={() => toggleRowExpansion(clinic.id)}
@@ -846,7 +743,7 @@ export function ClinicCostings({
                                 : 'Partial pricing'}
                             </span>
                           )}
-                          {clinic.total === lowestTotal && (
+                          {lowestTotal !== null && clinic.total === lowestTotal && (
                             <span className="grain text-[10px] font-semibold uppercase tracking-wide text-[#5B6AA5] bg-[#DEE8FF]/70 px-2 py-0.5 rounded-full whitespace-nowrap">
                               Best value
                             </span>
@@ -855,11 +752,9 @@ export function ClinicCostings({
                         <div className="text-xs text-gray-500">{clinic.location}</div>
                       </div>
                     </TableCell>
-                    <TableCell>£{clinic.consultation.toLocaleString()}</TableCell>
-                    <TableCell>£{clinic.eggRetrieval.toLocaleString()}</TableCell>
-                    <TableCell>£{clinic.ivfCycle.toLocaleString()}</TableCell>
-                    <TableCell>£{clinic.embryoTransfer.toLocaleString()}</TableCell>
-                    <TableCell>£{clinic.medications.toLocaleString()}</TableCell>
+                    {clinic.components.map((c) => (
+                      <TableCell key={c.key}>£{c.amount.toLocaleString()}</TableCell>
+                    ))}
                     <TableCell>
                       {clinic.outcome ? (
                         <div>
@@ -916,53 +811,46 @@ export function ClinicCostings({
                   
                   {expandedRows.includes(clinic.id) && (
                     <TableRow className="bg-gray-50">
-                      <TableCell colSpan={10} className="p-6">
-                        <div className="space-y-6">
-                          <div className="grid grid-cols-2 gap-6">
-                            <div>
-                              <h4 className="mb-3 text-gray-700">Additional Costs</h4>
-                              <div className="space-y-2 text-sm">
-                                <div className="flex justify-between">
-                                  <span className="text-gray-600">Storage (per year):</span>
-                                  <span>£{clinic.storagePerYear.toLocaleString()}</span>
+                      <TableCell colSpan={columns.length + 4} className="p-6">
+                        <div className="max-w-md space-y-4">
+                          <div>
+                            <h4 className="mb-3 text-sm font-semibold text-[#2F3440]">
+                              What makes up this total
+                            </h4>
+                            <div className="space-y-2 text-sm">
+                              {clinic.components.map((c) => (
+                                <div key={c.key} className="flex justify-between">
+                                  <span className="text-[#5C6478]">{c.label}</span>
+                                  <span className="text-[#2F3440]">£{c.amount.toLocaleString()}</span>
                                 </div>
-                                <div className="flex justify-between">
-                                  <span className="text-gray-600">Genetic Testing:</span>
-                                  <span>£{clinic.geneticTesting.toLocaleString()}</span>
-                                </div>
+                              ))}
+                              <div className="flex justify-between border-t pt-2 font-semibold">
+                                <span className="text-[#2F3440]">Total</span>
+                                <span className="text-[#2F3440]">
+                                  {clinic.total !== null
+                                    ? `£${clinic.total.toLocaleString()}`
+                                    : 'Not quoted'}
+                                </span>
                               </div>
                             </div>
-                            <div>
-                              <h4 className="mb-3 text-gray-700">Clinic Details</h4>
-                              <div className="space-y-2 text-sm">
-                                <div className="flex justify-between">
-                                  <span className="text-gray-600">Insurance Accepted:</span>
-                                  <span className="text-green-600">Yes</span>
-                                </div>
-                                <div className="flex justify-between">
-                                  <span className="text-gray-600">Payment Plans:</span>
-                                  <span className="text-green-600">Available</span>
-                                </div>
-                              </div>
-                            </div>
+                            {clinic.provenance && (
+                              <p className="text-[11px] text-[#5C6478] mt-3 leading-relaxed">
+                                {clinic.provenance.meta.label} · {clinic.provenance.verifiedLabel}
+                                {clinic.provenance.isStale && ' · may be out of date'}
+                              </p>
+                            )}
                           </div>
-                          
-                          <div className="border-t pt-4">
-                            <div className="flex gap-3 justify-end">
-                              <Button variant="outline" size="sm">View Full Details</Button>
-                              <Button
-                                size="sm"
-                                className="bg-[#F8AD7C] hover:bg-[#F2955F] text-[#2F3440] font-semibold"
-                                onClick={() =>
-                                  setEnquiring({ slug: clinic.slug, name: clinic.clinicName })
-                                }
-                              >
-                                Request consultation
-                              </Button>
-                              <Button className="bg-[#2F3440] hover:bg-[#5B6AA5]" size="sm" onClick={() => handleViewDetails(clinic)}>
-                                See clinic costings
-                              </Button>
-                            </div>
+
+                          <div className="flex justify-end">
+                            <Button
+                              size="sm"
+                              className="bg-[#F8AD7C] hover:bg-[#F2955F] text-[#2F3440] font-semibold"
+                              onClick={() =>
+                                setEnquiring({ slug: clinic.slug, name: clinic.clinicName })
+                              }
+                            >
+                              Request consultation
+                            </Button>
                           </div>
                         </div>
                       </TableCell>
@@ -974,19 +862,6 @@ export function ClinicCostings({
           </Table>
         </div>
       </div>
-
-      {/* Footer Actions */}
-      {selectedClinics.length > 0 && (
-        <div className="flex items-center justify-between p-4 glass rounded-xl">
-          <div className="text-sm">
-            <span className="text-[#5B6AA5]">{selectedClinics.length} clinic{selectedClinics.length > 1 ? 's' : ''}</span> selected
-          </div>
-          <div className="flex gap-3">
-            <Button variant="outline" size="sm">Compare Selected</Button>
-            <Button size="sm">Contact Selected Clinics</Button>
-          </div>
-        </div>
-      )}
 
       {enquiring && (
         <EnquiryFlow
