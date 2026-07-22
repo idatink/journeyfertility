@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Search, MapPin, PoundSterling, Menu, User, ChevronDown, Plus, ChevronRight, Snowflake, Baby, Activity, Sparkles, HeartPulse } from 'lucide-react';
+import { Search, MapPin, PoundSterling, Menu, User, ChevronDown, Plus, ChevronRight, Building2, Snowflake, Baby, Activity, Sparkles, HeartPulse } from 'lucide-react';
 import { Button } from './components/ui/button';
 import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from './components/ui/select';
 import { Checkbox } from './components/ui/checkbox';
@@ -28,6 +28,13 @@ import story3 from '../assets/photos/story-3.jpg';
 import story4 from '../assets/photos/story-4.jpg';
 
 const CONFIDENCE_WORDS = ['clarity', 'confidence', 'calm', 'control', 'certainty', 'support'];
+
+const SERVICE_TABS = [
+  { id: 'egg-freezing', label: 'Egg Freezing' },
+  { id: 'embryo', label: 'Embryo Freezing' },
+  { id: 'ivf', label: 'IVF Treatment' },
+  { id: 'fertility', label: 'Fertility Testing' },
+] as const;
 
 const STAGES = [
   {
@@ -359,181 +366,144 @@ export default function App() {
           </div>
         </div>
 
-        {/* Browse by service */}
-        <div id="search" className="scroll-mt-6 flex items-center justify-between flex-wrap gap-3 mb-4">
-          <span className="text-sm font-medium text-[#5C6478]">Or browse by service</span>
-          <div className="flex gap-2 flex-wrap">
-            <Button variant={serviceType === 'egg-freezing' ? 'default' : 'outline'} size="sm" onClick={() => setServiceType('egg-freezing')} className={serviceType === 'egg-freezing' ? 'bg-[#2F3440] text-white hover:bg-[#434A5C]' : ''}>Egg Freezing</Button>
-            <Button variant={serviceType === 'embryo' ? 'default' : 'outline'} size="sm" onClick={() => setServiceType('embryo')} className={serviceType === 'embryo' ? 'bg-[#2F3440] text-white hover:bg-[#434A5C]' : ''}>Embryo Freezing</Button>
-            <Button variant={serviceType === 'ivf' ? 'default' : 'outline'} size="sm" onClick={() => setServiceType('ivf')} className={serviceType === 'ivf' ? 'bg-[#2F3440] text-white hover:bg-[#434A5C]' : ''}>IVF Treatment</Button>
-            <Button variant={serviceType === 'fertility' ? 'default' : 'outline'} size="sm" onClick={() => setServiceType('fertility')} className={serviceType === 'fertility' ? 'bg-[#2F3440] text-white hover:bg-[#434A5C]' : ''}>Fertility Testing</Button>
-          </div>
-        </div>
+        {/* Search */}
+        <div id="search" className="scroll-mt-6 mb-16">
+          <div className="glass rounded-2xl p-6 md:p-8 shadow-[0_18px_60px_rgba(120,140,200,0.18)]">
+            <h2 className="text-2xl md:text-3xl font-semibold tracking-tight text-[#2F3440] mb-1.5">
+              Compare clinics and their all-in costs
+            </h2>
+            <p className="text-[#5C6478] mb-6 max-w-xl">
+              Pick a service, then narrow by region, clinic and budget. We show the full cost of
+              each option &mdash; not just the headline fee.
+            </p>
 
-        {/* Search Form */}
-        <div className="glass rounded-2xl p-6 mb-16">
-          {/* Fertility Testing Search Form */}
-          {serviceType === 'fertility' ? (
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-              <div className="relative">
-                <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 z-10 pointer-events-none" />
-                <Select value={location} onValueChange={setLocation}>
-                  <SelectTrigger className="pl-10 bg-white">
-                    <SelectValue placeholder="Region" />
-                  </SelectTrigger>
-                  <SelectContent>
-                                      <SelectItem value="all">All UK regions</SelectItem>
-                  <SelectItem value="london">London</SelectItem>
-                  <SelectItem value="south-east">South East</SelectItem>
-                  <SelectItem value="south-west">South West</SelectItem>
-                  <SelectItem value="east-of-england">East of England</SelectItem>
-                  <SelectItem value="west-midlands">West Midlands</SelectItem>
-                  <SelectItem value="east-midlands">East Midlands</SelectItem>
-                  <SelectItem value="north-west">North West</SelectItem>
-                  <SelectItem value="north-east">North East</SelectItem>
-                  <SelectItem value="yorkshire">Yorkshire and the Humber</SelectItem>
-                  <SelectItem value="scotland">Scotland</SelectItem>
-                  <SelectItem value="wales">Wales</SelectItem>
-                  <SelectItem value="northern-ireland">Northern Ireland</SelectItem>
-                </SelectContent>
-                </Select>
+            {/* Service selector, inside the search */}
+            <div
+              role="tablist"
+              aria-label="Choose a service"
+              className="flex flex-wrap gap-1.5 p-1.5 rounded-2xl bg-white/50 mb-6"
+            >
+              {SERVICE_TABS.map((s) => {
+                const active = serviceType === s.id;
+                return (
+                  <button
+                    key={s.id}
+                    type="button"
+                    role="tab"
+                    aria-selected={active}
+                    onClick={() => setServiceType(s.id)}
+                    className={`grain flex-1 min-w-[8rem] text-sm font-semibold px-4 py-2.5 rounded-xl transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#5B6AA5] focus-visible:ring-offset-2 ${
+                      active ? 'bg-[#2F3440] text-white shadow-sm' : 'text-[#2F3440] hover:bg-white/70'
+                    }`}
+                  >
+                    {s.label}
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Filters */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div>
+                <label htmlFor="search-region" className="block text-xs font-semibold uppercase tracking-wide text-[#5C6478] mb-1.5">
+                  Region
+                </label>
+                <div className="relative">
+                  <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#5C6478] z-10 pointer-events-none" />
+                  <Select value={location} onValueChange={setLocation}>
+                    <SelectTrigger id="search-region" className="pl-10 min-h-12 bg-white text-base">
+                      <SelectValue placeholder="All UK regions" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All UK regions</SelectItem>
+                      <SelectItem value="london">London</SelectItem>
+                      <SelectItem value="south-east">South East</SelectItem>
+                      <SelectItem value="south-west">South West</SelectItem>
+                      <SelectItem value="east-of-england">East of England</SelectItem>
+                      <SelectItem value="west-midlands">West Midlands</SelectItem>
+                      <SelectItem value="east-midlands">East Midlands</SelectItem>
+                      <SelectItem value="north-west">North West</SelectItem>
+                      <SelectItem value="north-east">North East</SelectItem>
+                      <SelectItem value="yorkshire">Yorkshire and the Humber</SelectItem>
+                      <SelectItem value="scotland">Scotland</SelectItem>
+                      <SelectItem value="wales">Wales</SelectItem>
+                      <SelectItem value="northern-ireland">Northern Ireland</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
               </div>
 
-              <div className="relative">
-                <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 z-10 pointer-events-none" />
-                <Select value={clinic} onValueChange={setClinic}>
-                  <SelectTrigger className="pl-10 bg-white">
-                    <SelectValue placeholder="Testing Provider" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">All Clinics</SelectItem>
-                    <SelectItem value="thames-fertility">Thames Fertility Centre — London</SelectItem>
-                    <SelectItem value="southbank-reproductive">Southbank Reproductive Health — London</SelectItem>
-                    <SelectItem value="camden-ivf">Camden IVF Clinic — London</SelectItem>
-                    <SelectItem value="mersey-fertility">Mersey Fertility Institute — Liverpool</SelectItem>
-                    <SelectItem value="pennine-reproductive">Pennine Reproductive Centre — Manchester</SelectItem>
-                    <SelectItem value="northern-lights-fertility">Northern Lights Fertility — Edinburgh</SelectItem>
-                    <SelectItem value="clyde-reproductive">Clyde Reproductive Health — Glasgow</SelectItem>
-                    <SelectItem value="severn-fertility">Severn Fertility Clinic — Bristol</SelectItem>
-                    <SelectItem value="midlands-fertility">Midlands Fertility Institute — Birmingham</SelectItem>
-                    <SelectItem value="wharfedale-reproductive">Wharfedale Reproductive Centre — Leeds</SelectItem>
-                    <SelectItem value="cardiff-bay-fertility">Cardiff Bay Fertility — Cardiff</SelectItem>
-                    <SelectItem value="lagan-fertility">Lagan Fertility Centre — Belfast</SelectItem>
-                  </SelectContent>
-                </Select>
+              <div>
+                <label htmlFor="search-clinic" className="block text-xs font-semibold uppercase tracking-wide text-[#5C6478] mb-1.5">
+                  Clinic
+                </label>
+                <div className="relative">
+                  <Building2 className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#5C6478] z-10 pointer-events-none" />
+                  <Select value={clinic} onValueChange={setClinic}>
+                    <SelectTrigger id="search-clinic" className="pl-10 min-h-12 bg-white text-base">
+                      <SelectValue placeholder="All clinics" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All clinics</SelectItem>
+                      <SelectItem value="thames-fertility">Thames Fertility Centre &mdash; London</SelectItem>
+                      <SelectItem value="southbank-reproductive">Southbank Reproductive Health &mdash; London</SelectItem>
+                      <SelectItem value="camden-ivf">Camden IVF Clinic &mdash; London</SelectItem>
+                      <SelectItem value="mersey-fertility">Mersey Fertility Institute &mdash; Liverpool</SelectItem>
+                      <SelectItem value="pennine-reproductive">Pennine Reproductive Centre &mdash; Manchester</SelectItem>
+                      <SelectItem value="northern-lights-fertility">Northern Lights Fertility &mdash; Edinburgh</SelectItem>
+                      <SelectItem value="clyde-reproductive">Clyde Reproductive Health &mdash; Glasgow</SelectItem>
+                      <SelectItem value="severn-fertility">Severn Fertility Clinic &mdash; Bristol</SelectItem>
+                      <SelectItem value="midlands-fertility">Midlands Fertility Institute &mdash; Birmingham</SelectItem>
+                      <SelectItem value="wharfedale-reproductive">Wharfedale Reproductive Centre &mdash; Leeds</SelectItem>
+                      <SelectItem value="cardiff-bay-fertility">Cardiff Bay Fertility &mdash; Cardiff</SelectItem>
+                      <SelectItem value="lagan-fertility">Lagan Fertility Centre &mdash; Belfast</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
               </div>
 
-              <div className="relative">
-                <PoundSterling className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 z-10 pointer-events-none" />
-                <Select value={budgetRange} onValueChange={setBudgetRange}>
-                  <SelectTrigger className="pl-10 bg-white">
-                    <SelectValue placeholder="Budget Range" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">All Budgets</SelectItem>
-                    {BUDGET_BRACKETS[serviceType].map((b) => (
-                      <SelectItem key={b.id} value={b.id}>
-                        {b.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+              <div>
+                <label htmlFor="search-budget" className="block text-xs font-semibold uppercase tracking-wide text-[#5C6478] mb-1.5">
+                  Budget
+                </label>
+                <div className="relative">
+                  <PoundSterling className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#5C6478] z-10 pointer-events-none" />
+                  <Select value={budgetRange} onValueChange={setBudgetRange}>
+                    <SelectTrigger id="search-budget" className="pl-10 min-h-12 bg-white text-base">
+                      <SelectValue placeholder="Any budget" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">Any budget</SelectItem>
+                      {BUDGET_BRACKETS[serviceType].map((b) => (
+                        <SelectItem key={b.id} value={b.id}>
+                          {b.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
               </div>
             </div>
-          ) : (
-            /* Standard Treatment Search Form */
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-            <div className="relative">
-              <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 z-10 pointer-events-none" />
-              <Select value={location} onValueChange={setLocation}>
-                <SelectTrigger className="pl-10 bg-white">
-                  <SelectValue placeholder="Region" />
-                </SelectTrigger>
-                <SelectContent>
-                                    <SelectItem value="all">All UK regions</SelectItem>
-                  <SelectItem value="london">London</SelectItem>
-                  <SelectItem value="south-east">South East</SelectItem>
-                  <SelectItem value="south-west">South West</SelectItem>
-                  <SelectItem value="east-of-england">East of England</SelectItem>
-                  <SelectItem value="west-midlands">West Midlands</SelectItem>
-                  <SelectItem value="east-midlands">East Midlands</SelectItem>
-                  <SelectItem value="north-west">North West</SelectItem>
-                  <SelectItem value="north-east">North East</SelectItem>
-                  <SelectItem value="yorkshire">Yorkshire and the Humber</SelectItem>
-                  <SelectItem value="scotland">Scotland</SelectItem>
-                  <SelectItem value="wales">Wales</SelectItem>
-                  <SelectItem value="northern-ireland">Northern Ireland</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
 
-            <div className="relative">
-              <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 z-10 pointer-events-none" />
-              <Select value={clinic} onValueChange={setClinic}>
-                <SelectTrigger className="pl-10 bg-white">
-                  <SelectValue placeholder="Preferred Clinic" />
-                </SelectTrigger>
-                <SelectContent>
-                                    <SelectItem value="all">All Clinics</SelectItem>
-                  <SelectItem value="thames-fertility">Thames Fertility Centre — London</SelectItem>
-                  <SelectItem value="southbank-reproductive">Southbank Reproductive Health — London</SelectItem>
-                  <SelectItem value="camden-ivf">Camden IVF Clinic — London</SelectItem>
-                  <SelectItem value="mersey-fertility">Mersey Fertility Institute — Liverpool</SelectItem>
-                  <SelectItem value="pennine-reproductive">Pennine Reproductive Centre — Manchester</SelectItem>
-                  <SelectItem value="northern-lights-fertility">Northern Lights Fertility — Edinburgh</SelectItem>
-                  <SelectItem value="clyde-reproductive">Clyde Reproductive Health — Glasgow</SelectItem>
-                  <SelectItem value="severn-fertility">Severn Fertility Clinic — Bristol</SelectItem>
-                  <SelectItem value="midlands-fertility">Midlands Fertility Institute — Birmingham</SelectItem>
-                  <SelectItem value="wharfedale-reproductive">Wharfedale Reproductive Centre — Leeds</SelectItem>
-                  <SelectItem value="cardiff-bay-fertility">Cardiff Bay Fertility — Cardiff</SelectItem>
-                  <SelectItem value="lagan-fertility">Lagan Fertility Centre — Belfast</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-
-            {/*
-              Appointment date filter removed: there is no clinic availability
-              data behind it, so it could only ever appear to filter. It returns
-              when clinics supply real availability.
-            */}
-
-            <div className="relative">
-              <PoundSterling className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 z-10 pointer-events-none" />
-              <Select value={budgetRange} onValueChange={setBudgetRange}>
-                <SelectTrigger className="pl-10 bg-white">
-                  <SelectValue placeholder="Budget Range" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Budgets</SelectItem>
-                  {BUDGET_BRACKETS[serviceType].map((b) => (
-                    <SelectItem key={b.id} value={b.id}>
-                      {b.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-          )}
-
-          {/* At-home test kits is the only checkbox with real filtering behind it. */}
-          {serviceType === 'fertility' && (
-            <div className="flex flex-wrap gap-4 mb-4">
-              <label className="flex items-center gap-2 cursor-pointer">
+            {serviceType === 'fertility' && (
+              <label className="flex items-center gap-2 mt-4 cursor-pointer w-fit">
                 <Checkbox
                   className="bg-white"
                   checked={atHomeOnly}
                   onCheckedChange={(checked) => setAtHomeOnly(checked as boolean)}
                 />
-                <span className="text-sm">At-home test kits only</span>
+                <span className="text-sm text-[#2F3440]">At-home test kits only</span>
               </label>
-            </div>
-          )}
+            )}
 
-          <Button className="w-full md:w-auto px-8 py-6 bg-[#F8AD7C] hover:bg-[#F2955F] text-[#2F3440] font-semibold" onClick={handleSearch}>
-            <Search className="w-4 h-4 mr-2" />
-            Search
-          </Button>
+            <Button
+              className="w-full sm:w-auto mt-6 h-12 px-10 bg-[#F8AD7C] hover:bg-[#F2955F] text-[#2F3440] font-semibold text-base"
+              onClick={handleSearch}
+            >
+              <Search className="w-4 h-4 mr-2" />
+              Search clinics
+            </Button>
+          </div>
         </div>
         </>
         )}
