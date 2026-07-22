@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Search, MapPin, Calendar, DollarSign, Users, Heart, Menu, User, ChevronDown, Plus, ChevronLeft, ChevronRight, Snowflake, Baby, Activity, Sparkles, HeartPulse } from 'lucide-react';
+import { Search, MapPin, PoundSterling, Menu, User, ChevronDown, Plus, ChevronRight, Snowflake, Baby, Activity, Sparkles, HeartPulse } from 'lucide-react';
 import { Button } from './components/ui/button';
 import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from './components/ui/select';
 import { Checkbox } from './components/ui/checkbox';
@@ -116,10 +116,8 @@ export default function App() {
     setLocation('all');
   }, [serviceType]);
   const [showQuiz, setShowQuiz] = useState(false);
-  const [scrollToClinics, setScrollToClinics] = useState(false);
   const [topicIndex, setTopicIndex] = useState(0);
   const [atHomeOnly, setAtHomeOnly] = useState(false);
-  const [travelPackageIndex, setTravelPackageIndex] = useState(0);
   const [selectedStage, setSelectedStage] = useState<string | null>(null);
 
   /**
@@ -250,8 +248,8 @@ export default function App() {
               className="w-full h-[360px] md:h-[460px] lg:h-[560px] object-cover object-[50%_22%] rounded-xl"
             />
             <div className="absolute bottom-4 left-4 grain glass-strong rounded-xl px-4 py-3">
-              <div className="text-2xl font-bold text-[#2F3440] leading-none mb-1">500+</div>
-              <div className="text-xs text-[#5C6478]">verified clinics worldwide</div>
+              <div className="text-sm font-semibold text-[#2F3440] leading-tight">UK fertility clinics</div>
+              <div className="text-xs text-[#5C6478]">costs and outcomes, side by side</div>
             </div>
           </div>
         </div>
@@ -355,26 +353,25 @@ export default function App() {
                     <SelectValue placeholder="Testing Provider" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="all">All Providers</SelectItem>
-                    
-                    {/* At-Home Test Kits */}
-                    <SelectItem value="modern-fertility">Modern Fertility</SelectItem>
-                    <SelectItem value="everlywell">Everlywell</SelectItem>
-                    <SelectItem value="letsgetchecked">LetsGetChecked</SelectItem>
-                    <SelectItem value="mylab-box">myLAB Box</SelectItem>
-                    
-                    {/* Local Testing Centers */}
-                    <SelectItem value="hudson-reproductive">Hudson Reproductive Centre - New York</SelectItem>
-                    <SelectItem value="charles-river-fertility">Charles River Fertility Testing Center</SelectItem>
-                    <SelectItem value="bayfront-reproductive">Bayfront Reproductive Health Lab - San Francisco</SelectItem>
-                    <SelectItem value="bosphorus-reproductive">Memorial Hospital Testing - Istanbul</SelectItem>
-                    <SelectItem value="barcelona-fertility">Barcelona Fertility Clinic</SelectItem>
+                    <SelectItem value="all">All Clinics</SelectItem>
+                    <SelectItem value="thames-fertility">Thames Fertility Centre — London</SelectItem>
+                    <SelectItem value="southbank-reproductive">Southbank Reproductive Health — London</SelectItem>
+                    <SelectItem value="camden-ivf">Camden IVF Clinic — London</SelectItem>
+                    <SelectItem value="mersey-fertility">Mersey Fertility Institute — Liverpool</SelectItem>
+                    <SelectItem value="pennine-reproductive">Pennine Reproductive Centre — Manchester</SelectItem>
+                    <SelectItem value="northern-lights-fertility">Northern Lights Fertility — Edinburgh</SelectItem>
+                    <SelectItem value="clyde-reproductive">Clyde Reproductive Health — Glasgow</SelectItem>
+                    <SelectItem value="severn-fertility">Severn Fertility Clinic — Bristol</SelectItem>
+                    <SelectItem value="midlands-fertility">Midlands Fertility Institute — Birmingham</SelectItem>
+                    <SelectItem value="wharfedale-reproductive">Wharfedale Reproductive Centre — Leeds</SelectItem>
+                    <SelectItem value="cardiff-bay-fertility">Cardiff Bay Fertility — Cardiff</SelectItem>
+                    <SelectItem value="lagan-fertility">Lagan Fertility Centre — Belfast</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
 
               <div className="relative">
-                <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 z-10 pointer-events-none" />
+                <PoundSterling className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 z-10 pointer-events-none" />
                 <Select value={budgetRange} onValueChange={setBudgetRange}>
                   <SelectTrigger className="pl-10 bg-white">
                     <SelectValue placeholder="Budget Range" />
@@ -448,7 +445,7 @@ export default function App() {
             */}
 
             <div className="relative">
-              <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 z-10 pointer-events-none" />
+              <PoundSterling className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 z-10 pointer-events-none" />
               <Select value={budgetRange} onValueChange={setBudgetRange}>
                 <SelectTrigger className="pl-10 bg-white">
                   <SelectValue placeholder="Budget Range" />
@@ -466,39 +463,16 @@ export default function App() {
           </div>
           )}
 
-          {/* Checkbox Filters */}
-          {serviceType === 'fertility' ? (
+          {/* At-home test kits is the only checkbox with real filtering behind it. */}
+          {serviceType === 'fertility' && (
             <div className="flex flex-wrap gap-4 mb-4">
               <label className="flex items-center gap-2 cursor-pointer">
-                <Checkbox 
-                  className="bg-white" 
+                <Checkbox
+                  className="bg-white"
                   checked={atHomeOnly}
                   onCheckedChange={(checked) => setAtHomeOnly(checked as boolean)}
                 />
                 <span className="text-sm">At-home test kits only</span>
-              </label>
-              
-              <label className="flex items-center gap-2 cursor-pointer">
-                <Checkbox className="bg-white" />
-                <span className="text-sm">Same-day results available</span>
-              </label>
-              
-              <label className="flex items-center gap-2 cursor-pointer">
-                <Checkbox className="bg-white" />
-                <span className="text-sm">HSA/FSA eligible</span>
-              </label>
-            </div>
-          ) : (
-            <div className="flex flex-wrap gap-4 mb-4">
-              
-              <label className="flex items-center gap-2 cursor-pointer">
-                <Checkbox className="bg-white" />
-                <span className="text-sm">Show options with insurance coverage only </span>
-              </label>
-              
-              <label className="flex items-center gap-2 cursor-pointer">
-                <Checkbox className="bg-white" />
-                <span className="text-sm">Options with payment planning only</span>
               </label>
             </div>
           )}
@@ -600,55 +574,22 @@ export default function App() {
           <div className="relative md:absolute md:inset-0 bg-gradient-to-t from-white/95 via-white/70 to-white/10 flex flex-col justify-end p-8 md:p-12">
             <div className="max-w-3xl">
               <span className="grain inline-block px-3 py-1 bg-[#F8AD7C] text-[#2F3440] text-xs font-bold uppercase tracking-wider rounded-full mb-4">
-                Clinical Excellence & Transparency
+                Not sure where to start?
               </span>
               <h2 className="text-[#2F3440] text-3xl md:text-5xl font-semibold tracking-tight mb-4 leading-tight">
-                {serviceType === 'egg-freezing' && 'Science-Backed Egg Freezing. Full Lab Transparency.'}
-                {serviceType === 'embryo' && 'Advanced Embryology Lab Standards & Storage.'}
-                {serviceType === 'ivf' && 'World-Class IVF Labs. Transparent Clinical Data.'}
-                {serviceType === 'fertility' && 'Precision Diagnostic Testing. Lab-Direct Results.'}
+                A few questions to help you work out what to look into first.
               </h2>
-              <div className="flex flex-wrap items-center gap-4 text-[#5C6478] text-sm md:text-base mb-6">
-                <span className="flex items-center gap-1"><Users className="w-4 h-4" /> Expert Embryologists</span>
-                <span className="hidden md:inline">•</span>
-                <span className="flex items-center gap-1"><Heart className="w-4 h-4" /> ISO Certified Facilities</span>
-                <span className="hidden md:inline">•</span>
-                <span className="flex items-center gap-1"><DollarSign className="w-4 h-4" /> No Hidden Lab Fees</span>
-              </div>
+              <p className="text-[#5C6478] text-sm md:text-base mb-6 max-w-xl leading-relaxed">
+                A short, private self-assessment. Your answers stay in your browser — nothing is
+                saved or sent. It just points you to the parts of the comparison and the guides that
+                are most relevant to where you are.
+              </p>
               <div className="flex flex-col sm:flex-row gap-4">
                 <Button className="bg-[#F8AD7C] hover:bg-[#F2955F] text-[#2F3440] font-semibold px-8 h-12" onClick={() => setShowQuiz(true)}>
-                  Take Self-Assessment Quiz
-                </Button>
-                <Button variant="outline" className="glass border-white/70 text-[#2F3440] hover:bg-white/75 h-12 px-8">
-                  View Lab Standards
+                  Take the self-assessment
                 </Button>
               </div>
             </div>
-          </div>
-        </div>
-
-        {/* Lab Transparency Section */}
-        <div className="grid md:grid-cols-3 gap-6 mb-12">
-          <div className="glass rounded-2xl p-6 flex flex-col items-center text-center">
-            <div className="w-12 h-12 bg-[#F8AD7C]/50 rounded-full flex items-center justify-center mb-4 text-[#5B6AA5]">
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" /></svg>
-            </div>
-            <h3 className="font-semibold mb-2">Certified Laboratories</h3>
-            <p className="text-sm text-gray-600">Every clinic on our platform meets strict ISO 15189 standards for clinical laboratories.</p>
-          </div>
-          <div className="glass rounded-2xl p-6 flex flex-col items-center text-center">
-            <div className="w-12 h-12 bg-[#F8AD7C]/50 rounded-full flex items-center justify-center mb-4 text-[#5B6AA5]">
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>
-            </div>
-            <h3 className="font-semibold mb-2">Verified Success Rates</h3>
-            <p className="text-sm text-gray-600">Lab-verified outcomes and audit reports available for every clinic listed.</p>
-          </div>
-          <div className="glass rounded-2xl p-6 flex flex-col items-center text-center">
-            <div className="w-12 h-12 bg-[#F8AD7C]/50 rounded-full flex items-center justify-center mb-4 text-[#5B6AA5]">
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-            </div>
-            <h3 className="font-semibold mb-2">Real-time Lab Access</h3>
-            <p className="text-sm text-gray-600">Direct portal access to your embryology reports and high-res imaging.</p>
           </div>
         </div>
 
@@ -762,26 +703,6 @@ export default function App() {
             </div>
           </div>
 
-          {/* CTA Section */}
-          <div className="mt-8 pt-8 border-t border-[#A8BEEB]/20 text-center">
-            <div className="flex flex-col md:flex-row items-center justify-center gap-4">
-              <Button className="bg-[#F8AD7C] hover:bg-[#F2955F] text-[#2F3440] font-semibold px-8">
-                {serviceType === 'egg-freezing' && 'Explore Egg Freezing Clinics'}
-                {serviceType === 'embryo' && 'Explore Embryo Storage Options'}
-                {serviceType === 'ivf' && 'Explore IVF Treatment Centers'}
-                {serviceType === 'fertility' && 'Find Testing Centers Near You'}
-              </Button>
-              <Button variant="outline" className="border-[#A8BEEB] text-[#2F3440] hover:bg-[#2F3440] hover:border-[#2F3440] hover:text-white px-8">
-                Read Success Stories
-              </Button>
-            </div>
-            <p className="text-sm text-gray-600 mt-4">
-              {serviceType === 'egg-freezing' && 'Join thousands who\'ve taken control of their fertility future'}
-              {serviceType === 'embryo' && 'Join families who\'ve successfully preserved their embryos'}
-              {serviceType === 'ivf' && 'Join thousands who\'ve found their path to parenthood'}
-              {serviceType === 'fertility' && 'Join thousands who\'ve taken the first step with testing'}
-            </p>
-          </div>
         </div>
 
         {/* Testimonials Section */}
@@ -796,28 +717,17 @@ export default function App() {
                 costs — so you can ask better questions.
               </p>
             </div>
-            <div className="hidden md:flex gap-2">
-              <button
-                onClick={() => setTopicIndex(Math.max(0, topicIndex - 1))}
-                disabled={topicIndex === 0}
-                className="w-12 h-12 rounded-full bg-[#E2E2E2] hover:bg-[#DADADA] disabled:opacity-30 disabled:cursor-not-allowed flex items-center justify-center transition-colors"
-              >
-                <ChevronLeft className="w-5 h-5" />
-              </button>
-              <button
-                onClick={() => setTopicIndex(Math.min(3, topicIndex + 1))}
-                disabled={topicIndex >= 3}
-                className="w-12 h-12 rounded-full bg-[#2F3440] hover:bg-[#434A5C] disabled:opacity-30 disabled:cursor-not-allowed flex items-center justify-center transition-colors"
-              >
-                <ChevronRight className="w-5 h-5 text-white" />
-              </button>
-            </div>
           </div>
 
+          {/* All four cards fit side by side from md up, so no pagination is
+              needed there. The mobile dots (below, hidden on desktop) are the
+              only control that changes topicIndex, so on desktop it stays 0 and
+              the track sits at translateX(0). The calc accounts for the gap so
+              mobile slides land flush. */}
           <div className="relative overflow-hidden">
             <div
               className="flex gap-4 transition-transform duration-500 ease-out"
-              style={{ transform: `translateX(-${topicIndex * 100}%)` }}
+              style={{ transform: `translateX(calc(-${topicIndex} * (100% + 1rem)))` }}
             >
               {journeyTopics.map((topic, idx) => (
                 <button
@@ -878,11 +788,11 @@ export default function App() {
                 },
                 {
                   question: "How can I find the most affordable fertility clinic using JourneyFertility?",
-                  answer: "Use our search filters to compare prices, read reviews, and find clinics that accept insurance. We show you all costs upfront so you can make an informed decision."
+                  answer: "Filter by treatment, region and budget, and compare the full all-in cost of each clinic — including medication, storage and extras, not just the headline fee. You can also filter by funding route to see NHS-funded and private options."
                 },
                 {
                   question: "Do I book my treatment directly with JourneyFertility?",
-                  answer: "We connect you directly with fertility clinics. You'll be able to contact them, schedule consultations, and book your treatment through our secure platform."
+                  answer: "No — we are a comparison service, not a clinic. When you are ready, you send an enquiry through us and the clinic you chose gets in touch to arrange a consultation. The treatment itself is always booked and provided by the clinic."
                 }
               ].map((faq, index) => (
                 <div key={index} className="border-b border-gray-200 pb-4 mb-4">
@@ -903,8 +813,8 @@ export default function App() {
             <div>
               {[
                 {
-                  question: "Does JourneyFertility do insurance verification?",
-                  answer: "Many of our partner clinics work with insurance providers. Use our insurance filter to find clinics that accept your coverage."
+                  question: "Can I use NHS funding for fertility treatment?",
+                  answer: "Sometimes. NHS-funded fertility treatment exists but eligibility and how many cycles are covered vary by area. Where a clinic offers an NHS-funded route we flag it with the funding filter, so you can compare that alongside private prices."
                 },
                 {
                   question: "What should my fees cover?",
@@ -915,8 +825,8 @@ export default function App() {
                   answer: "Success rates show the percentage of successful pregnancies or viable embryos from treatments at each clinic. We provide transparent data to help you make informed choices."
                 },
                 {
-                  question: "Can I book fertility treatments abroad using JourneyFertility?",
-                  answer: "Yes! We partner with accredited fertility clinics worldwide, helping you find quality care at competitive prices internationally."
+                  question: "Do you list clinics outside the UK?",
+                  answer: "Not for now. JourneyFertility lists UK clinics only, so that prices, funding routes and regulation are comparable. If that ever changes, we will say so clearly."
                 }
               ].map((faq, index) => (
                 <div key={index + 3} className="border-b border-gray-200 pb-4 mb-4">
@@ -936,151 +846,6 @@ export default function App() {
           </div>
         </div>
 
-        {/* Travel Package Example - London to Istanbul */}
-        <div className="mt-12 bg-[#DEE8FF]/40 border border-[#A8BEEB]/20 rounded-2xl p-6 md:p-8">
-          <h3 className="text-xl md:text-2xl mb-2">Example Travel Package</h3>
-          <p className="text-gray-600 mb-6 text-sm md:text-base">London to Istanbul - Full Egg Freezing Package</p>
-          
-          {/* Mobile Slider */}
-          <div className="md:hidden mb-6">
-            <div className="relative overflow-hidden">
-              <div
-                className="flex gap-4 transition-transform duration-500 ease-out"
-                style={{ transform: `translateX(-${travelPackageIndex * 100}%)` }}
-              >
-                {/* Flight Card */}
-                <div className="flex-shrink-0 w-full bg-white rounded-xl p-6">
-                  <div className="flex items-start justify-between mb-3">
-                    <div>
-                      <h4 className="font-semibold mb-1">Return Flight</h4>
-                      <p className="text-sm text-gray-600">London → Istanbul</p>
-                    </div>
-                    <svg className="w-8 h-8 text-[#A8BEEB]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
-                    </svg>
-                  </div>
-                  <div className="text-2xl font-semibold text-[#5B6AA5]">£280</div>
-                  <p className="text-xs text-gray-500 mt-1">Economy class, direct</p>
-                </div>
-
-                {/* Accommodation Card */}
-                <div className="flex-shrink-0 w-full bg-white rounded-xl p-6">
-                  <div className="flex items-start justify-between mb-3">
-                    <div>
-                      <h4 className="font-semibold mb-1">Accommodation</h4>
-                      <p className="text-sm text-gray-600">7 nights, 4-star hotel</p>
-                    </div>
-                    <svg className="w-8 h-8 text-[#A8BEEB]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-                    </svg>
-                  </div>
-                  <div className="text-2xl font-semibold text-[#5B6AA5]">£420</div>
-                  <p className="text-xs text-gray-500 mt-1">Near clinic, breakfast included</p>
-                </div>
-
-                {/* Treatment Card */}
-                <div className="flex-shrink-0 w-full bg-white rounded-xl p-6">
-                  <div className="flex items-start justify-between mb-3">
-                    <div>
-                      <h4 className="font-semibold mb-1">Egg Freezing</h4>
-                      <p className="text-sm text-gray-600">Full cycle at Bosphorus Reproductive</p>
-                    </div>
-                    <svg className="w-8 h-8 text-[#A8BEEB]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                    </svg>
-                  </div>
-                  <div className="text-2xl font-semibold text-[#5B6AA5]">£2,100</div>
-                  <p className="text-xs text-gray-500 mt-1">Including medications</p>
-                </div>
-              </div>
-            </div>
-
-            {/* Mobile Navigation Dots */}
-            <div className="flex justify-center gap-2 mt-4">
-              {[0, 1, 2].map((idx) => (
-                <button
-                  key={idx}
-                  onClick={() => setTravelPackageIndex(idx)}
-                  className={`w-2 h-2 rounded-full transition-colors ${
-                    travelPackageIndex === idx ? 'bg-[#2F3440]' : 'bg-[#DADADA]'
-                  }`}
-                />
-              ))}
-            </div>
-          </div>
-
-          {/* Desktop Grid */}
-          <div className="hidden md:grid md:grid-cols-3 gap-6 mb-6">
-            {/* Flight */}
-            <div className="glass rounded-xl p-6">
-              <div className="flex items-start justify-between mb-3">
-                <div>
-                  <h4 className="font-semibold mb-1">Return Flight</h4>
-                  <p className="text-sm text-gray-600">London → Istanbul</p>
-                </div>
-                <svg className="w-8 h-8 text-[#A8BEEB]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
-                </svg>
-              </div>
-              <div className="text-2xl font-semibold text-[#5B6AA5]">£280</div>
-              <p className="text-xs text-gray-500 mt-1">Economy class, direct</p>
-            </div>
-
-            {/* Accommodation */}
-            <div className="glass rounded-xl p-6">
-              <div className="flex items-start justify-between mb-3">
-                <div>
-                  <h4 className="font-semibold mb-1">Accommodation</h4>
-                  <p className="text-sm text-gray-600">7 nights, 4-star hotel</p>
-                </div>
-                <svg className="w-8 h-8 text-[#A8BEEB]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-                </svg>
-              </div>
-              <div className="text-2xl font-semibold text-[#5B6AA5]">£420</div>
-              <p className="text-xs text-gray-500 mt-1">Near clinic, breakfast included</p>
-            </div>
-
-            {/* Treatment */}
-            <div className="glass rounded-xl p-6">
-              <div className="flex items-start justify-between mb-3">
-                <div>
-                  <h4 className="font-semibold mb-1">Egg Freezing</h4>
-                  <p className="text-sm text-gray-600">Full cycle at Bosphorus Reproductive</p>
-                </div>
-                <svg className="w-8 h-8 text-[#A8BEEB]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                </svg>
-              </div>
-              <div className="text-2xl font-semibold text-[#5B6AA5]">£2,100</div>
-              <p className="text-xs text-gray-500 mt-1">Including medications</p>
-            </div>
-          </div>
-
-          {/* Total */}
-          <div className="bg-white rounded-xl p-4 md:p-6 border-2 border-[#5B6AA5]">
-            <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-              <div className="flex-1">
-                <h4 className="text-lg md:text-xl font-semibold mb-1">Total Package Cost</h4>
-                <p className="text-sm text-gray-600 mb-3">All-inclusive egg freezing trip</p>
-                <div className="flex flex-wrap gap-2">
-                  <span className="px-3 py-1 bg-[#DEE8FF]/60 text-[#2F3440] rounded-full text-xs md:text-sm">✓ Flights</span>
-                  <span className="px-3 py-1 bg-[#DEE8FF]/60 text-[#2F3440] rounded-full text-xs md:text-sm">✓ Accommodation</span>
-                  <span className="px-3 py-1 bg-[#DEE8FF]/60 text-[#2F3440] rounded-full text-xs md:text-sm">✓ Treatment</span>
-                  <span className="px-3 py-1 bg-[#DEE8FF]/60 text-[#2F3440] rounded-full text-xs md:text-sm">✓ Airport transfers</span>
-                </div>
-              </div>
-              <div className="text-left md:text-right">
-                <div className="text-3xl md:text-4xl font-bold text-[#5B6AA5]">£2,800</div>
-                <p className="text-sm text-gray-500 mt-1">Save ~£8,700 vs UK</p>
-              </div>
-            </div>
-          </div>
-
-          <p className="text-xs md:text-sm text-gray-600 mt-4 text-center">
-            💡 Same treatment in London typically costs £11,500+ (excluding accommodation)
-          </p>
-        </div>
           </>
         )}
 
@@ -1157,7 +922,6 @@ export default function App() {
                     Resources
                   </button>
                 </li>
-                <li><a href="#" className="hover:text-white">Treatment abroad</a></li>
                 <li><a href="#" className="hover:text-white">Partnerships</a></li>
               </ul>
             </div>
