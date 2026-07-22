@@ -76,6 +76,18 @@ export const CLINIC_PROVENANCE: Record<string, Provenance> = {
   'wharfedale-reproductive': { source: 'patient_reported', lastVerified: '2026-05-02' },
   'cardiff-bay-fertility': { source: 'published', lastVerified: '2026-06-12' },
   'lagan-fertility': { source: 'unverified', lastVerified: '2025-10-06' },
+'costa-brava-fertility': { source: 'partner', lastVerified: '2026-06-18' },
+  'meridian-reproductive-madrid': { source: 'published', lastVerified: '2026-05-30' },
+  'turia-ivf-valencia': { source: 'patient_reported', lastVerified: '2026-04-12' },
+  'vltava-fertility-prague': { source: 'published', lastVerified: '2026-06-05' },
+  'moravia-reproductive-brno': { source: 'patient_reported', lastVerified: '2026-03-28' },
+  'charles-bridge-ivf': { source: 'published', lastVerified: '2026-05-14' },
+  'aegean-fertility-athens': { source: 'published', lastVerified: '2026-06-20' },
+  'thermaic-ivf-thessaloniki': { source: 'unverified', lastVerified: '2025-12-08' },
+  'minoan-reproductive-crete': { source: 'published', lastVerified: '2026-04-30' },
+  'bosphorus-fertility-istanbul': { source: 'published', lastVerified: '2026-06-15' },
+  'kyrenia-reproductive': { source: 'patient_reported', lastVerified: '2026-02-22' },
+  'anatolia-ivf-ankara': { source: 'unverified', lastVerified: '2025-11-02' },
 };
 
 /** Prices older than this are shown as stale regardless of source. */

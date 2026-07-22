@@ -27,7 +27,7 @@ export const OUTCOME_BASIS = {
   outcomeType: "Live birth",
   denominatorType: "per cycle started",
   year: 2025,
-  source: "Illustrative — to be replaced by HFEA",
+  source: "Illustrative — to be replaced by each country's registry (HFEA in the UK)",
 } as const;
 
 export const CLINIC_OUTCOMES: Record<string, Record<AgeBand, [number, number]>> = {
@@ -114,6 +114,62 @@ export const CLINIC_OUTCOMES: Record<string, Record<AgeBand, [number, number]>> 
     "38-40": [15, 78],
     "41-42": [4, 42],
     "43-plus": [1, 24],
+  },
+"costa-brava-fertility": {
+    "under-35": [70, 150],
+    "35-37": [47, 128],
+    "38-40": [34, 138],
+    "41-42": [10, 74],
+    "43-plus": [2, 40],
+  },
+  "meridian-reproductive-madrid": {
+    "under-35": [58, 140],
+    "35-37": [39, 120],
+    "38-40": [29, 130],
+    "41-42": [8, 70],
+    "43-plus": [2, 38],
+  },
+  "vltava-fertility-prague": {
+    "under-35": [64, 152],
+    "35-37": [43, 126],
+    "38-40": [31, 134],
+    "41-42": [9, 72],
+    "43-plus": [2, 39],
+  },
+  "charles-bridge-ivf": {
+    "under-35": [55, 138],
+    "35-37": [37, 116],
+    "38-40": [27, 126],
+    "41-42": [8, 68],
+    "43-plus": [2, 36],
+  },
+  "aegean-fertility-athens": {
+    "under-35": [60, 145],
+    "35-37": [40, 122],
+    "38-40": [30, 132],
+    "41-42": [9, 71],
+    "43-plus": [2, 39],
+  },
+  "minoan-reproductive-crete": {
+    "under-35": [52, 132],
+    "35-37": [35, 112],
+    "38-40": [26, 120],
+    "41-42": [7, 64],
+    "43-plus": [1, 34],
+  },
+  "bosphorus-fertility-istanbul": {
+    "under-35": [66, 150],
+    "35-37": [44, 124],
+    "38-40": [32, 132],
+    "41-42": [9, 70],
+    "43-plus": [2, 38],
+  },
+  "anatolia-ivf-ankara": {
+    "under-35": [49, 128],
+    "35-37": [33, 108],
+    "38-40": [24, 116],
+    "41-42": [7, 62],
+    "43-plus": [1, 33],
   },
 };
 

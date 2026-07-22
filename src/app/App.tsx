@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
 import { Search, MapPin, PoundSterling, Menu, User, ChevronDown, Plus, ChevronRight, Building2, Snowflake, Baby, Activity, Sparkles, HeartPulse } from 'lucide-react';
 import { Button } from './components/ui/button';
-import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from './components/ui/select';
+import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue, SelectGroup, SelectLabel } from './components/ui/select';
 import { Checkbox } from './components/ui/checkbox';
 import { ImageWithFallback } from './components/figma/ImageWithFallback';
-import { ClinicCostings } from './components/ClinicCostings';
+import { ClinicCostings, COUNTRIES } from './components/ClinicCostings';
 import { SelfAssessmentQuiz } from './components/SelfAssessmentQuiz';
 import { EmbryoFreezingQuiz } from './components/EmbryoFreezingQuiz';
 import { IVFTreatmentQuiz } from './components/IVFTreatmentQuiz';
@@ -308,8 +308,8 @@ export default function App() {
               className="w-full h-[360px] md:h-[460px] lg:h-[560px] object-cover object-[50%_22%] rounded-xl"
             />
             <div className="absolute bottom-4 left-4 grain glass-strong rounded-xl px-4 py-3">
-              <div className="text-sm font-semibold text-[#2F3440] leading-tight">UK fertility clinics</div>
-              <div className="text-xs text-[#5C6478]">costs and outcomes, side by side</div>
+              <div className="text-sm font-semibold text-[#2F3440] leading-tight">UK &amp; abroad</div>
+              <div className="text-xs text-[#5C6478]">costs compared, side by side</div>
             </div>
           </div>
         </div>
@@ -373,8 +373,8 @@ export default function App() {
               Compare clinics and their all-in costs
             </h2>
             <p className="text-[#5C6478] mb-6 max-w-xl">
-              Pick a service, then narrow by region, clinic and budget. We show the full cost of
-              each option &mdash; not just the headline fee.
+              Pick a service, then narrow by country, clinic and budget. We show the full cost of
+              each option &mdash; UK and abroad &mdash; not just the headline fee.
             </p>
 
             {/* Service selector, inside the search */}
@@ -405,29 +405,22 @@ export default function App() {
             {/* Filters */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div>
-                <label htmlFor="search-region" className="block text-xs font-semibold uppercase tracking-wide text-[#5C6478] mb-1.5">
-                  Region
+                <label htmlFor="search-country" className="block text-xs font-semibold uppercase tracking-wide text-[#5C6478] mb-1.5">
+                  Country
                 </label>
                 <div className="relative">
                   <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#5C6478] z-10 pointer-events-none" />
                   <Select value={location} onValueChange={setLocation}>
-                    <SelectTrigger id="search-region" className="pl-10 min-h-12 bg-white text-base">
-                      <SelectValue placeholder="All UK regions" />
+                    <SelectTrigger id="search-country" className="pl-10 min-h-12 bg-white text-base">
+                      <SelectValue placeholder="All countries" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="all">All UK regions</SelectItem>
-                      <SelectItem value="london">London</SelectItem>
-                      <SelectItem value="south-east">South East</SelectItem>
-                      <SelectItem value="south-west">South West</SelectItem>
-                      <SelectItem value="east-of-england">East of England</SelectItem>
-                      <SelectItem value="west-midlands">West Midlands</SelectItem>
-                      <SelectItem value="east-midlands">East Midlands</SelectItem>
-                      <SelectItem value="north-west">North West</SelectItem>
-                      <SelectItem value="north-east">North East</SelectItem>
-                      <SelectItem value="yorkshire">Yorkshire and the Humber</SelectItem>
-                      <SelectItem value="scotland">Scotland</SelectItem>
-                      <SelectItem value="wales">Wales</SelectItem>
-                      <SelectItem value="northern-ireland">Northern Ireland</SelectItem>
+                      <SelectItem value="all">All countries</SelectItem>
+                      {COUNTRIES.map((c) => (
+                        <SelectItem key={c.id} value={c.id}>
+                          {c.label}
+                        </SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
                 </div>
@@ -445,18 +438,45 @@ export default function App() {
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="all">All clinics</SelectItem>
-                      <SelectItem value="thames-fertility">Thames Fertility Centre &mdash; London</SelectItem>
-                      <SelectItem value="southbank-reproductive">Southbank Reproductive Health &mdash; London</SelectItem>
-                      <SelectItem value="camden-ivf">Camden IVF Clinic &mdash; London</SelectItem>
-                      <SelectItem value="mersey-fertility">Mersey Fertility Institute &mdash; Liverpool</SelectItem>
-                      <SelectItem value="pennine-reproductive">Pennine Reproductive Centre &mdash; Manchester</SelectItem>
-                      <SelectItem value="northern-lights-fertility">Northern Lights Fertility &mdash; Edinburgh</SelectItem>
-                      <SelectItem value="clyde-reproductive">Clyde Reproductive Health &mdash; Glasgow</SelectItem>
-                      <SelectItem value="severn-fertility">Severn Fertility Clinic &mdash; Bristol</SelectItem>
-                      <SelectItem value="midlands-fertility">Midlands Fertility Institute &mdash; Birmingham</SelectItem>
-                      <SelectItem value="wharfedale-reproductive">Wharfedale Reproductive Centre &mdash; Leeds</SelectItem>
-                      <SelectItem value="cardiff-bay-fertility">Cardiff Bay Fertility &mdash; Cardiff</SelectItem>
-                      <SelectItem value="lagan-fertility">Lagan Fertility Centre &mdash; Belfast</SelectItem>
+                      <SelectGroup>
+                        <SelectLabel>United Kingdom</SelectLabel>
+                        <SelectItem value="thames-fertility">Thames Fertility Centre &mdash; London</SelectItem>
+                        <SelectItem value="southbank-reproductive">Southbank Reproductive Health &mdash; London</SelectItem>
+                        <SelectItem value="camden-ivf">Camden IVF Clinic &mdash; London</SelectItem>
+                        <SelectItem value="mersey-fertility">Mersey Fertility Institute &mdash; Liverpool</SelectItem>
+                        <SelectItem value="pennine-reproductive">Pennine Reproductive Centre &mdash; Manchester</SelectItem>
+                        <SelectItem value="northern-lights-fertility">Northern Lights Fertility &mdash; Edinburgh</SelectItem>
+                        <SelectItem value="clyde-reproductive">Clyde Reproductive Health &mdash; Glasgow</SelectItem>
+                        <SelectItem value="severn-fertility">Severn Fertility Clinic &mdash; Bristol</SelectItem>
+                        <SelectItem value="midlands-fertility">Midlands Fertility Institute &mdash; Birmingham</SelectItem>
+                        <SelectItem value="wharfedale-reproductive">Wharfedale Reproductive Centre &mdash; Leeds</SelectItem>
+                        <SelectItem value="cardiff-bay-fertility">Cardiff Bay Fertility &mdash; Cardiff</SelectItem>
+                        <SelectItem value="lagan-fertility">Lagan Fertility Centre &mdash; Belfast</SelectItem>
+                      </SelectGroup>
+                      <SelectGroup>
+                        <SelectLabel>Spain</SelectLabel>
+                        <SelectItem value="costa-brava-fertility">Costa Brava Fertility &mdash; Barcelona</SelectItem>
+                        <SelectItem value="meridian-reproductive-madrid">Meridian Reproductive Madrid &mdash; Madrid</SelectItem>
+                        <SelectItem value="turia-ivf-valencia">Turia IVF Valencia &mdash; Valencia</SelectItem>
+                      </SelectGroup>
+                      <SelectGroup>
+                        <SelectLabel>Czech Republic</SelectLabel>
+                        <SelectItem value="vltava-fertility-prague">Vltava Fertility Prague &mdash; Prague</SelectItem>
+                        <SelectItem value="moravia-reproductive-brno">Moravia Reproductive Brno &mdash; Brno</SelectItem>
+                        <SelectItem value="charles-bridge-ivf">Charles Bridge IVF &mdash; Prague</SelectItem>
+                      </SelectGroup>
+                      <SelectGroup>
+                        <SelectLabel>Greece</SelectLabel>
+                        <SelectItem value="aegean-fertility-athens">Aegean Fertility Athens &mdash; Athens</SelectItem>
+                        <SelectItem value="thermaic-ivf-thessaloniki">Thermaic IVF Thessaloniki &mdash; Thessaloniki</SelectItem>
+                        <SelectItem value="minoan-reproductive-crete">Minoan Reproductive Crete &mdash; Heraklion</SelectItem>
+                      </SelectGroup>
+                      <SelectGroup>
+                        <SelectLabel>Türkiye &amp; N. Cyprus</SelectLabel>
+                        <SelectItem value="bosphorus-fertility-istanbul">Bosphorus Fertility Istanbul &mdash; Istanbul</SelectItem>
+                        <SelectItem value="kyrenia-reproductive">Kyrenia Reproductive &mdash; Kyrenia</SelectItem>
+                        <SelectItem value="anatolia-ivf-ankara">Anatolia IVF Ankara &mdash; Ankara</SelectItem>
+                      </SelectGroup>
                     </SelectContent>
                   </Select>
                 </div>
@@ -867,8 +887,8 @@ export default function App() {
                   answer: "Success rates show the percentage of successful pregnancies or viable embryos from treatments at each clinic. We provide transparent data to help you make informed choices."
                 },
                 {
-                  question: "Do you list clinics outside the UK?",
-                  answer: "Not for now. JourneyFertility lists UK clinics only, so that prices, funding routes and regulation are comparable. If that ever changes, we will say so clearly."
+                  question: "Can I compare clinics abroad as well as in the UK?",
+                  answer: "Yes. Alongside UK clinics you can compare common destinations abroad — Spain, the Czech Republic, Greece and Türkiye & N. Cyprus — with all prices shown in GBP so they are directly comparable. Remember the headline saving abroad excludes travel and accommodation, and that outcome data can be harder to verify outside the UK."
                 }
               ].map((faq, index) => (
                 <div key={index + 3} className="border-b border-gray-200 pb-4 mb-4">

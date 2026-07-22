@@ -34,6 +34,8 @@ interface ClinicCost {
   id: number;
   slug: string;
   regionSlug: string;
+  /** country slug for the cross-country filter */
+  country: string;
   fundingRoutes: ("nhs" | "private")[];
   /** how much of its price list the clinic publishes */
   pricingCompleteness: "full" | "partial" | "none";
@@ -71,6 +73,7 @@ const mockClinicData: ClinicCost[] = [
     id: 1,
     slug: "thames-fertility",
     regionSlug: "london",
+    country: "uk",
     pricingCompleteness: "full",
     fundingRoutes: ["nhs", "private"],
     clinicName: "Thames Fertility Centre",
@@ -91,6 +94,7 @@ const mockClinicData: ClinicCost[] = [
     id: 2,
     slug: "southbank-reproductive",
     regionSlug: "london",
+    country: "uk",
     pricingCompleteness: "full",
     fundingRoutes: ["private"],
     clinicName: "Southbank Reproductive Health",
@@ -111,6 +115,7 @@ const mockClinicData: ClinicCost[] = [
     id: 3,
     slug: "camden-ivf",
     regionSlug: "london",
+    country: "uk",
     pricingCompleteness: "partial",
     fundingRoutes: ["nhs", "private"],
     clinicName: "Camden IVF Clinic",
@@ -131,6 +136,7 @@ const mockClinicData: ClinicCost[] = [
     id: 4,
     slug: "mersey-fertility",
     regionSlug: "north-west",
+    country: "uk",
     pricingCompleteness: "full",
     fundingRoutes: ["nhs", "private"],
     clinicName: "Mersey Fertility Institute",
@@ -151,6 +157,7 @@ const mockClinicData: ClinicCost[] = [
     id: 5,
     slug: "pennine-reproductive",
     regionSlug: "north-west",
+    country: "uk",
     pricingCompleteness: "full",
     fundingRoutes: ["nhs", "private"],
     clinicName: "Pennine Reproductive Centre",
@@ -171,6 +178,7 @@ const mockClinicData: ClinicCost[] = [
     id: 6,
     slug: "northern-lights-fertility",
     regionSlug: "scotland",
+    country: "uk",
     pricingCompleteness: "full",
     fundingRoutes: ["nhs", "private"],
     clinicName: "Northern Lights Fertility",
@@ -191,6 +199,7 @@ const mockClinicData: ClinicCost[] = [
     id: 7,
     slug: "clyde-reproductive",
     regionSlug: "scotland",
+    country: "uk",
     pricingCompleteness: "partial",
     fundingRoutes: ["nhs"],
     clinicName: "Clyde Reproductive Health",
@@ -211,6 +220,7 @@ const mockClinicData: ClinicCost[] = [
     id: 8,
     slug: "severn-fertility",
     regionSlug: "south-west",
+    country: "uk",
     pricingCompleteness: "none",
     fundingRoutes: ["private"],
     clinicName: "Severn Fertility Clinic",
@@ -231,6 +241,7 @@ const mockClinicData: ClinicCost[] = [
     id: 9,
     slug: "midlands-fertility",
     regionSlug: "west-midlands",
+    country: "uk",
     pricingCompleteness: "full",
     fundingRoutes: ["nhs", "private"],
     clinicName: "Midlands Fertility Institute",
@@ -251,6 +262,7 @@ const mockClinicData: ClinicCost[] = [
     id: 10,
     slug: "wharfedale-reproductive",
     regionSlug: "yorkshire",
+    country: "uk",
     pricingCompleteness: "partial",
     fundingRoutes: ["nhs", "private"],
     clinicName: "Wharfedale Reproductive Centre",
@@ -271,6 +283,7 @@ const mockClinicData: ClinicCost[] = [
     id: 11,
     slug: "cardiff-bay-fertility",
     regionSlug: "wales",
+    country: "uk",
     pricingCompleteness: "full",
     fundingRoutes: ["nhs", "private"],
     clinicName: "Cardiff Bay Fertility",
@@ -291,6 +304,7 @@ const mockClinicData: ClinicCost[] = [
     id: 12,
     slug: "lagan-fertility",
     regionSlug: "northern-ireland",
+    country: "uk",
     pricingCompleteness: "none",
     fundingRoutes: ["private"],
     clinicName: "Lagan Fertility Centre",
@@ -304,6 +318,258 @@ const mockClinicData: ClinicCost[] = [
     geneticTesting: 2600,
     embryoFreezing: 1020,
     fertilityTestPanel: 225,
+    successRate: 0,
+    total: 0
+  },
+{
+    id: 13,
+    slug: "costa-brava-fertility",
+    regionSlug: "spain",
+    country: "spain",
+    pricingCompleteness: "full",
+    fundingRoutes: ["private"],
+    clinicName: "Costa Brava Fertility",
+    location: "Barcelona",
+    consultation: 130,
+    eggRetrieval: 2100,
+    ivfCycle: 1900,
+    embryoTransfer: 800,
+    medications: 1050,
+    storagePerYear: 300,
+    geneticTesting: 1900,
+    embryoFreezing: 700,
+    fertilityTestPanel: 180,
+    successRate: 0,
+    total: 0
+  },
+  {
+    id: 14,
+    slug: "meridian-reproductive-madrid",
+    regionSlug: "spain",
+    country: "spain",
+    pricingCompleteness: "full",
+    fundingRoutes: ["private"],
+    clinicName: "Meridian Reproductive Madrid",
+    location: "Madrid",
+    consultation: 120,
+    eggRetrieval: 1950,
+    ivfCycle: 1750,
+    embryoTransfer: 750,
+    medications: 980,
+    storagePerYear: 280,
+    geneticTesting: 1800,
+    embryoFreezing: 650,
+    fertilityTestPanel: 165,
+    successRate: 0,
+    total: 0
+  },
+  {
+    id: 15,
+    slug: "turia-ivf-valencia",
+    regionSlug: "spain",
+    country: "spain",
+    pricingCompleteness: "partial",
+    fundingRoutes: ["private"],
+    clinicName: "Turia IVF Valencia",
+    location: "Valencia",
+    consultation: 140,
+    eggRetrieval: 2200,
+    ivfCycle: 2050,
+    embryoTransfer: 850,
+    medications: 1100,
+    storagePerYear: 310,
+    geneticTesting: 2000,
+    embryoFreezing: 720,
+    fertilityTestPanel: 190,
+    successRate: 0,
+    total: 0
+  },
+  {
+    id: 16,
+    slug: "vltava-fertility-prague",
+    regionSlug: "czechia",
+    country: "czechia",
+    pricingCompleteness: "full",
+    fundingRoutes: ["private"],
+    clinicName: "Vltava Fertility Prague",
+    location: "Prague",
+    consultation: 90,
+    eggRetrieval: 1350,
+    ivfCycle: 1200,
+    embryoTransfer: 520,
+    medications: 720,
+    storagePerYear: 190,
+    geneticTesting: 1200,
+    embryoFreezing: 420,
+    fertilityTestPanel: 110,
+    successRate: 0,
+    total: 0
+  },
+  {
+    id: 17,
+    slug: "moravia-reproductive-brno",
+    regionSlug: "czechia",
+    country: "czechia",
+    pricingCompleteness: "partial",
+    fundingRoutes: ["private"],
+    clinicName: "Moravia Reproductive Brno",
+    location: "Brno",
+    consultation: 80,
+    eggRetrieval: 1200,
+    ivfCycle: 1050,
+    embryoTransfer: 480,
+    medications: 650,
+    storagePerYear: 170,
+    geneticTesting: 1100,
+    embryoFreezing: 380,
+    fertilityTestPanel: 95,
+    successRate: 0,
+    total: 0
+  },
+  {
+    id: 18,
+    slug: "charles-bridge-ivf",
+    regionSlug: "czechia",
+    country: "czechia",
+    pricingCompleteness: "full",
+    fundingRoutes: ["private"],
+    clinicName: "Charles Bridge IVF",
+    location: "Prague",
+    consultation: 100,
+    eggRetrieval: 1450,
+    ivfCycle: 1300,
+    embryoTransfer: 560,
+    medications: 780,
+    storagePerYear: 200,
+    geneticTesting: 1300,
+    embryoFreezing: 450,
+    fertilityTestPanel: 120,
+    successRate: 0,
+    total: 0
+  },
+  {
+    id: 19,
+    slug: "aegean-fertility-athens",
+    regionSlug: "greece",
+    country: "greece",
+    pricingCompleteness: "full",
+    fundingRoutes: ["private"],
+    clinicName: "Aegean Fertility Athens",
+    location: "Athens",
+    consultation: 100,
+    eggRetrieval: 1550,
+    ivfCycle: 1400,
+    embryoTransfer: 600,
+    medications: 820,
+    storagePerYear: 210,
+    geneticTesting: 1400,
+    embryoFreezing: 480,
+    fertilityTestPanel: 130,
+    successRate: 0,
+    total: 0
+  },
+  {
+    id: 20,
+    slug: "thermaic-ivf-thessaloniki",
+    regionSlug: "greece",
+    country: "greece",
+    pricingCompleteness: "partial",
+    fundingRoutes: ["private"],
+    clinicName: "Thermaic IVF Thessaloniki",
+    location: "Thessaloniki",
+    consultation: 90,
+    eggRetrieval: 1400,
+    ivfCycle: 1250,
+    embryoTransfer: 550,
+    medications: 750,
+    storagePerYear: 195,
+    geneticTesting: 1250,
+    embryoFreezing: 430,
+    fertilityTestPanel: 115,
+    successRate: 0,
+    total: 0
+  },
+  {
+    id: 21,
+    slug: "minoan-reproductive-crete",
+    regionSlug: "greece",
+    country: "greece",
+    pricingCompleteness: "full",
+    fundingRoutes: ["private"],
+    clinicName: "Minoan Reproductive Crete",
+    location: "Heraklion",
+    consultation: 110,
+    eggRetrieval: 1650,
+    ivfCycle: 1500,
+    embryoTransfer: 640,
+    medications: 880,
+    storagePerYear: 220,
+    geneticTesting: 1500,
+    embryoFreezing: 510,
+    fertilityTestPanel: 140,
+    successRate: 0,
+    total: 0
+  },
+  {
+    id: 22,
+    slug: "bosphorus-fertility-istanbul",
+    regionSlug: "turkey",
+    country: "turkey",
+    pricingCompleteness: "full",
+    fundingRoutes: ["private"],
+    clinicName: "Bosphorus Fertility Istanbul",
+    location: "Istanbul",
+    consultation: 75,
+    eggRetrieval: 1150,
+    ivfCycle: 1000,
+    embryoTransfer: 450,
+    medications: 620,
+    storagePerYear: 160,
+    geneticTesting: 1050,
+    embryoFreezing: 360,
+    fertilityTestPanel: 90,
+    successRate: 0,
+    total: 0
+  },
+  {
+    id: 23,
+    slug: "kyrenia-reproductive",
+    regionSlug: "turkey",
+    country: "turkey",
+    pricingCompleteness: "partial",
+    fundingRoutes: ["private"],
+    clinicName: "Kyrenia Reproductive",
+    location: "Kyrenia",
+    consultation: 70,
+    eggRetrieval: 1050,
+    ivfCycle: 920,
+    embryoTransfer: 420,
+    medications: 580,
+    storagePerYear: 150,
+    geneticTesting: 980,
+    embryoFreezing: 330,
+    fertilityTestPanel: 80,
+    successRate: 0,
+    total: 0
+  },
+  {
+    id: 24,
+    slug: "anatolia-ivf-ankara",
+    regionSlug: "turkey",
+    country: "turkey",
+    pricingCompleteness: "none",
+    fundingRoutes: ["private"],
+    clinicName: "Anatolia IVF Ankara",
+    location: "Ankara",
+    consultation: 80,
+    eggRetrieval: 1250,
+    ivfCycle: 1100,
+    embryoTransfer: 480,
+    medications: 660,
+    storagePerYear: 170,
+    geneticTesting: 1120,
+    embryoFreezing: 380,
+    fertilityTestPanel: 95,
     successRate: 0,
     total: 0
   }
@@ -321,6 +587,19 @@ const PRICED_COMPONENTS: Record<ServiceType, (keyof ClinicCost)[]> = {
   ivf: ['consultation', 'eggRetrieval', 'ivfCycle', 'embryoTransfer', 'medications'],
   fertility: ['consultation', 'fertilityTestPanel'],
 };
+
+/** Countries the comparison spans. Shared with the search form in App.tsx. */
+export const COUNTRIES = [
+  { id: 'uk', label: 'United Kingdom' },
+  { id: 'spain', label: 'Spain' },
+  { id: 'czechia', label: 'Czech Republic' },
+  { id: 'greece', label: 'Greece' },
+  { id: 'turkey', label: 'Türkiye & N. Cyprus' },
+] as const;
+
+const COUNTRY_LABELS: Record<string, string> = Object.fromEntries(
+  COUNTRIES.map((c) => [c.id, c.label])
+);
 
 export const COMPONENT_LABELS: Partial<Record<keyof ClinicCost, string>> = {
   consultation: 'Consultation',
@@ -405,7 +684,7 @@ export function ClinicCostings({
   // Everything except the minimum-success filter, so each threshold can be
   // tested against the same set the user is currently looking at.
   const withoutMinSuccess = allPriced.filter((c) => {
-    if (location !== 'all' && c.regionSlug !== location) return false;
+    if (location !== 'all' && c.country !== location) return false;
     if (clinicFilter !== 'all' && c.slug !== clinicFilter) return false;
     if (budget) {
       if (c.total === null) return false;
@@ -590,9 +869,12 @@ export function ClinicCostings({
 
       {/* Sample data notice — remove once real listings are ingested */}
       <div className="glass rounded-2xl p-4 text-xs text-[#5C6478] leading-relaxed">
-        <span className="font-semibold text-[#B4762F]">Sample data.</span> These clinics are
-        fictional and their prices and outcomes are illustrative, used to build and test the
-        comparison. No figure here describes a real clinic.
+        <span className="font-semibold text-[#B4762F]">Sample data.</span> These UK and
+        international clinics are fictional and their prices and outcomes are illustrative, used to
+        build and test the comparison. No figure here describes a real clinic. All prices are shown
+        in <span className="font-semibold text-[#2F3440]">GBP</span> for comparison; abroad, the
+        headline saving does not include travel, accommodation or the harder task of checking a
+        clinic&rsquo;s results.
       </div>
 
       {/* Refine */}
@@ -791,7 +1073,9 @@ export function ClinicCostings({
                             </span>
                           )}
                         </div>
-                        <div className="text-xs text-gray-500">{clinic.location}</div>
+                        <div className="text-xs text-gray-500">
+                          {clinic.location} · {COUNTRY_LABELS[clinic.country] ?? clinic.country}
+                        </div>
                       </div>
                     </TableCell>
                     {clinic.components.map((c) => (
