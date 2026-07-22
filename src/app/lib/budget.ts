@@ -19,17 +19,20 @@ export interface BudgetBracket {
  * drift apart.
  */
 export const BUDGET_BRACKETS: Record<ServiceType, BudgetBracket[]> = {
+  // Bracket boundaries are fitted to the actual spread of computed totals so
+  // every option returns clinics — no bracket the form offers can land on the
+  // empty state. Refit these whenever the underlying prices change.
   'egg-freezing': [
     { id: 'ef-under-4500', label: 'Under £4,500', min: 0, max: 4500 },
-    { id: 'ef-4500-5500', label: '£4,500 – £5,500', min: 4500, max: 5500 },
-    { id: 'ef-5500-6500', label: '£5,500 – £6,500', min: 5500, max: 6500 },
-    { id: 'ef-over-6500', label: 'Over £6,500', min: 6500, max: Infinity },
+    { id: 'ef-4500-5000', label: '£4,500 – £5,000', min: 4500, max: 5000 },
+    { id: 'ef-5000-5500', label: '£5,000 – £5,500', min: 5000, max: 5500 },
+    { id: 'ef-over-5500', label: 'Over £5,500', min: 5500, max: Infinity },
   ],
   embryo: [
     { id: 'em-under-5500', label: 'Under £5,500', min: 0, max: 5500 },
-    { id: 'em-5500-6500', label: '£5,500 – £6,500', min: 5500, max: 6500 },
-    { id: 'em-6500-7500', label: '£6,500 – £7,500', min: 6500, max: 7500 },
-    { id: 'em-over-7500', label: 'Over £7,500', min: 7500, max: Infinity },
+    { id: 'em-5500-6000', label: '£5,500 – £6,000', min: 5500, max: 6000 },
+    { id: 'em-6000-6500', label: '£6,000 – £6,500', min: 6000, max: 6500 },
+    { id: 'em-over-6500', label: 'Over £6,500', min: 6500, max: Infinity },
   ],
   ivf: [
     { id: 'ivf-under-9000', label: 'Under £9,000', min: 0, max: 9000 },

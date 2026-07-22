@@ -591,6 +591,12 @@ export function ClinicCostings({
               </button>
             ))}
           </div>
+          {minSuccess !== null && (
+            <p className="text-[11px] text-[#5C6478] mt-2 max-w-xs leading-relaxed">
+              Clinics with no published rate for this age band are still shown — a clinic is only
+              excluded when it has published a figure below {minSuccess}%.
+            </p>
+          )}
         </div>
 
         <div>
@@ -761,7 +767,7 @@ export function ClinicCostings({
                           <div className="flex items-center gap-2">
                             <div className="flex-1 bg-gray-200 rounded-full h-2 min-w-[48px]">
                               <div
-                                className="bg-[#A8BEEB] h-2 rounded-full"
+                                className="bg-[#5B6AA5] h-2 rounded-full"
                                 style={{ width: `${clinic.outcome.rate}%` }}
                               />
                             </div>
