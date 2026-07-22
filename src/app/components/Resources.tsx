@@ -1,6 +1,25 @@
 import { useState } from 'react';
 import { ArrowLeft, Clock, ChevronRight } from 'lucide-react';
 import { Button } from './ui/button';
+import eggFreezingCover from '../../assets/photos/resource-egg-freezing.jpg';
+import embryoFreezingCover from '../../assets/photos/resource-embryo-freezing.jpg';
+import ivfCover from '../../assets/photos/resource-ivf.jpg';
+import fertilityTestingCover from '../../assets/photos/resource-fertility-testing.jpg';
+import costsPlanningCover from '../../assets/photos/resource-costs-planning.jpg';
+
+/**
+ * One soft, abstract cover per category — a shared mood image rather than a
+ * literal illustration. Deliberately no people and nothing clinical: on a
+ * fertility page a calm gradient sets tone without attributing a condition to
+ * anyone or implying a medical claim. Sources are recorded in ATTRIBUTIONS.md.
+ */
+const CATEGORY_COVERS: Record<string, string> = {
+  'Egg Freezing': eggFreezingCover,
+  'Embryo Freezing': embryoFreezingCover,
+  IVF: ivfCover,
+  'Fertility Testing': fertilityTestingCover,
+  'Costs & Planning': costsPlanningCover,
+};
 
 interface ResourcesProps {
   onBack: () => void;
@@ -592,6 +611,15 @@ export function Resources({ onBack, initialCategory = 'All' }: ResourcesProps) {
           All resources
         </Button>
 
+        <div className="relative rounded-2xl overflow-hidden mb-8 h-40 md:h-52">
+          <img
+            src={CATEGORY_COVERS[openArticle.category]}
+            alt=""
+            aria-hidden="true"
+            className="w-full h-full object-cover"
+          />
+        </div>
+
         <div className="flex items-center gap-3 mb-5">
           <span className="grain text-[11px] font-semibold uppercase tracking-wide text-[#5B6AA5] bg-[#DEE8FF]/70 px-3 py-1 rounded-full">
             {openArticle.category}
@@ -684,27 +712,41 @@ export function Resources({ onBack, initialCategory = 'All' }: ResourcesProps) {
               setOpenArticle(article);
               window.scrollTo({ top: 0 });
             }}
-            className="group glass rounded-2xl p-6 text-left flex flex-col transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_12px_40px_rgba(120,140,200,0.22)]"
+            className="group glass rounded-2xl overflow-hidden text-left flex flex-col transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_12px_40px_rgba(120,140,200,0.22)]"
           >
-            <div className="flex items-center justify-between mb-5">
-              <span className="grain text-[11px] font-semibold uppercase tracking-wide text-[#5B6AA5] bg-[#DEE8FF]/70 px-3 py-1 rounded-full">
-                {article.category}
-              </span>
-              <span className="flex items-center gap-1.5 text-xs text-[#5C6478]">
-                <Clock className="w-3 h-3" />
-                {article.readTime}
-              </span>
+            <div className="relative h-28 overflow-hidden">
+              <img
+                src={CATEGORY_COVERS[article.category]}
+                alt=""
+                aria-hidden="true"
+                loading="lazy"
+                className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-[1.04]"
+              />
+              {/* Keeps the title legible on the lightest gradients where the card body meets the image. */}
+              <div className="absolute inset-x-0 bottom-0 h-10 bg-gradient-to-t from-white/70 to-transparent" />
             </div>
 
-            <h3 className="text-lg font-semibold text-[#2F3440] leading-snug mb-3">
-              {article.title}
-            </h3>
-            <p className="text-sm text-[#5C6478] leading-relaxed mb-5 flex-1">{article.excerpt}</p>
+            <div className="p-6 flex flex-col flex-1">
+              <div className="flex items-center justify-between mb-5">
+                <span className="grain text-[11px] font-semibold uppercase tracking-wide text-[#5B6AA5] bg-[#DEE8FF]/70 px-3 py-1 rounded-full">
+                  {article.category}
+                </span>
+                <span className="flex items-center gap-1.5 text-xs text-[#5C6478]">
+                  <Clock className="w-3 h-3" />
+                  {article.readTime}
+                </span>
+              </div>
 
-            <span className="flex items-center gap-1.5 text-sm font-semibold text-[#5B6AA5]">
-              Read guide
-              <ChevronRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5" />
-            </span>
+              <h3 className="text-lg font-semibold text-[#2F3440] leading-snug mb-3">
+                {article.title}
+              </h3>
+              <p className="text-sm text-[#5C6478] leading-relaxed mb-5 flex-1">{article.excerpt}</p>
+
+              <span className="flex items-center gap-1.5 text-sm font-semibold text-[#5B6AA5]">
+                Read guide
+                <ChevronRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5" />
+              </span>
+            </div>
           </button>
         ))}
       </div>

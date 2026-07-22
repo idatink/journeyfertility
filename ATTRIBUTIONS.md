@@ -22,6 +22,22 @@ from our own domain rather than Unsplash's CDN, for the same privacy reason.
 > suggests they endorse this service. See `docs/DPIA.md` and the note in
 > `App.tsx` above the testimonials data.
 
+## Resources page category covers
+
+Five soft, abstract cover images in `src/assets/photos/resource-*.jpg`, one per
+Resources category, from [Unsplash](https://unsplash.com) under the
+[Unsplash License](https://unsplash.com/license). Served from our own domain,
+not Unsplash's CDN. All are non-representational (gradients, light and shadow) —
+no identifiable people, so the likeness note above does not apply.
+
+| File | Category | Source |
+|---|---|---|
+| `resource-egg-freezing.jpg` | Egg Freezing | https://unsplash.com/photos/a-blurry-photo-of-a-pink-and-blue-background-qlW7RwHZVG8 |
+| `resource-embryo-freezing.jpg` | Embryo Freezing | https://unsplash.com/photos/photo-of-blue-and-pink-sea-n7a2OJDSZns |
+| `resource-ivf.jpg` | IVF | https://unsplash.com/photos/photo-1554034483-04fda0d3507b |
+| `resource-fertility-testing.jpg` | Fertility Testing | https://unsplash.com/photos/window-shadow-on-wall-RIQ96s3Uzso |
+| `resource-costs-planning.jpg` | Costs & Planning | https://unsplash.com/photos/a-blurry-image-of-a-blue-and-green-background-5Q6yZN8ckuY |
+
 ## Card photography
 
 `egg-freezing-card.jpg` and `fertility-testing-card.jpg` were supplied by the

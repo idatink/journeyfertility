@@ -592,8 +592,17 @@ export default function App() {
         {viewMode === 'home' && (
           <>
         {/* Featured Destination Card with Lab Visuals */}
-        <div className="relative rounded-lg overflow-hidden mb-8 h-64 md:h-80 lg:h-96">
-          <ImageWithFallback 
+        {/*
+          The banner is a fixed-height image with a bottom-anchored text overlay
+          on desktop. On mobile that fixed height (h-64) is shorter than the
+          content, and because the overlay was `absolute inset-0` inside an
+          `overflow-hidden` box, the top of the heading got clipped. So on mobile
+          we let the content drive the height (overlay is `relative`, image sits
+          behind as an absolute background); from md up we restore the original
+          fixed-height, bottom-anchored banner exactly as before.
+        */}
+        <div className="relative rounded-lg overflow-hidden mb-8 md:h-80 lg:h-96">
+          <ImageWithFallback
             src={
               serviceType === 'egg-freezing'
                 ? eggFreezingBanner
@@ -612,9 +621,9 @@ export default function App() {
                 ? "Laboratory culture dishes with a pipette"
                 : "A softly lit orb in blue and rose, diagnostic testing"
             }
-            className="w-full h-full object-cover"
+            className="absolute inset-0 w-full h-full object-cover"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-white/95 via-white/70 to-white/10 flex flex-col justify-end p-8 md:p-12">
+          <div className="relative md:absolute md:inset-0 bg-gradient-to-t from-white/95 via-white/70 to-white/10 flex flex-col justify-end p-8 md:p-12">
             <div className="max-w-3xl">
               <span className="grain inline-block px-3 py-1 bg-[#F8AD7C] text-[#2F3440] text-xs font-bold uppercase tracking-wider rounded-full mb-4">
                 Clinical Excellence & Transparency
