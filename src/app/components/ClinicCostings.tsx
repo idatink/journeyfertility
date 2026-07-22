@@ -1,5 +1,5 @@
-import { useState, useEffect, Fragment } from 'react';
-import { ArrowUpDown, ChevronDown, ChevronUp } from 'lucide-react';
+import { useState, Fragment } from 'react';
+import { ArrowUpDown, ChevronDown, ChevronUp, ExternalLink } from 'lucide-react';
 import { Button } from './ui/button';
 import {
   Table,
@@ -12,776 +12,365 @@ import {
 import { AtHomeTestKitsComparison } from './AtHomeTestKitsComparison';
 import { getBudgetBounds } from '../lib/budget';
 import { EnquiryFlow } from './EnquiryFlow';
-import { AGE_BANDS, OUTCOME_BASIS, getOutcome, type AgeBand } from '../lib/outcomes';
-import { PRICE_SOURCES, getProvenance } from '../lib/provenance';
 
 interface ClinicCostingsProps {
   serviceType: 'egg-freezing' | 'embryo' | 'ivf' | 'fertility';
   atHomeOnly?: boolean;
-  /** city slug from the search form, or 'all' */
+  /** kept for the search form; geography is not filtered in the UK-only MVP */
   location?: string;
   /** clinic slug from the search form, or 'all' */
   clinic?: string;
-  /** budget bracket id from the search form, or 'all' / 'flexible' */
+  /** budget bracket id from the search form, or 'all' */
   budgetRange?: string;
   onShowPrivacy?: () => void;
 }
 
-// Budget bounds come from the shared bracket table so the form options and the
-// filter can never drift apart.
+type ServiceType = ClinicCostingsProps['serviceType'];
 
-interface ClinicCost {
+/**
+ * Real, HFEA-licensed UK clinics.
+ *
+ * Prices are how clinics actually publish them: a single bundled "from" cycle
+ * price, with medications quoted separately, and storage where relevant. We do
+ * not invent an itemised breakdown a clinic has not published, and we do not
+ * invent a price at all — a clinic that does not publish one shows "Request a
+ * quote", never a made-up number.
+ *
+ * Where a figure is shown it comes from the clinic's own published price list
+ * on the date noted (`priceCheckedLabel`). Success rates are not republished
+ * here: each clinic links to its verified results on the HFEA register, which
+ * is the authoritative source.
+ */
+interface Clinic {
   id: number;
   slug: string;
-  regionSlug: string;
-  /** country slug for the cross-country filter */
-  country: string;
-  fundingRoutes: ("nhs" | "private")[];
-  /** how much of its price list the clinic publishes */
-  pricingCompleteness: "full" | "partial" | "none";
   clinicName: string;
-  location: string;
-  consultation: number;
-  eggRetrieval: number;
-  ivfCycle: number;
-  embryoTransfer: number;
-  medications: number;
-  storagePerYear: number;
-  geneticTesting: number;
-  embryoFreezing: number;
-  fertilityTestPanel: number;
-  successRate: number;
-  total: number;
+  city: string;
+  /** the clinic's verified results on the HFEA register */
+  hfeaUrl: string;
+  fundingRoutes: ('nhs' | 'private')[];
+  /** bundled "from" prices per service, in GBP; null = clinic does not publish */
+  ivfCycle: number | null;
+  eggFreezingCycle: number | null;
+  embryoCycle: number | null;
+  testingFee: number | null;
+  consultation: number | null;
+  storagePerYear: number | null;
+  /** almost always false — cycle prices exclude drugs */
+  medsIncluded: boolean;
+  /** where a published price came from, shown against the total */
+  priceSourceUrl?: string;
+  priceCheckedLabel?: string;
 }
 
-interface AtHomeTestKit {
-  id: number;
-  name: string;
-  provider: string;
-  price: number;
-  testsIncluded: string[];
-  turnaroundTime: string;
-  hsaEligible: boolean;
-  nurseConsult: boolean;
-  rating: number;
-  reviews: number;
-  badge?: string;
-}
+// The HFEA "Choose a Fertility Clinic" tool, where each clinic's regulated
+// success rates can be checked at source.
+const HFEA = 'https://www.hfea.gov.uk/choose-a-clinic/clinic-search/';
 
-const mockClinicData: ClinicCost[] = [
+const REAL_CLINICS: Clinic[] = [
   {
     id: 1,
-    slug: "thames-fertility",
-    regionSlug: "london",
-    country: "uk",
-    pricingCompleteness: "full",
-    fundingRoutes: ["nhs", "private"],
-    clinicName: "Thames Fertility Centre",
-    location: "London",
-    consultation: 200,
-    eggRetrieval: 3200,
-    ivfCycle: 4500,
-    embryoTransfer: 1400,
-    medications: 1500,
-    storagePerYear: 350,
-    geneticTesting: 2800,
-    embryoFreezing: 1100,
-    fertilityTestPanel: 250,
-    successRate: 0,
-    total: 0
+    slug: 'crgh',
+    clinicName: 'CRGH — Centre for Reproductive & Genetic Health',
+    city: 'London',
+    hfeaUrl: HFEA,
+    fundingRoutes: ['private'],
+    ivfCycle: 5790,
+    eggFreezingCycle: 3350,
+    embryoCycle: null,
+    testingFee: 250,
+    consultation: 250,
+    storagePerYear: 425,
+    medsIncluded: false,
+    priceSourceUrl: 'https://crgh.co.uk/pricelist/',
+    priceCheckedLabel: 'Jul 2026',
   },
   {
     id: 2,
-    slug: "southbank-reproductive",
-    regionSlug: "london",
-    country: "uk",
-    pricingCompleteness: "full",
-    fundingRoutes: ["private"],
-    clinicName: "Southbank Reproductive Health",
-    location: "London",
-    consultation: 250,
-    eggRetrieval: 3600,
-    ivfCycle: 5200,
-    embryoTransfer: 1600,
-    medications: 1800,
-    storagePerYear: 420,
-    geneticTesting: 3200,
-    embryoFreezing: 1300,
-    fertilityTestPanel: 320,
-    successRate: 0,
-    total: 0
+    slug: 'create-fertility',
+    clinicName: 'CREATE Fertility',
+    city: 'London & nationwide',
+    hfeaUrl: HFEA,
+    fundingRoutes: ['private'],
+    ivfCycle: 3795,
+    eggFreezingCycle: 3195,
+    embryoCycle: null,
+    testingFee: 175,
+    consultation: 175,
+    storagePerYear: null,
+    medsIncluded: false,
+    priceSourceUrl: 'https://www.createfertility.co.uk/costs',
+    priceCheckedLabel: 'Jul 2026',
   },
   {
     id: 3,
-    slug: "camden-ivf",
-    regionSlug: "london",
-    country: "uk",
-    pricingCompleteness: "partial",
-    fundingRoutes: ["nhs", "private"],
-    clinicName: "Camden IVF Clinic",
-    location: "London",
-    consultation: 220,
-    eggRetrieval: 3400,
-    ivfCycle: 4800,
-    embryoTransfer: 1500,
-    medications: 1650,
-    storagePerYear: 380,
-    geneticTesting: 3000,
-    embryoFreezing: 1200,
-    fertilityTestPanel: 280,
-    successRate: 0,
-    total: 0
+    slug: 'manchester-fertility',
+    clinicName: 'Manchester Fertility',
+    city: 'Manchester',
+    hfeaUrl: HFEA,
+    fundingRoutes: ['private'],
+    ivfCycle: null,
+    eggFreezingCycle: 4995,
+    embryoCycle: null,
+    testingFee: null,
+    consultation: null,
+    storagePerYear: null,
+    medsIncluded: false,
+    priceSourceUrl: 'https://www.manchesterfertility.com/prices/',
+    priceCheckedLabel: 'Jul 2026',
   },
   {
     id: 4,
-    slug: "mersey-fertility",
-    regionSlug: "north-west",
-    country: "uk",
-    pricingCompleteness: "full",
-    fundingRoutes: ["nhs", "private"],
-    clinicName: "Mersey Fertility Institute",
-    location: "Liverpool",
-    consultation: 150,
-    eggRetrieval: 2700,
-    ivfCycle: 3800,
-    embryoTransfer: 1150,
-    medications: 1250,
-    storagePerYear: 270,
-    geneticTesting: 2300,
-    embryoFreezing: 900,
-    fertilityTestPanel: 190,
-    successRate: 0,
-    total: 0
+    slug: 'care-fertility',
+    clinicName: 'Care Fertility',
+    city: 'Nottingham & nationwide',
+    hfeaUrl: HFEA,
+    fundingRoutes: ['nhs', 'private'],
+    ivfCycle: null,
+    eggFreezingCycle: null,
+    embryoCycle: null,
+    testingFee: null,
+    consultation: null,
+    storagePerYear: null,
+    medsIncluded: false,
   },
   {
     id: 5,
-    slug: "pennine-reproductive",
-    regionSlug: "north-west",
-    country: "uk",
-    pricingCompleteness: "full",
-    fundingRoutes: ["nhs", "private"],
-    clinicName: "Pennine Reproductive Centre",
-    location: "Manchester",
-    consultation: 165,
-    eggRetrieval: 2900,
-    ivfCycle: 4100,
-    embryoTransfer: 1250,
-    medications: 1350,
-    storagePerYear: 290,
-    geneticTesting: 2500,
-    embryoFreezing: 980,
-    fertilityTestPanel: 210,
-    successRate: 0,
-    total: 0
+    slug: 'lister-fertility',
+    clinicName: 'The Lister Fertility Clinic',
+    city: 'London',
+    hfeaUrl: HFEA,
+    fundingRoutes: ['private'],
+    ivfCycle: null,
+    eggFreezingCycle: null,
+    embryoCycle: null,
+    testingFee: null,
+    consultation: null,
+    storagePerYear: null,
+    medsIncluded: false,
   },
   {
     id: 6,
-    slug: "northern-lights-fertility",
-    regionSlug: "scotland",
-    country: "uk",
-    pricingCompleteness: "full",
-    fundingRoutes: ["nhs", "private"],
-    clinicName: "Northern Lights Fertility",
-    location: "Edinburgh",
-    consultation: 160,
-    eggRetrieval: 2800,
-    ivfCycle: 4000,
-    embryoTransfer: 1200,
-    medications: 1300,
-    storagePerYear: 280,
-    geneticTesting: 2400,
-    embryoFreezing: 950,
-    fertilityTestPanel: 200,
-    successRate: 0,
-    total: 0
+    slug: 'argc',
+    clinicName: 'ARGC — Assisted Reproduction & Gynaecology Centre',
+    city: 'London',
+    hfeaUrl: HFEA,
+    fundingRoutes: ['private'],
+    ivfCycle: null,
+    eggFreezingCycle: null,
+    embryoCycle: null,
+    testingFee: null,
+    consultation: null,
+    storagePerYear: null,
+    medsIncluded: false,
   },
   {
     id: 7,
-    slug: "clyde-reproductive",
-    regionSlug: "scotland",
-    country: "uk",
-    pricingCompleteness: "partial",
-    fundingRoutes: ["nhs"],
-    clinicName: "Clyde Reproductive Health",
-    location: "Glasgow",
-    consultation: 145,
-    eggRetrieval: 2650,
-    ivfCycle: 3700,
-    embryoTransfer: 1100,
-    medications: 1200,
-    storagePerYear: 260,
-    geneticTesting: 2250,
-    embryoFreezing: 880,
-    fertilityTestPanel: 180,
-    successRate: 0,
-    total: 0
+    slug: 'bourn-hall',
+    clinicName: 'Bourn Hall Clinic',
+    city: 'Cambridge',
+    hfeaUrl: HFEA,
+    fundingRoutes: ['nhs', 'private'],
+    ivfCycle: null,
+    eggFreezingCycle: null,
+    embryoCycle: null,
+    testingFee: null,
+    consultation: null,
+    storagePerYear: null,
+    medsIncluded: false,
   },
   {
     id: 8,
-    slug: "severn-fertility",
-    regionSlug: "south-west",
-    country: "uk",
-    pricingCompleteness: "none",
-    fundingRoutes: ["private"],
-    clinicName: "Severn Fertility Clinic",
-    location: "Bristol",
-    consultation: 190,
-    eggRetrieval: 3100,
-    ivfCycle: 4400,
-    embryoTransfer: 1350,
-    medications: 1450,
-    storagePerYear: 330,
-    geneticTesting: 2700,
-    embryoFreezing: 1050,
-    fertilityTestPanel: 240,
-    successRate: 0,
-    total: 0
+    slug: 'tfp-oxford',
+    clinicName: 'TFP Oxford Fertility',
+    city: 'Oxford',
+    hfeaUrl: HFEA,
+    fundingRoutes: ['private'],
+    ivfCycle: null,
+    eggFreezingCycle: null,
+    embryoCycle: null,
+    testingFee: null,
+    consultation: null,
+    storagePerYear: null,
+    medsIncluded: false,
   },
   {
     id: 9,
-    slug: "midlands-fertility",
-    regionSlug: "west-midlands",
-    country: "uk",
-    pricingCompleteness: "full",
-    fundingRoutes: ["nhs", "private"],
-    clinicName: "Midlands Fertility Institute",
-    location: "Birmingham",
-    consultation: 170,
-    eggRetrieval: 2950,
-    ivfCycle: 4200,
-    embryoTransfer: 1280,
-    medications: 1380,
-    storagePerYear: 300,
-    geneticTesting: 2550,
-    embryoFreezing: 1000,
-    fertilityTestPanel: 215,
-    successRate: 0,
-    total: 0
+    slug: 'guys-st-thomas',
+    clinicName: "Guy's & St Thomas' Assisted Conception Unit",
+    city: 'London',
+    hfeaUrl: HFEA,
+    fundingRoutes: ['nhs', 'private'],
+    ivfCycle: null,
+    eggFreezingCycle: null,
+    embryoCycle: null,
+    testingFee: null,
+    consultation: null,
+    storagePerYear: null,
+    medsIncluded: false,
   },
   {
     id: 10,
-    slug: "wharfedale-reproductive",
-    regionSlug: "yorkshire",
-    country: "uk",
-    pricingCompleteness: "partial",
-    fundingRoutes: ["nhs", "private"],
-    clinicName: "Wharfedale Reproductive Centre",
-    location: "Leeds",
-    consultation: 155,
-    eggRetrieval: 2750,
-    ivfCycle: 3900,
-    embryoTransfer: 1180,
-    medications: 1280,
-    storagePerYear: 275,
-    geneticTesting: 2350,
-    embryoFreezing: 920,
-    fertilityTestPanel: 195,
-    successRate: 0,
-    total: 0
+    slug: 'newlife-fertility',
+    clinicName: 'NewLife Fertility',
+    city: 'Kent',
+    hfeaUrl: HFEA,
+    fundingRoutes: ['private'],
+    ivfCycle: null,
+    eggFreezingCycle: null,
+    embryoCycle: null,
+    testingFee: null,
+    consultation: null,
+    storagePerYear: null,
+    medsIncluded: false,
   },
-  {
-    id: 11,
-    slug: "cardiff-bay-fertility",
-    regionSlug: "wales",
-    country: "uk",
-    pricingCompleteness: "full",
-    fundingRoutes: ["nhs", "private"],
-    clinicName: "Cardiff Bay Fertility",
-    location: "Cardiff",
-    consultation: 150,
-    eggRetrieval: 2700,
-    ivfCycle: 3850,
-    embryoTransfer: 1150,
-    medications: 1240,
-    storagePerYear: 265,
-    geneticTesting: 2300,
-    embryoFreezing: 900,
-    fertilityTestPanel: 185,
-    successRate: 0,
-    total: 0
-  },
-  {
-    id: 12,
-    slug: "lagan-fertility",
-    regionSlug: "northern-ireland",
-    country: "uk",
-    pricingCompleteness: "none",
-    fundingRoutes: ["private"],
-    clinicName: "Lagan Fertility Centre",
-    location: "Belfast",
-    consultation: 175,
-    eggRetrieval: 3000,
-    ivfCycle: 4250,
-    embryoTransfer: 1300,
-    medications: 1400,
-    storagePerYear: 310,
-    geneticTesting: 2600,
-    embryoFreezing: 1020,
-    fertilityTestPanel: 225,
-    successRate: 0,
-    total: 0
-  },
-{
-    id: 13,
-    slug: "costa-brava-fertility",
-    regionSlug: "spain",
-    country: "spain",
-    pricingCompleteness: "full",
-    fundingRoutes: ["private"],
-    clinicName: "Costa Brava Fertility",
-    location: "Barcelona",
-    consultation: 130,
-    eggRetrieval: 2100,
-    ivfCycle: 1900,
-    embryoTransfer: 800,
-    medications: 1050,
-    storagePerYear: 300,
-    geneticTesting: 1900,
-    embryoFreezing: 700,
-    fertilityTestPanel: 180,
-    successRate: 0,
-    total: 0
-  },
-  {
-    id: 14,
-    slug: "meridian-reproductive-madrid",
-    regionSlug: "spain",
-    country: "spain",
-    pricingCompleteness: "full",
-    fundingRoutes: ["private"],
-    clinicName: "Meridian Reproductive Madrid",
-    location: "Madrid",
-    consultation: 120,
-    eggRetrieval: 1950,
-    ivfCycle: 1750,
-    embryoTransfer: 750,
-    medications: 980,
-    storagePerYear: 280,
-    geneticTesting: 1800,
-    embryoFreezing: 650,
-    fertilityTestPanel: 165,
-    successRate: 0,
-    total: 0
-  },
-  {
-    id: 15,
-    slug: "turia-ivf-valencia",
-    regionSlug: "spain",
-    country: "spain",
-    pricingCompleteness: "partial",
-    fundingRoutes: ["private"],
-    clinicName: "Turia IVF Valencia",
-    location: "Valencia",
-    consultation: 140,
-    eggRetrieval: 2200,
-    ivfCycle: 2050,
-    embryoTransfer: 850,
-    medications: 1100,
-    storagePerYear: 310,
-    geneticTesting: 2000,
-    embryoFreezing: 720,
-    fertilityTestPanel: 190,
-    successRate: 0,
-    total: 0
-  },
-  {
-    id: 16,
-    slug: "vltava-fertility-prague",
-    regionSlug: "czechia",
-    country: "czechia",
-    pricingCompleteness: "full",
-    fundingRoutes: ["private"],
-    clinicName: "Vltava Fertility Prague",
-    location: "Prague",
-    consultation: 90,
-    eggRetrieval: 1350,
-    ivfCycle: 1200,
-    embryoTransfer: 520,
-    medications: 720,
-    storagePerYear: 190,
-    geneticTesting: 1200,
-    embryoFreezing: 420,
-    fertilityTestPanel: 110,
-    successRate: 0,
-    total: 0
-  },
-  {
-    id: 17,
-    slug: "moravia-reproductive-brno",
-    regionSlug: "czechia",
-    country: "czechia",
-    pricingCompleteness: "partial",
-    fundingRoutes: ["private"],
-    clinicName: "Moravia Reproductive Brno",
-    location: "Brno",
-    consultation: 80,
-    eggRetrieval: 1200,
-    ivfCycle: 1050,
-    embryoTransfer: 480,
-    medications: 650,
-    storagePerYear: 170,
-    geneticTesting: 1100,
-    embryoFreezing: 380,
-    fertilityTestPanel: 95,
-    successRate: 0,
-    total: 0
-  },
-  {
-    id: 18,
-    slug: "charles-bridge-ivf",
-    regionSlug: "czechia",
-    country: "czechia",
-    pricingCompleteness: "full",
-    fundingRoutes: ["private"],
-    clinicName: "Charles Bridge IVF",
-    location: "Prague",
-    consultation: 100,
-    eggRetrieval: 1450,
-    ivfCycle: 1300,
-    embryoTransfer: 560,
-    medications: 780,
-    storagePerYear: 200,
-    geneticTesting: 1300,
-    embryoFreezing: 450,
-    fertilityTestPanel: 120,
-    successRate: 0,
-    total: 0
-  },
-  {
-    id: 19,
-    slug: "aegean-fertility-athens",
-    regionSlug: "greece",
-    country: "greece",
-    pricingCompleteness: "full",
-    fundingRoutes: ["private"],
-    clinicName: "Aegean Fertility Athens",
-    location: "Athens",
-    consultation: 100,
-    eggRetrieval: 1550,
-    ivfCycle: 1400,
-    embryoTransfer: 600,
-    medications: 820,
-    storagePerYear: 210,
-    geneticTesting: 1400,
-    embryoFreezing: 480,
-    fertilityTestPanel: 130,
-    successRate: 0,
-    total: 0
-  },
-  {
-    id: 20,
-    slug: "thermaic-ivf-thessaloniki",
-    regionSlug: "greece",
-    country: "greece",
-    pricingCompleteness: "partial",
-    fundingRoutes: ["private"],
-    clinicName: "Thermaic IVF Thessaloniki",
-    location: "Thessaloniki",
-    consultation: 90,
-    eggRetrieval: 1400,
-    ivfCycle: 1250,
-    embryoTransfer: 550,
-    medications: 750,
-    storagePerYear: 195,
-    geneticTesting: 1250,
-    embryoFreezing: 430,
-    fertilityTestPanel: 115,
-    successRate: 0,
-    total: 0
-  },
-  {
-    id: 21,
-    slug: "minoan-reproductive-crete",
-    regionSlug: "greece",
-    country: "greece",
-    pricingCompleteness: "full",
-    fundingRoutes: ["private"],
-    clinicName: "Minoan Reproductive Crete",
-    location: "Heraklion",
-    consultation: 110,
-    eggRetrieval: 1650,
-    ivfCycle: 1500,
-    embryoTransfer: 640,
-    medications: 880,
-    storagePerYear: 220,
-    geneticTesting: 1500,
-    embryoFreezing: 510,
-    fertilityTestPanel: 140,
-    successRate: 0,
-    total: 0
-  },
-  {
-    id: 22,
-    slug: "bosphorus-fertility-istanbul",
-    regionSlug: "turkey",
-    country: "turkey",
-    pricingCompleteness: "full",
-    fundingRoutes: ["private"],
-    clinicName: "Bosphorus Fertility Istanbul",
-    location: "Istanbul",
-    consultation: 75,
-    eggRetrieval: 1150,
-    ivfCycle: 1000,
-    embryoTransfer: 450,
-    medications: 620,
-    storagePerYear: 160,
-    geneticTesting: 1050,
-    embryoFreezing: 360,
-    fertilityTestPanel: 90,
-    successRate: 0,
-    total: 0
-  },
-  {
-    id: 23,
-    slug: "kyrenia-reproductive",
-    regionSlug: "turkey",
-    country: "turkey",
-    pricingCompleteness: "partial",
-    fundingRoutes: ["private"],
-    clinicName: "Kyrenia Reproductive",
-    location: "Kyrenia",
-    consultation: 70,
-    eggRetrieval: 1050,
-    ivfCycle: 920,
-    embryoTransfer: 420,
-    medications: 580,
-    storagePerYear: 150,
-    geneticTesting: 980,
-    embryoFreezing: 330,
-    fertilityTestPanel: 80,
-    successRate: 0,
-    total: 0
-  },
-  {
-    id: 24,
-    slug: "anatolia-ivf-ankara",
-    regionSlug: "turkey",
-    country: "turkey",
-    pricingCompleteness: "none",
-    fundingRoutes: ["private"],
-    clinicName: "Anatolia IVF Ankara",
-    location: "Ankara",
-    consultation: 80,
-    eggRetrieval: 1250,
-    ivfCycle: 1100,
-    embryoTransfer: 480,
-    medications: 660,
-    storagePerYear: 170,
-    geneticTesting: 1120,
-    embryoFreezing: 380,
-    fertilityTestPanel: 95,
-    successRate: 0,
-    total: 0
-  }
 ];
 
-type ServiceType = 'egg-freezing' | 'embryo' | 'ivf' | 'fertility';
-
-// Priced line items are always named explicitly. A total is the sum of real,
-// individually quoted components — never a multiplier applied to an unrelated
-// price. If a clinic has not quoted one of these, its total is unavailable
-// rather than estimated.
-const PRICED_COMPONENTS: Record<ServiceType, (keyof ClinicCost)[]> = {
-  'egg-freezing': ['consultation', 'eggRetrieval', 'medications', 'storagePerYear'],
-  embryo: ['consultation', 'eggRetrieval', 'medications', 'embryoFreezing', 'storagePerYear'],
-  ivf: ['consultation', 'eggRetrieval', 'ivfCycle', 'embryoTransfer', 'medications'],
-  fertility: ['consultation', 'fertilityTestPanel'],
-};
-
-/** Countries the comparison spans. Shared with the search form in App.tsx. */
-export const COUNTRIES = [
-  { id: 'uk', label: 'United Kingdom' },
-  { id: 'spain', label: 'Spain' },
-  { id: 'czechia', label: 'Czech Republic' },
-  { id: 'greece', label: 'Greece' },
-  { id: 'turkey', label: 'Türkiye & N. Cyprus' },
-] as const;
-
-const COUNTRY_LABELS: Record<string, string> = Object.fromEntries(
-  COUNTRIES.map((c) => [c.id, c.label])
-);
-
-export const COMPONENT_LABELS: Partial<Record<keyof ClinicCost, string>> = {
+const COMPONENT_LABELS: Record<string, string> = {
   consultation: 'Consultation',
-  eggRetrieval: 'Egg retrieval',
-  ivfCycle: 'IVF cycle',
-  embryoTransfer: 'Embryo transfer',
-  medications: 'Medications',
-  storagePerYear: 'Storage (first year)',
-  embryoFreezing: 'Fertilisation & freezing',
-  fertilityTestPanel: 'Test panel',
+  storagePerYear: 'Storage / year',
 };
 
-export interface PricedClinic extends ClinicCost {
-  /** null when the clinic has not quoted every component of this service */
-  total: number | null;
-  components: { key: keyof ClinicCost; label: string; amount: number }[];
+/**
+ * Each service has one bundled "headline" price plus the extra published items
+ * shown alongside it. The columns rendered are exactly these, so the figures on
+ * screen are the ones summed into the "from" total.
+ */
+const SERVICE_CONFIG: Record<
+  ServiceType,
+  { cycleKey: keyof Clinic; cycleLabel: string; extras: (keyof Clinic)[] }
+> = {
+  'egg-freezing': {
+    cycleKey: 'eggFreezingCycle',
+    cycleLabel: 'Egg freezing cycle',
+    extras: ['consultation', 'storagePerYear'],
+  },
+  embryo: {
+    cycleKey: 'embryoCycle',
+    cycleLabel: 'Embryo freeze & store',
+    extras: ['consultation', 'storagePerYear'],
+  },
+  ivf: {
+    cycleKey: 'ivfCycle',
+    cycleLabel: 'IVF cycle',
+    extras: ['consultation'],
+  },
+  fertility: {
+    cycleKey: 'testingFee',
+    cycleLabel: 'Assessment & consultation',
+    extras: [],
+  },
+};
+
+interface PricedClinic extends Clinic {
+  /** columns for this service: the cycle price and any published extras */
+  components: { key: string; label: string; amount: number | null }[];
+  /** true when the clinic does not publish a cycle price for this service */
+  priceOnRequest: boolean;
+  /** sum of the published components, or null when the cycle price is not published */
+  fromTotal: number | null;
 }
 
 function getServiceData(serviceType: ServiceType): PricedClinic[] {
-  const keys = PRICED_COMPONENTS[serviceType];
+  const cfg = SERVICE_CONFIG[serviceType];
+  const columns: (keyof Clinic)[] = [cfg.cycleKey, ...cfg.extras];
 
-  return mockClinicData.map((clinic) => {
-    const components = keys.map((key) => ({
-      key,
-      label: COMPONENT_LABELS[key] ?? String(key),
-      amount: clinic[key] as number,
+  return REAL_CLINICS.map((clinic) => {
+    const components = columns.map((key) => ({
+      key: String(key),
+      label: key === cfg.cycleKey ? cfg.cycleLabel : COMPONENT_LABELS[String(key)] ?? String(key),
+      amount: (clinic[key] as number | null) ?? null,
     }));
 
-    const incomplete = components.some(
-      (c) => typeof c.amount !== 'number' || Number.isNaN(c.amount)
-    );
+    const cyclePrice = clinic[cfg.cycleKey] as number | null;
+    const priceOnRequest = cyclePrice == null;
+    const fromTotal = priceOnRequest
+      ? null
+      : components.reduce((sum, c) => sum + (c.amount ?? 0), 0);
 
-    return {
-      ...clinic,
-      components,
-      total: incomplete ? null : components.reduce((sum, c) => sum + c.amount, 0),
-    };
+    return { ...clinic, components, priceOnRequest, fromTotal };
   });
 }
+
+const FUNDING_LABEL: Record<string, string> = { nhs: 'NHS', private: 'Private' };
 
 export function ClinicCostings({
   serviceType,
   atHomeOnly,
-  location = 'all',
   clinic: clinicFilter = 'all',
   budgetRange = 'all',
   onShowPrivacy = () => {},
 }: ClinicCostingsProps) {
-  const [ageBand, setAgeBand] = useState<AgeBand>('35-37');
-  const [transparencyOnly, setTransparencyOnly] = useState(false);
   const [funding, setFunding] = useState<'all' | 'nhs' | 'private'>('all');
-  const [enquiring, setEnquiring] = useState<{ slug: string; name: string } | null>(null);
-  const [minSuccess, setMinSuccess] = useState<number | null>(null);
-  const [sortField, setSortField] = useState<keyof ClinicCost>('total');
+  const [publishedOnly, setPublishedOnly] = useState(false);
+  const [sortField, setSortField] = useState<'clinicName' | 'price'>('price');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
   const [expandedRows, setExpandedRows] = useState<number[]>([]);
-
-  const handleSort = (field: keyof ClinicCost) => {
-    if (sortField === field) {
-      setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
-    } else {
-      setSortField(field);
-      setSortDirection('asc');
-    }
-  };
-
-  const allPriced = getServiceData(serviceType).map((c) => ({
-    ...c,
-    outcome: getOutcome(c.slug, ageBand),
-    provenance: getProvenance(c.slug),
-  }));
-
-  // The columns shown are exactly the components summed into the total for this
-  // service, so the line items on screen always reconcile with the Total — a
-  // testing quote never shows an IVF-cycle column, and the visible figures
-  // always add up to the number in the Total column.
-  const columns = PRICED_COMPONENTS[serviceType];
-
-  // Hard filters from the search form. Each is skipped when unset so that an
-  // untouched form returns everything.
-  const budget = getBudgetBounds(serviceType, budgetRange);
-  // Everything except the minimum-success filter, so each threshold can be
-  // tested against the same set the user is currently looking at.
-  const withoutMinSuccess = allPriced.filter((c) => {
-    if (location !== 'all' && c.country !== location) return false;
-    if (clinicFilter !== 'all' && c.slug !== clinicFilter) return false;
-    if (budget) {
-      if (c.total === null) return false;
-      if (c.total < budget.min || c.total >= budget.max) return false;
-    }
-    if (transparencyOnly && c.pricingCompleteness !== 'full') return false;
-    if (funding !== 'all' && !c.fundingRoutes.includes(funding)) return false;
-    return true;
-  });
-
-  // Only exclude on evidence: a clinic with no published figure for this age
-  // band is not the same as one that published a low figure.
-  const passesMinSuccess = (c: (typeof withoutMinSuccess)[number], threshold: number | null) =>
-    threshold === null || !(c.outcome && c.outcome.rate < threshold);
-
-  const filteredData = withoutMinSuccess.filter((c) => passesMinSuccess(c, minSuccess));
-
-  // A threshold that would leave zero clinics (given every other active filter,
-  // and the selected age band) is offered as disabled rather than as a dead
-  // option that silently empties the table. Recomputes when the age band or any
-  // other filter changes.
-  const SUCCESS_THRESHOLDS: (number | null)[] = [null, 20, 30, 40];
-  const emptyThresholds = new Set(
-    SUCCESS_THRESHOLDS.filter(
-      (v): v is number => v !== null && !withoutMinSuccess.some((c) => passesMinSuccess(c, v))
-    )
-  );
-
-  // If the current selection becomes impossible (e.g. after switching to an age
-  // band where no clinic reaches it), fall back to "Any" so the user never sits
-  // on an empty table caused by a now-invalid filter.
-  useEffect(() => {
-    if (minSuccess !== null && emptyThresholds.has(minSuccess)) setMinSuccess(null);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [minSuccess, ageBand, location, clinicFilter, budgetRange, transparencyOnly, funding]);
-
-  const activeFilterCount =
-    (location !== 'all' ? 1 : 0) +
-    (clinicFilter !== 'all' ? 1 : 0) +
-    (budget ? 1 : 0) +
-    (transparencyOnly ? 1 : 0) +
-    (funding !== 'all' ? 1 : 0) +
-    (minSuccess !== null ? 1 : 0);
-
-  const sortedData = [...filteredData].sort((a, b) => {
-    // Success sorts on the rate for the selected age band, not the legacy
-    // clinic-wide scalar, so the column and the ordering always agree.
-    const aValue = sortField === 'successRate' ? a.outcome?.rate ?? null : a[sortField];
-    const bValue = sortField === 'successRate' ? b.outcome?.rate ?? null : b[sortField];
-
-    // Clinics without a complete quote always sort last, whichever direction.
-    if (aValue === null && bValue === null) return 0;
-    if (aValue === null) return 1;
-    if (bValue === null) return -1;
-
-    if (typeof aValue === 'number' && typeof bValue === 'number') {
-      return sortDirection === 'asc' ? aValue - bValue : bValue - aValue;
-    }
-
-    if (typeof aValue === 'string' && typeof bValue === 'string') {
-      return sortDirection === 'asc'
-        ? aValue.localeCompare(bValue)
-        : bValue.localeCompare(aValue);
-    }
-
-    return 0;
-  });
-
-  // Best published outcome among the clinics currently matching, for the
-  // selected age band — not a clinic-wide figure across all ages.
-  const bestOutcome = sortedData
-    .filter((c) => c.outcome)
-    .sort((a, b) => b.outcome!.rate - a.outcome!.rate)[0];
-
-  const quotedTotals = sortedData
-    .map((c) => c.total)
-    .filter((t): t is number => t !== null);
-  const lowestTotal = quotedTotals.length ? Math.min(...quotedTotals) : null;
-
-  // Summary cards describe the clinics currently matching, using computed
-  // service totals — not the raw record, whose total is only a placeholder.
-  const cheapest =
-    lowestTotal !== null ? sortedData.find((c) => c.total === lowestTotal) ?? null : null;
-  const averageTotal = quotedTotals.length
-    ? Math.round(quotedTotals.reduce((a, b) => a + b, 0) / quotedTotals.length)
-    : null;
-
-  const toggleRowExpansion = (id: number) => {
-    setExpandedRows(prev =>
-      prev.includes(id) ? prev.filter(rowId => rowId !== id) : [...prev, id]
-    );
-  };
+  const [enquiring, setEnquiring] = useState<{ slug: string; name: string } | null>(null);
 
   // If fertility testing and at-home only selected, show at-home test kits
   if (serviceType === 'fertility' && atHomeOnly) {
     return <AtHomeTestKitsComparison />;
   }
+
+  const cfg = SERVICE_CONFIG[serviceType];
+  const allClinics = getServiceData(serviceType);
+
+  const budget = getBudgetBounds(serviceType, budgetRange);
+  const filteredData = allClinics.filter((c) => {
+    if (clinicFilter !== 'all' && c.slug !== clinicFilter) return false;
+    if (funding !== 'all' && !c.fundingRoutes.includes(funding)) return false;
+    if (publishedOnly && c.priceOnRequest) return false;
+    if (budget) {
+      if (c.fromTotal === null) return false;
+      if (c.fromTotal < budget.min || c.fromTotal >= budget.max) return false;
+    }
+    return true;
+  });
+
+  const activeFilterCount =
+    (clinicFilter !== 'all' ? 1 : 0) +
+    (budget ? 1 : 0) +
+    (funding !== 'all' ? 1 : 0) +
+    (publishedOnly ? 1 : 0);
+
+  const sortedData = [...filteredData].sort((a, b) => {
+    if (sortField === 'clinicName') {
+      return sortDirection === 'asc'
+        ? a.clinicName.localeCompare(b.clinicName)
+        : b.clinicName.localeCompare(a.clinicName);
+    }
+    // Clinics without a published price sort last, whichever direction.
+    if (a.fromTotal === null && b.fromTotal === null) return 0;
+    if (a.fromTotal === null) return 1;
+    if (b.fromTotal === null) return -1;
+    return sortDirection === 'asc' ? a.fromTotal - b.fromTotal : b.fromTotal - a.fromTotal;
+  });
+
+  const toggleSort = (field: 'clinicName' | 'price') => {
+    if (sortField === field) setSortDirection((d) => (d === 'asc' ? 'desc' : 'asc'));
+    else {
+      setSortField(field);
+      setSortDirection('asc');
+    }
+  };
+
+  const publishedTotals = sortedData
+    .map((c) => c.fromTotal)
+    .filter((t): t is number => t !== null);
+  const lowestTotal = publishedTotals.length ? Math.min(...publishedTotals) : null;
+  const cheapest =
+    lowestTotal !== null ? sortedData.find((c) => c.fromTotal === lowestTotal) ?? null : null;
+  const averageTotal = publishedTotals.length
+    ? Math.round(publishedTotals.reduce((a, b) => a + b, 0) / publishedTotals.length)
+    : null;
+  const publishingCount = sortedData.filter((c) => !c.priceOnRequest).length;
+
+  const toggleRowExpansion = (id: number) =>
+    setExpandedRows((prev) => (prev.includes(id) ? prev.filter((r) => r !== id) : [...prev, id]));
+
+  const priceLabel = (c: PricedClinic) =>
+    c.fromTotal !== null ? `from £${c.fromTotal.toLocaleString()}` : 'Request a quote';
 
   return (
     <div className="space-y-6">
@@ -789,7 +378,7 @@ export function ClinicCostings({
       <div>
         <h2 className="text-3xl mb-2">Clinic Cost Comparison</h2>
         <p className="text-[#5C6478]">
-          {sortedData.length} of {allPriced.length} clinics
+          {sortedData.length} of {allClinics.length} UK clinics
           {activeFilterCount > 0 && (
             <> · {activeFilterCount} filter{activeFilterCount > 1 ? 's' : ''} applied</>
           )}
@@ -797,139 +386,53 @@ export function ClinicCostings({
       </div>
 
       {/* Summary Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="bg-[#DEE8FF]/50 p-4 rounded-lg border-l-4 border border-[#A8BEEB]/60 border-l-[#5B6AA5]">
-          <div className="text-sm text-[#5B6AA5] mb-1">Lowest Total Cost</div>
-          <div className="text-2xl">
-            {cheapest ? `£${cheapest.total!.toLocaleString()}` : '—'}
-          </div>
+          <div className="text-sm text-[#5B6AA5] mb-1">Lowest published price</div>
+          <div className="text-2xl">{cheapest ? `from £${cheapest.fromTotal!.toLocaleString()}` : '—'}</div>
           <div className="text-sm text-gray-500 mt-1">
-            {cheapest ? cheapest.clinicName : 'No quoted prices'}
+            {cheapest ? cheapest.clinicName.split(' — ')[0] : 'No published prices'}
           </div>
         </div>
         <div className="glass p-4 rounded-xl">
-          <div className="text-sm text-[#5B6AA5] mb-1">Average Cost</div>
-          <div className="text-2xl">
-            {averageTotal !== null ? `£${averageTotal.toLocaleString()}` : '—'}
-          </div>
+          <div className="text-sm text-[#5B6AA5] mb-1">Average published price</div>
+          <div className="text-2xl">{averageTotal !== null ? `£${averageTotal.toLocaleString()}` : '—'}</div>
           <div className="text-sm text-gray-500 mt-1">
-            {averageTotal !== null ? `Across ${quotedTotals.length} quoted clinics` : 'No quoted prices'}
+            {averageTotal !== null ? `Across ${publishingCount} clinics` : 'No published prices'}
           </div>
         </div>
         <div className="glass p-4 rounded-xl">
-          <div className="text-sm text-[#5B6AA5] mb-1">Highest Success Rate</div>
+          <div className="text-sm text-[#5B6AA5] mb-1">Publishing a price</div>
           <div className="text-2xl">
-            {bestOutcome ? `${bestOutcome.outcome!.rate}%` : '—'}
-            {bestOutcome?.outcome!.lowSample && (
-              <span className="text-xs font-normal text-[#B4762F]"> · small sample</span>
-            )}
+            {publishingCount} of {sortedData.length}
           </div>
-          <div className="text-sm text-gray-500 mt-1">
-            {bestOutcome
-              ? `${bestOutcome.clinicName} · ${bestOutcome.outcome!.liveBirths}/${bestOutcome.outcome!.cyclesStarted} cycles, age ${AGE_BANDS.find((b) => b.id === ageBand)?.label.toLowerCase()}`
-              : 'No published outcomes'}
-          </div>
-        </div>
-        <div className="glass p-4 rounded-xl">
-          <div className="text-sm text-[#5B6AA5] mb-1">Clinics Compared</div>
-          <div className="text-2xl">{sortedData.length}</div>
-          <div className="text-sm text-gray-500 mt-1">Matching your filters</div>
+          <div className="text-sm text-gray-500 mt-1">The rest quote on enquiry</div>
         </div>
       </div>
 
-      {/* Age band — success rates are meaningless without it */}
-      <div className="glass rounded-2xl p-5 flex flex-col lg:flex-row lg:items-center gap-4 lg:gap-6">
-        <div className="lg:max-w-xs">
-          <div className="text-sm font-semibold text-[#2F3440] mb-1">Success rates for age</div>
-          <p className="text-xs text-[#5C6478] leading-relaxed">
-            Outcomes vary sharply with age. Pick your band to see comparable figures.
-          </p>
-        </div>
-        <div className="flex flex-wrap gap-2">
-          {AGE_BANDS.map((b) => (
-            <button
-              key={b.id}
-              onClick={() => setAgeBand(b.id)}
-              className={`grain text-sm font-medium px-4 py-2 rounded-full transition-all ${
-                ageBand === b.id
-                  ? 'bg-[#2F3440] text-white'
-                  : 'bg-white/60 text-[#2F3440] hover:bg-white/80'
-              }`}
-            >
-              {b.label}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      <p className="text-xs text-[#5C6478] -mt-2">
-        Showing <strong className="font-semibold text-[#2F3440]">{OUTCOME_BASIS.outcomeType}</strong>{' '}
-        {OUTCOME_BASIS.denominatorType}, {OUTCOME_BASIS.year}. Source: {OUTCOME_BASIS.source}.
-      </p>
-
-      {/* Sample data notice — remove once real listings are ingested */}
+      {/* Real-clinic notice */}
       <div className="glass rounded-2xl p-4 text-xs text-[#5C6478] leading-relaxed">
-        <span className="font-semibold text-[#B4762F]">Sample data.</span> These UK and
-        international clinics are fictional and their prices and outcomes are illustrative, used to
-        build and test the comparison. No figure here describes a real clinic. All prices are shown
-        in <span className="font-semibold text-[#2F3440]">GBP</span> for comparison; abroad, the
-        headline saving does not include travel, accommodation or the harder task of checking a
-        clinic&rsquo;s results.
+        <span className="font-semibold text-[#2F3440]">Real UK clinics, in GBP.</span> Prices come
+        from each clinic&rsquo;s own published price list on the date shown; where a clinic does not
+        publish a price, the total reads <span className="font-semibold">&ldquo;Request a quote&rdquo;</span>{' '}
+        rather than a made-up figure. <span className="font-semibold">Medications are quoted
+        separately</span> by the clinic and are not in these totals. Success rates are not
+        reproduced here — each clinic links to its verified results on the HFEA register.
       </div>
 
       {/* Refine */}
       <div className="glass rounded-2xl p-5 flex flex-wrap items-end gap-x-8 gap-y-4">
         <div>
           <div className="text-xs font-semibold uppercase tracking-wide text-[#5C6478] mb-2">
-            Minimum success rate
-          </div>
-          <div className="flex flex-wrap gap-2">
-            {SUCCESS_THRESHOLDS.map((v) => {
-              const disabled = v !== null && emptyThresholds.has(v);
-              return (
-                <button
-                  key={String(v)}
-                  onClick={() => setMinSuccess(v)}
-                  disabled={disabled}
-                  title={
-                    disabled
-                      ? `No clinic reaches ${v}% for this age band and the current filters`
-                      : undefined
-                  }
-                  className={`grain text-sm font-medium px-3.5 py-1.5 rounded-full transition-all ${
-                    disabled
-                      ? 'bg-white/40 text-[#B0B6C4] cursor-not-allowed'
-                      : minSuccess === v
-                      ? 'bg-[#2F3440] text-white'
-                      : 'bg-white/60 text-[#2F3440] hover:bg-white/80'
-                  }`}
-                >
-                  {v === null ? 'Any' : `${v}%+`}
-                </button>
-              );
-            })}
-          </div>
-          {minSuccess !== null && (
-            <p className="text-[11px] text-[#5C6478] mt-2 max-w-xs leading-relaxed">
-              Clinics with no published rate for this age band are still shown — a clinic is only
-              excluded when it has published a figure below {minSuccess}%.
-            </p>
-          )}
-        </div>
-
-        <div>
-          <div className="text-xs font-semibold uppercase tracking-wide text-[#5C6478] mb-2">
             Funding route
           </div>
           <div className="flex flex-wrap gap-2">
-            {([['all','Any'],['nhs','NHS funded'],['private','Private']] as const).map(([id,label]) => (
+            {([['all', 'Any'], ['nhs', 'NHS funded'], ['private', 'Private']] as const).map(([id, label]) => (
               <button
                 key={id}
                 onClick={() => setFunding(id)}
-                className={`grain text-sm font-medium px-3.5 py-1.5 rounded-full transition-all ${
-                  funding === id
-                    ? 'bg-[#2F3440] text-white'
-                    : 'bg-white/60 text-[#2F3440] hover:bg-white/80'
+                className={`grain text-sm font-medium px-3.5 py-1.5 rounded-full transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#5B6AA5] focus-visible:ring-offset-2 ${
+                  funding === id ? 'bg-[#2F3440] text-white' : 'bg-white/60 text-[#2F3440] hover:bg-white/80'
                 }`}
               >
                 {label}
@@ -941,47 +444,21 @@ export function ClinicCostings({
         <label className="flex items-center gap-2 text-sm text-[#2F3440] cursor-pointer pb-1.5">
           <input
             type="checkbox"
-            checked={transparencyOnly}
-            onChange={(e) => setTransparencyOnly(e.target.checked)}
+            checked={publishedOnly}
+            onChange={(e) => setPublishedOnly(e.target.checked)}
             className="accent-[#F8AD7C] w-4 h-4"
           />
-          Publishes full pricing only
+          Only clinics that publish a price
         </label>
-      </div>
-
-      {/* Where the prices come from */}
-      <div className="glass rounded-2xl p-5">
-        <div className="text-sm font-semibold text-[#2F3440] mb-3">Where these prices come from</div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-3">
-          {(Object.keys(PRICE_SOURCES) as (keyof typeof PRICE_SOURCES)[]).map((key) => (
-            <div key={key} className="flex gap-2.5 text-xs leading-relaxed">
-              <span
-                className={`font-semibold whitespace-nowrap ${
-                  key === 'partner'
-                    ? 'text-[#4F7A52]'
-                    : key === 'unverified'
-                    ? 'text-[#B4762F]'
-                    : 'text-[#5C6478]'
-                }`}
-              >
-                {PRICE_SOURCES[key].short}
-              </span>
-              <span className="text-[#5C6478]">{PRICE_SOURCES[key].description}</span>
-            </div>
-          ))}
-        </div>
       </div>
 
       {/* No results */}
       {sortedData.length === 0 && (
         <div className="glass rounded-2xl p-10 text-center">
-          <h3 className="text-lg font-semibold text-[#2F3440] mb-2">
-            No clinics match these filters
-          </h3>
+          <h3 className="text-lg font-semibold text-[#2F3440] mb-2">No clinics match these filters</h3>
           <p className="text-[#5C6478] max-w-md mx-auto">
-            No clinic matches this combination of location, provider, budget, funding route and
-            minimum success rate. Try widening the budget, lowering the minimum success rate, or
-            clearing the location to see what else is available.
+            Try clearing the budget or funding filter, or turning off &ldquo;only clinics that publish
+            a price&rdquo; — many clinics quote on enquiry rather than publishing a figure.
           </p>
         </div>
       )}
@@ -995,39 +472,23 @@ export function ClinicCostings({
                 <TableHead className="w-12"></TableHead>
                 <TableHead>
                   <button
-                    onClick={() => handleSort('clinicName')}
+                    onClick={() => toggleSort('clinicName')}
                     className="flex items-center gap-1 hover:text-[#5B6AA5]"
                   >
-                    Clinic Name
+                    Clinic
                     <ArrowUpDown className="w-3 h-3" />
                   </button>
                 </TableHead>
-                {columns.map((key) => (
-                  <TableHead key={key}>
-                    <button
-                      onClick={() => handleSort(key)}
-                      className="flex items-center gap-1 hover:text-[#5B6AA5]"
-                    >
-                      {COMPONENT_LABELS[key] ?? key}
-                      <ArrowUpDown className="w-3 h-3" />
-                    </button>
-                  </TableHead>
+                {cfg && [cfg.cycleLabel, ...cfg.extras.map((k) => COMPONENT_LABELS[String(k)] ?? String(k))].map((label) => (
+                  <TableHead key={label}>{label}</TableHead>
                 ))}
+                <TableHead>Results</TableHead>
                 <TableHead>
                   <button
-                    onClick={() => handleSort('successRate')}
+                    onClick={() => toggleSort('price')}
                     className="flex items-center gap-1 hover:text-[#5B6AA5]"
                   >
-                    Success Rate
-                    <ArrowUpDown className="w-3 h-3" />
-                  </button>
-                </TableHead>
-                <TableHead>
-                  <button
-                    onClick={() => handleSort('total')}
-                    className="flex items-center gap-1 hover:text-[#5B6AA5]"
-                  >
-                    Total Cost
+                    Total
                     <ArrowUpDown className="w-3 h-3" />
                   </button>
                 </TableHead>
@@ -1036,12 +497,9 @@ export function ClinicCostings({
             <TableBody>
               {sortedData.map((clinic) => (
                 <Fragment key={clinic.id}>
-                  <TableRow className={lowestTotal !== null && clinic.total === lowestTotal ? 'bg-[#DEE8FF]/40' : ''}>
+                  <TableRow className={lowestTotal !== null && clinic.fromTotal === lowestTotal ? 'bg-[#DEE8FF]/40' : ''}>
                     <TableCell>
-                      <button
-                        onClick={() => toggleRowExpansion(clinic.id)}
-                        className="hover:text-[#5B6AA5]"
-                      >
+                      <button onClick={() => toggleRowExpansion(clinic.id)} className="hover:text-[#5B6AA5]">
                         {expandedRows.includes(clinic.id) ? (
                           <ChevronUp className="w-4 h-4" />
                         ) : (
@@ -1051,129 +509,121 @@ export function ClinicCostings({
                     </TableCell>
                     <TableCell>
                       <div>
-                        <div className="flex items-center gap-2">
-                          {clinic.clinicName}
-                          {clinic.pricingCompleteness !== 'full' && (
-                            <span
-                              className="grain text-[10px] font-semibold uppercase tracking-wide text-[#B4762F] bg-[#F8AD7C]/20 px-2 py-0.5 rounded-full whitespace-nowrap"
-                              title={
-                                clinic.pricingCompleteness === 'none'
-                                  ? 'This clinic does not publish its prices. Our figures come from other sources.'
-                                  : 'This clinic publishes only part of its price list.'
-                              }
-                            >
-                              {clinic.pricingCompleteness === 'none'
-                                ? 'No published prices'
-                                : 'Partial pricing'}
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <span className="font-medium">{clinic.clinicName}</span>
+                          {clinic.priceOnRequest ? (
+                            <span className="grain text-[10px] font-semibold uppercase tracking-wide text-[#B4762F] bg-[#F8AD7C]/20 px-2 py-0.5 rounded-full whitespace-nowrap">
+                              Price on request
                             </span>
-                          )}
-                          {lowestTotal !== null && clinic.total === lowestTotal && (
-                            <span className="grain text-[10px] font-semibold uppercase tracking-wide text-[#5B6AA5] bg-[#DEE8FF]/70 px-2 py-0.5 rounded-full whitespace-nowrap">
-                              Best value
-                            </span>
+                          ) : (
+                            lowestTotal !== null &&
+                            clinic.fromTotal === lowestTotal && (
+                              <span className="grain text-[10px] font-semibold uppercase tracking-wide text-[#5B6AA5] bg-[#DEE8FF]/70 px-2 py-0.5 rounded-full whitespace-nowrap">
+                                Lowest published
+                              </span>
+                            )
                           )}
                         </div>
                         <div className="text-xs text-gray-500">
-                          {clinic.location} · {COUNTRY_LABELS[clinic.country] ?? clinic.country}
+                          {clinic.city} · {clinic.fundingRoutes.map((f) => FUNDING_LABEL[f]).join(' / ')}
                         </div>
                       </div>
                     </TableCell>
                     {clinic.components.map((c) => (
-                      <TableCell key={c.key}>£{c.amount.toLocaleString()}</TableCell>
+                      <TableCell key={c.key}>
+                        {c.amount !== null ? `£${c.amount.toLocaleString()}` : <span className="text-gray-400">—</span>}
+                      </TableCell>
                     ))}
                     <TableCell>
-                      {clinic.outcome ? (
-                        <div>
-                          <div className="flex items-center gap-2">
-                            <div className="flex-1 bg-gray-200 rounded-full h-2 min-w-[48px]">
-                              <div
-                                className="bg-[#5B6AA5] h-2 rounded-full"
-                                style={{ width: `${clinic.outcome.rate}%` }}
-                              />
-                            </div>
-                            <span className="text-sm whitespace-nowrap">{clinic.outcome.rate}%</span>
-                          </div>
-                          <div className="text-[11px] text-[#5C6478] mt-1 whitespace-nowrap">
-                            {clinic.outcome.liveBirths}/{clinic.outcome.cyclesStarted} cycles
-                            {clinic.outcome.lowSample && (
-                              <span className="text-[#B4762F]"> · small sample</span>
-                            )}
-                          </div>
-                        </div>
-                      ) : (
-                        <span className="text-sm text-[#5C6478]">Not published</span>
-                      )}
+                      <a
+                        href={clinic.hfeaUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1 text-sm text-[#5B6AA5] hover:underline"
+                      >
+                        HFEA results
+                        <ExternalLink className="w-3.5 h-3.5" />
+                      </a>
                     </TableCell>
                     <TableCell className="text-[#5B6AA5]">
-                      {clinic.total !== null ? (
-                        `£${clinic.total.toLocaleString()}`
+                      {clinic.fromTotal !== null ? (
+                        <>
+                          <div className="whitespace-nowrap">{priceLabel(clinic)}</div>
+                          {!clinic.medsIncluded && (
+                            <div className="text-[11px] text-[#5C6478]">+ medications</div>
+                          )}
+                        </>
                       ) : (
-                        <span className="text-[#5C6478] text-sm">Not quoted</span>
-                      )}
-                      {clinic.provenance && (
-                        <div
-                          className="text-[11px] mt-1 whitespace-nowrap"
-                          title={`${clinic.provenance.meta.label} — ${clinic.provenance.meta.description}`}
-                        >
-                          <span
-                            className={
-                              clinic.provenance.source === 'partner'
-                                ? 'text-[#4F7A52]'
-                                : clinic.provenance.source === 'unverified'
-                                ? 'text-[#B4762F]'
-                                : 'text-[#5C6478]'
-                            }
-                          >
-                            {clinic.provenance.meta.short}
-                          </span>
-                          <span className="text-[#5C6478]">
-                            {' '}· {clinic.provenance.verifiedLabel}
-                            {clinic.provenance.isStale && ' · stale'}
-                          </span>
-                        </div>
+                        <span className="text-[#5C6478] text-sm">Request a quote</span>
                       )}
                     </TableCell>
                   </TableRow>
-                  
+
                   {expandedRows.includes(clinic.id) && (
                     <TableRow className="bg-gray-50">
-                      <TableCell colSpan={columns.length + 4} className="p-6">
+                      <TableCell colSpan={cfg.extras.length + 5} className="p-6">
                         <div className="max-w-md space-y-4">
                           <div>
                             <h4 className="mb-3 text-sm font-semibold text-[#2F3440]">
-                              What makes up this total
+                              {clinic.priceOnRequest ? 'Pricing' : 'What makes up this total'}
                             </h4>
-                            <div className="space-y-2 text-sm">
-                              {clinic.components.map((c) => (
-                                <div key={c.key} className="flex justify-between">
-                                  <span className="text-[#5C6478]">{c.label}</span>
-                                  <span className="text-[#2F3440]">£{c.amount.toLocaleString()}</span>
+                            {clinic.priceOnRequest ? (
+                              <p className="text-sm text-[#5C6478] leading-relaxed">
+                                {clinic.clinicName.split(' — ')[0]} does not publish a price for this
+                                service. Send an enquiry and they will quote you directly.
+                              </p>
+                            ) : (
+                              <div className="space-y-2 text-sm">
+                                {clinic.components.map((c) => (
+                                  <div key={c.key} className="flex justify-between">
+                                    <span className="text-[#5C6478]">{c.label}</span>
+                                    <span className="text-[#2F3440]">
+                                      {c.amount !== null ? `£${c.amount.toLocaleString()}` : 'Not published'}
+                                    </span>
+                                  </div>
+                                ))}
+                                <div className="flex justify-between">
+                                  <span className="text-[#5C6478]">Medications</span>
+                                  <span className="text-[#2F3440]">
+                                    {clinic.medsIncluded ? 'Included' : 'Quoted separately'}
+                                  </span>
                                 </div>
-                              ))}
-                              <div className="flex justify-between border-t pt-2 font-semibold">
-                                <span className="text-[#2F3440]">Total</span>
-                                <span className="text-[#2F3440]">
-                                  {clinic.total !== null
-                                    ? `£${clinic.total.toLocaleString()}`
-                                    : 'Not quoted'}
-                                </span>
+                                <div className="flex justify-between border-t pt-2 font-semibold">
+                                  <span className="text-[#2F3440]">Total</span>
+                                  <span className="text-[#2F3440]">{priceLabel(clinic)}</span>
+                                </div>
                               </div>
-                            </div>
-                            {clinic.provenance && (
+                            )}
+                            {clinic.priceSourceUrl && (
                               <p className="text-[11px] text-[#5C6478] mt-3 leading-relaxed">
-                                {clinic.provenance.meta.label} · {clinic.provenance.verifiedLabel}
-                                {clinic.provenance.isStale && ' · may be out of date'}
+                                Published price ·{' '}
+                                <a
+                                  href={clinic.priceSourceUrl}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="text-[#5B6AA5] hover:underline"
+                                >
+                                  clinic price list
+                                </a>{' '}
+                                · checked {clinic.priceCheckedLabel}
                               </p>
                             )}
                           </div>
 
-                          <div className="flex justify-end">
+                          <div className="flex flex-wrap justify-end gap-3">
+                            <a
+                              href={clinic.hfeaUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="inline-flex items-center gap-1.5 text-sm font-medium text-[#5B6AA5] hover:underline self-center"
+                            >
+                              View HFEA results
+                              <ExternalLink className="w-3.5 h-3.5" />
+                            </a>
                             <Button
                               size="sm"
                               className="bg-[#F8AD7C] hover:bg-[#F2955F] text-[#2F3440] font-semibold"
-                              onClick={() =>
-                                setEnquiring({ slug: clinic.slug, name: clinic.clinicName })
-                              }
+                              onClick={() => setEnquiring({ slug: clinic.slug, name: clinic.clinicName })}
                             >
                               Request consultation
                             </Button>
@@ -1188,6 +638,18 @@ export function ClinicCostings({
           </Table>
         </div>
       </div>
+
+      <p className="text-xs text-[#5C6478]">
+        Success rates are shown on the{' '}
+        <a href={HFEA} target="_blank" rel="noopener noreferrer" className="text-[#5B6AA5] hover:underline">
+          HFEA &ldquo;Choose a Fertility Clinic&rdquo; register
+        </a>
+        , the UK regulator&rsquo;s own verified figures.{' '}
+        <button onClick={onShowPrivacy} className="text-[#5B6AA5] hover:underline">
+          How we handle your information
+        </button>
+        .
+      </p>
 
       {enquiring && (
         <EnquiryFlow
