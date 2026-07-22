@@ -72,11 +72,26 @@ const STAGES = [
   },
 ];
 
+function usePrefersReducedMotion() {
+  const [reduce, setReduce] = useState(false);
+  useEffect(() => {
+    const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
+    setReduce(mq.matches);
+    const onChange = () => setReduce(mq.matches);
+    mq.addEventListener('change', onChange);
+    return () => mq.removeEventListener('change', onChange);
+  }, []);
+  return reduce;
+}
+
 function RotatingWord() {
+  const reduceMotion = usePrefersReducedMotion();
   const [index, setIndex] = useState(0);
   const [show, setShow] = useState(true);
 
   useEffect(() => {
+    // Reduced-motion: hold on the first word, no flipping.
+    if (reduceMotion) return;
     const interval = setInterval(() => {
       setShow(false);
       setTimeout(() => {
@@ -85,11 +100,13 @@ function RotatingWord() {
       }, 350);
     }, 2400);
     return () => clearInterval(interval);
-  }, []);
+  }, [reduceMotion]);
 
+  // min-width stops the sub-headline reflowing as the word width changes;
+  // motion-safe keeps the fade off under reduced-motion.
   return (
     <span
-      className={`grain inline-block bg-[#F8AD7C] text-[#2F3440] font-bold px-2 rounded-md transition-all duration-300 ${
+      className={`grain inline-flex justify-center min-w-[5.5ch] bg-[#F8AD7C] text-[#2F3440] font-bold px-2 rounded-md motion-safe:transition-all motion-safe:duration-300 ${
         show ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-1'
       }`}
     >
@@ -119,6 +136,8 @@ export default function App() {
   const [topicIndex, setTopicIndex] = useState(0);
   const [atHomeOnly, setAtHomeOnly] = useState(false);
   const [selectedStage, setSelectedStage] = useState<string | null>(null);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const reduceMotion = usePrefersReducedMotion();
 
   /**
    * Entry points into the guides. Deliberately makes no claim about the people
@@ -190,16 +209,50 @@ export default function App() {
             >
               Resources
             </button>
-            <button className="flex items-center gap-1 text-gray-700 hover:text-gray-900">
+            <button className="flex items-center gap-1 text-gray-700 hover:text-gray-900 rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#5B6AA5] focus-visible:ring-offset-2">
               <User className="w-4 h-4" />
               Sign in
             </button>
           </nav>
-          
-          <button className="md:hidden">
+
+          <button
+            type="button"
+            className="md:hidden rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#5B6AA5] focus-visible:ring-offset-2"
+            aria-label={mobileMenuOpen ? 'Close menu' : 'Open menu'}
+            aria-expanded={mobileMenuOpen}
+            aria-controls="mobile-menu"
+            onClick={() => setMobileMenuOpen((o) => !o)}
+          >
             <Menu className="w-6 h-6" />
           </button>
         </div>
+
+        {/* Mobile menu */}
+        {mobileMenuOpen && (
+          <nav id="mobile-menu" className="md:hidden border-t border-[#A8BEEB]/20 px-6 py-4 flex flex-col gap-1">
+            <button
+              type="button"
+              onClick={() => { setViewMode('about'); setMobileMenuOpen(false); window.scrollTo(0, 0); }}
+              className="text-left py-2 text-[#2F3440] hover:text-[#5B6AA5]"
+            >
+              About
+            </button>
+            <button
+              type="button"
+              onClick={() => { setResourcesCategory('All'); setViewMode('resources'); setMobileMenuOpen(false); window.scrollTo(0, 0); }}
+              className="text-left py-2 text-[#2F3440] hover:text-[#5B6AA5]"
+            >
+              Resources
+            </button>
+            <button
+              type="button"
+              className="flex items-center gap-1.5 text-left py-2 text-[#2F3440] hover:text-[#5B6AA5]"
+            >
+              <User className="w-4 h-4" />
+              Sign in
+            </button>
+          </nav>
+        )}
       </header>
 
       {/* Main Content */}
@@ -275,11 +328,11 @@ export default function App() {
                     setServiceType(stage.service);
                     setSelectedStage(stage.id);
                     setTimeout(
-                      () => document.getElementById('search')?.scrollIntoView({ behavior: 'smooth', block: 'start' }),
+                      () => document.getElementById('search')?.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'start' }),
                       100
                     );
                   }}
-                  className={`group text-left rounded-2xl border p-6 transition-all duration-200 ${
+                  className={`group text-left rounded-2xl border p-6 transition-all duration-200 motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#5B6AA5] focus-visible:ring-offset-2 ${
                     active
                       ? 'border-[#F8AD7C] bg-[#FDEEE1] ring-2 ring-[#F8AD7C]'
                       : 'glass hover:-translate-y-0.5 hover:shadow-[0_12px_40px_rgba(120,140,200,0.22)]'
@@ -524,7 +577,7 @@ export default function App() {
             onExplore={() => {
               setViewMode('home');
               setTimeout(
-                () => document.getElementById('search')?.scrollIntoView({ behavior: 'smooth', block: 'start' }),
+                () => document.getElementById('search')?.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'start' }),
                 100
               );
             }}
@@ -619,85 +672,101 @@ export default function App() {
             <div className="space-y-4">
               {/* Egg Freezing Card */}
               <div
-                className="relative rounded-xl overflow-hidden h-32 group cursor-pointer"
+                role="button"
+                tabIndex={0}
+                aria-label="Compare egg freezing clinics"
+                className="relative rounded-xl overflow-hidden h-32 group cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#5B6AA5] focus-visible:ring-offset-2"
                 onClick={() => { setServiceType('egg-freezing'); setViewMode('costings'); }}
+                onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setServiceType('egg-freezing'); setViewMode('costings'); } }}
               >
                 <img
                   src={eggFreezingCard}
                   alt=""
-                  className="w-full h-full object-cover object-[50%_42%] transition-transform duration-300 group-hover:scale-105"
+                  className="w-full h-full object-cover object-[50%_42%] transition-transform duration-300 group-hover:scale-105 motion-reduce:transition-none motion-reduce:group-hover:scale-100"
                 />
                 <div className={`absolute inset-0 bg-gradient-to-r from-black/70 to-black/40 flex items-center justify-between px-6 ${serviceType === 'egg-freezing' ? 'ring-4 ring-[#F8AD7C]' : ''}`}>
                   <div>
                     <h3 className="text-white text-xl mb-1">Egg Freezing</h3>
                     <p className="text-white/90 text-sm">Preserve your fertility for the future</p>
                   </div>
-                  <button className="w-10 h-10 rounded-full bg-white/90 hover:bg-white flex items-center justify-center transition-colors">
+                  <span aria-hidden="true" className="w-10 h-10 rounded-full bg-white/90 flex items-center justify-center shrink-0">
                     <Plus className="w-5 h-5 text-[#2F3440]" />
-                  </button>
+                  </span>
                 </div>
               </div>
 
               {/* IVF Treatment Card */}
               <div
-                className="relative rounded-xl overflow-hidden h-32 group cursor-pointer"
+                role="button"
+                tabIndex={0}
+                aria-label="Compare IVF clinics"
+                className="relative rounded-xl overflow-hidden h-32 group cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#5B6AA5] focus-visible:ring-offset-2"
                 onClick={() => { setServiceType('ivf'); setViewMode('costings'); }}
+                onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setServiceType('ivf'); setViewMode('costings'); } }}
               >
                 <ImageWithFallback
                   src={img_1609220136736443140cffec6}
                   alt="IVF treatment"
-                  className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                  className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105 motion-reduce:transition-none motion-reduce:group-hover:scale-100"
                 />
                 <div className={`absolute inset-0 bg-gradient-to-r from-black/70 to-black/40 flex items-center justify-between px-6 ${serviceType === 'ivf' ? 'ring-4 ring-[#F8AD7C]' : ''}`}>
                   <div>
                     <h3 className="text-white text-xl mb-1">IVF Treatment</h3>
                     <p className="text-white/90 text-sm">Building your family through assisted reproduction</p>
                   </div>
-                  <button className="w-10 h-10 rounded-full bg-white/90 hover:bg-white flex items-center justify-center transition-colors">
+                  <span aria-hidden="true" className="w-10 h-10 rounded-full bg-white/90 flex items-center justify-center shrink-0">
                     <Plus className="w-5 h-5 text-[#2F3440]" />
-                  </button>
+                  </span>
                 </div>
               </div>
 
               {/* Embryo Freezing Card */}
               <div
-                className="relative rounded-xl overflow-hidden h-32 group cursor-pointer"
+                role="button"
+                tabIndex={0}
+                aria-label="Compare embryo freezing clinics"
+                className="relative rounded-xl overflow-hidden h-32 group cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#5B6AA5] focus-visible:ring-offset-2"
                 onClick={() => { setServiceType('embryo'); setViewMode('costings'); }}
+                onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setServiceType('embryo'); setViewMode('costings'); } }}
               >
                 <ImageWithFallback
                   src={img_149389447389110fc1e5dbd22}
                   alt="Embryo freezing"
-                  className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                  className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105 motion-reduce:transition-none motion-reduce:group-hover:scale-100"
                 />
                 <div className={`absolute inset-0 bg-gradient-to-r from-black/70 to-black/40 flex items-center justify-between px-6 ${serviceType === 'embryo' ? 'ring-4 ring-[#F8AD7C]' : ''}`}>
                   <div>
                     <h3 className="text-white text-xl mb-1">Embryo Freezing</h3>
                     <p className="text-white/90 text-sm">Preserve embryos for future family planning</p>
                   </div>
-                  <button className="w-10 h-10 rounded-full bg-white/90 hover:bg-white flex items-center justify-center transition-colors">
+                  <span aria-hidden="true" className="w-10 h-10 rounded-full bg-white/90 flex items-center justify-center shrink-0">
                     <Plus className="w-5 h-5 text-[#2F3440]" />
-                  </button>
+                  </span>
                 </div>
               </div>
 
               {/* Fertility Testing Card */}
               <div
-                className="relative rounded-xl overflow-hidden h-32 group cursor-pointer"
+                role="button"
+                tabIndex={0}
+                aria-label="Compare fertility testing clinics"
+                className="relative rounded-xl overflow-hidden h-32 group cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#5B6AA5] focus-visible:ring-offset-2"
                 onClick={() => { setServiceType('fertility'); setViewMode('costings'); }}
+                onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setServiceType('fertility'); setViewMode('costings'); } }}
               >
                 <ImageWithFallback
                   src={fertilityTestingCard}
                   alt=""
-                  className="w-full h-full object-cover object-[50%_34%] transition-transform duration-300 group-hover:scale-105"
+                  className="w-full h-full object-cover object-[50%_34%] transition-transform duration-300 group-hover:scale-105 motion-reduce:transition-none motion-reduce:group-hover:scale-100"
                 />
                 <div className={`absolute inset-0 bg-gradient-to-r from-black/70 to-black/40 flex items-center justify-between px-6 ${serviceType === 'fertility' ? 'ring-4 ring-[#F8AD7C]' : ''}`}>
                   <div>
                     <h3 className="text-white text-xl mb-1">Fertility Testing</h3>
                     <p className="text-white/90 text-sm">Understand your fertility health and options</p>
                   </div>
-                  <button className="w-10 h-10 rounded-full bg-white/90 hover:bg-white flex items-center justify-center transition-colors">
+                  <span aria-hidden="true" className="w-10 h-10 rounded-full bg-white/90 flex items-center justify-center shrink-0">
                     <Plus className="w-5 h-5 text-[#2F3440]" />
-                  </button>
+                  </span>
                 </div>
               </div>
             </div>
@@ -796,15 +865,18 @@ export default function App() {
                 }
               ].map((faq, index) => (
                 <div key={index} className="border-b border-gray-200 pb-4 mb-4">
-                  <button 
+                  <button
+                    type="button"
                     onClick={() => toggleFAQ(index)}
-                    className="w-full flex items-center justify-between text-left"
+                    aria-expanded={!!showFAQ[index]}
+                    aria-controls={`faq-panel-${index}`}
+                    className="w-full flex items-center justify-between text-left rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#5B6AA5] focus-visible:ring-offset-2"
                   >
                     <span>{faq.question}</span>
-                    <ChevronDown className={`w-5 h-5 transition-transform ${showFAQ[index] ? 'rotate-180' : ''}`} />
+                    <ChevronDown className={`w-5 h-5 shrink-0 transition-transform motion-reduce:transition-none ${showFAQ[index] ? 'rotate-180' : ''}`} />
                   </button>
                   {showFAQ[index] && (
-                    <p className="text-gray-600 mt-4">{faq.answer}</p>
+                    <p id={`faq-panel-${index}`} className="text-gray-600 mt-4">{faq.answer}</p>
                   )}
                 </div>
               ))}
@@ -830,15 +902,18 @@ export default function App() {
                 }
               ].map((faq, index) => (
                 <div key={index + 3} className="border-b border-gray-200 pb-4 mb-4">
-                  <button 
+                  <button
+                    type="button"
                     onClick={() => toggleFAQ(index + 3)}
-                    className="w-full flex items-center justify-between text-left"
+                    aria-expanded={!!showFAQ[index + 3]}
+                    aria-controls={`faq-panel-${index + 3}`}
+                    className="w-full flex items-center justify-between text-left rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#5B6AA5] focus-visible:ring-offset-2"
                   >
                     <span>{faq.question}</span>
-                    <ChevronDown className={`w-5 h-5 transition-transform ${showFAQ[index + 3] ? 'rotate-180' : ''}`} />
+                    <ChevronDown className={`w-5 h-5 shrink-0 transition-transform motion-reduce:transition-none ${showFAQ[index + 3] ? 'rotate-180' : ''}`} />
                   </button>
                   {showFAQ[index + 3] && (
-                    <p className="text-gray-600 mt-4">{faq.answer}</p>
+                    <p id={`faq-panel-${index + 3}`} className="text-gray-600 mt-4">{faq.answer}</p>
                   )}
                 </div>
               ))}

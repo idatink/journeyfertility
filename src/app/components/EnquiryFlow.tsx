@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { X, ArrowLeft, ArrowRight, Check, AlertCircle, ShieldCheck } from 'lucide-react';
 import { Button } from './ui/button';
 import {
@@ -51,6 +51,57 @@ export function EnquiryFlow({
     createAttribution(clinicSlug, clinicName, serviceType, surface)
   );
 
+  const panelRef = useRef<HTMLDivElement>(null);
+  const headingRef = useRef<HTMLHeadingElement>(null);
+
+  /**
+   * Modal accessibility. This form carries data concerning health, so keyboard
+   * and screen-reader users must not be able to tab out into the page behind
+   * it, and Escape must close it. On open we lock background scroll, move focus
+   * to the heading, and trap Tab within the panel.
+   */
+  useEffect(() => {
+    const previousOverflow = document.body.style.overflow;
+    const previouslyFocused = document.activeElement as HTMLElement | null;
+    document.body.style.overflow = 'hidden';
+    headingRef.current?.focus();
+
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        onClose();
+        return;
+      }
+      if (e.key !== 'Tab' || !panelRef.current) return;
+      const focusable = panelRef.current.querySelectorAll<HTMLElement>(
+        'a[href], button:not([disabled]), input:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+      );
+      if (focusable.length === 0) return;
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    };
+
+    document.addEventListener('keydown', onKeyDown);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      document.removeEventListener('keydown', onKeyDown);
+      previouslyFocused?.focus?.();
+    };
+  }, [onClose]);
+
+  // On a successful send the heading changes to "Enquiry sent"; move focus to it
+  // so a screen reader announces the confirmation rather than leaving focus on
+  // the now-removed Send button.
+  useEffect(() => {
+    if (result?.ok) headingRef.current?.focus();
+  }, [result?.ok]);
+
   const set = <K extends keyof EnquiryDraft>(key: K, value: EnquiryDraft[K]) => {
     setDraft((d) => ({ ...d, [key]: value }));
     setErrors((e) => ({ ...e, [key]: undefined }));
@@ -75,15 +126,35 @@ export function EnquiryFlow({
 
   const field = 'w-full rounded-lg border border-[#CBD8F5] bg-white/80 px-3.5 py-2.5 text-[#2F3440] outline-none focus:border-[#2F3440] transition-colors';
   const errorText = (msg?: string) =>
-    msg ? <p className="text-xs text-[#B4762F] mt-1.5">{msg}</p> : null;
+    msg ? (
+      <p role="alert" className="text-xs font-medium text-[#B42318] mt-1.5">
+        {msg}
+      </p>
+    ) : null;
 
   return (
-    <div className="fixed inset-0 bg-black/40 z-50 flex items-start justify-center p-4 overflow-y-auto">
-      <div className="glass-strong rounded-2xl max-w-lg w-full my-8 overflow-hidden">
+    <div
+      className="fixed inset-0 bg-black/40 z-50 flex items-start justify-center p-4 overflow-y-auto"
+      onClick={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
+    >
+      <div
+        ref={panelRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="enquiry-heading"
+        className="glass-strong rounded-2xl max-w-lg w-full my-8 overflow-hidden"
+      >
         {/* Header */}
         <div className="flex items-start justify-between gap-4 p-6 border-b border-white/50">
           <div>
-            <h2 className="text-xl font-semibold tracking-tight text-[#2F3440]">
+            <h2
+              id="enquiry-heading"
+              ref={headingRef}
+              tabIndex={-1}
+              className="text-xl font-semibold tracking-tight text-[#2F3440] outline-none"
+            >
               {result?.ok ? 'Enquiry sent' : `Enquire with ${clinicName}`}
             </h2>
             {!result?.ok && (
@@ -92,16 +163,28 @@ export function EnquiryFlow({
               </p>
             )}
           </div>
-          <button onClick={onClose} className="text-[#5C6478] hover:text-[#2F3440] shrink-0">
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label="Close"
+            className="text-[#5C6478] hover:text-[#2F3440] shrink-0 rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#5B6AA5] focus-visible:ring-offset-2"
+          >
             <X className="w-5 h-5" />
           </button>
         </div>
 
         {/* Progress */}
         {!result?.ok && (
-          <div className="h-1 bg-white/50">
+          <div
+            className="h-1 bg-white/50"
+            role="progressbar"
+            aria-valuenow={step + 1}
+            aria-valuemin={1}
+            aria-valuemax={3}
+            aria-label={`Step ${step + 1} of 3`}
+          >
             <div
-              className="h-1 bg-[#A8BEEB] transition-all duration-300"
+              className="h-1 bg-[#F8AD7C] transition-all duration-300"
               style={{ width: `${((step + 1) / 3) * 100}%` }}
             />
           </div>
@@ -139,54 +222,63 @@ export function EnquiryFlow({
               {step === 0 && (
                 <div className="space-y-4">
                   <div>
-                    <label className="text-sm font-medium text-[#2F3440] block mb-1.5">
+                    <label htmlFor="enq-name" className="text-sm font-medium text-[#2F3440] block mb-1.5">
                       Full name
                     </label>
                     <input
+                      id="enq-name"
                       className={field}
                       value={draft.fullName}
                       onChange={(e) => set('fullName', e.target.value)}
                       autoComplete="name"
+                      aria-invalid={!!errors.fullName}
                     />
                     {errorText(errors.fullName)}
                   </div>
 
                   <div>
-                    <label className="text-sm font-medium text-[#2F3440] block mb-1.5">Email</label>
+                    <label htmlFor="enq-email" className="text-sm font-medium text-[#2F3440] block mb-1.5">Email</label>
                     <input
+                      id="enq-email"
                       className={field}
                       type="email"
                       value={draft.email}
                       onChange={(e) => set('email', e.target.value)}
                       autoComplete="email"
+                      aria-invalid={!!errors.email}
                     />
                     {errorText(errors.email)}
                   </div>
 
                   <div>
-                    <label className="text-sm font-medium text-[#2F3440] block mb-1.5">
+                    <label htmlFor="enq-phone" className="text-sm font-medium text-[#2F3440] block mb-1.5">
                       Phone <span className="text-[#5C6478] font-normal">(optional)</span>
                     </label>
                     <input
+                      id="enq-phone"
                       className={field}
                       type="tel"
                       value={draft.phone}
                       onChange={(e) => set('phone', e.target.value)}
                       autoComplete="tel"
+                      aria-invalid={!!errors.phone}
                     />
                     {errorText(errors.phone)}
                   </div>
 
                   <div>
-                    <div className="text-sm font-medium text-[#2F3440] mb-2">
+                    <div id="pref-contact-label" className="text-sm font-medium text-[#2F3440] mb-2">
                       How should the clinic contact you?
                     </div>
-                    <div className="flex gap-2">
+                    <div className="flex gap-2" role="radiogroup" aria-labelledby="pref-contact-label">
                       {(['email', 'phone'] as const).map((m) => (
                         <button
                           key={m}
+                          type="button"
+                          role="radio"
+                          aria-checked={draft.preferredContact === m}
                           onClick={() => set('preferredContact', m)}
-                          className={`grain text-sm font-medium px-4 py-2 rounded-full capitalize transition-all ${
+                          className={`grain text-sm font-medium px-4 py-2 rounded-full capitalize transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#5B6AA5] focus-visible:ring-offset-2 ${
                             draft.preferredContact === m
                               ? 'bg-[#2F3440] text-white'
                               : 'bg-white/60 text-[#2F3440] hover:bg-white/80'
@@ -204,15 +296,18 @@ export function EnquiryFlow({
               {step === 1 && (
                 <div className="space-y-5">
                   <div>
-                    <div className="text-sm font-medium text-[#2F3440] mb-2">
+                    <div id="timing-label" className="text-sm font-medium text-[#2F3440] mb-2">
                       When are you hoping to start?
                     </div>
-                    <div className="flex flex-wrap gap-2">
+                    <div className="flex flex-wrap gap-2" role="radiogroup" aria-labelledby="timing-label">
                       {TIMING_OPTIONS.map((t) => (
                         <button
                           key={t.id}
+                          type="button"
+                          role="radio"
+                          aria-checked={draft.timing === t.id}
                           onClick={() => set('timing', t.id)}
-                          className={`grain text-sm font-medium px-4 py-2 rounded-full transition-all ${
+                          className={`grain text-sm font-medium px-4 py-2 rounded-full transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#5B6AA5] focus-visible:ring-offset-2 ${
                             draft.timing === t.id
                               ? 'bg-[#2F3440] text-white'
                               : 'bg-white/60 text-[#2F3440] hover:bg-white/80'
@@ -226,15 +321,18 @@ export function EnquiryFlow({
                   </div>
 
                   <div>
-                    <div className="text-sm font-medium text-[#2F3440] mb-2">
+                    <div id="funding-label" className="text-sm font-medium text-[#2F3440] mb-2">
                       How are you planning to pay?
                     </div>
-                    <div className="flex flex-wrap gap-2">
+                    <div className="flex flex-wrap gap-2" role="radiogroup" aria-labelledby="funding-label">
                       {FUNDING_OPTIONS.map((f) => (
                         <button
                           key={f.id}
+                          type="button"
+                          role="radio"
+                          aria-checked={draft.fundingRoute === f.id}
                           onClick={() => set('fundingRoute', f.id)}
-                          className={`grain text-sm font-medium px-4 py-2 rounded-full transition-all ${
+                          className={`grain text-sm font-medium px-4 py-2 rounded-full transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#5B6AA5] focus-visible:ring-offset-2 ${
                             draft.fundingRoute === f.id
                               ? 'bg-[#2F3440] text-white'
                               : 'bg-white/60 text-[#2F3440] hover:bg-white/80'
@@ -248,11 +346,12 @@ export function EnquiryFlow({
                   </div>
 
                   <div>
-                    <label className="text-sm font-medium text-[#2F3440] block mb-1.5">
+                    <label htmlFor="enq-message" className="text-sm font-medium text-[#2F3440] block mb-1.5">
                       Anything you want to ask?{' '}
                       <span className="text-[#5C6478] font-normal">(optional)</span>
                     </label>
                     <textarea
+                      id="enq-message"
                       className={`${field} min-h-[90px] resize-y`}
                       value={draft.message}
                       onChange={(e) => set('message', e.target.value)}
@@ -335,7 +434,7 @@ export function EnquiryFlow({
                   </p>
 
                   {result && !result.ok && (
-                    <div className="glass rounded-xl p-4 flex gap-3">
+                    <div role="alert" className="glass rounded-xl p-4 flex gap-3">
                       <AlertCircle className="w-5 h-5 text-[#B4762F] shrink-0 mt-0.5" />
                       <div className="text-sm text-[#5C6478] leading-relaxed">
                         <span className="font-semibold text-[#2F3440]">
