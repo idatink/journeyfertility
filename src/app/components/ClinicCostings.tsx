@@ -1,4 +1,4 @@
-import { useState, Fragment } from 'react';
+import { useState, useEffect, Fragment } from 'react';
 import { ArrowUpDown, ChevronDown, ChevronUp } from 'lucide-react';
 import { Button } from './ui/button';
 import {
@@ -402,7 +402,9 @@ export function ClinicCostings({
   // Hard filters from the search form. Each is skipped when unset so that an
   // untouched form returns everything.
   const budget = getBudgetBounds(serviceType, budgetRange);
-  const filteredData = allPriced.filter((c) => {
+  // Everything except the minimum-success filter, so each threshold can be
+  // tested against the same set the user is currently looking at.
+  const withoutMinSuccess = allPriced.filter((c) => {
     if (location !== 'all' && c.regionSlug !== location) return false;
     if (clinicFilter !== 'all' && c.slug !== clinicFilter) return false;
     if (budget) {
@@ -411,11 +413,34 @@ export function ClinicCostings({
     }
     if (transparencyOnly && c.pricingCompleteness !== 'full') return false;
     if (funding !== 'all' && !c.fundingRoutes.includes(funding)) return false;
-    // Only exclude on evidence: a clinic with no published figure for this age
-    // band is not the same as one that published a low figure.
-    if (minSuccess !== null && c.outcome && c.outcome.rate < minSuccess) return false;
     return true;
   });
+
+  // Only exclude on evidence: a clinic with no published figure for this age
+  // band is not the same as one that published a low figure.
+  const passesMinSuccess = (c: (typeof withoutMinSuccess)[number], threshold: number | null) =>
+    threshold === null || !(c.outcome && c.outcome.rate < threshold);
+
+  const filteredData = withoutMinSuccess.filter((c) => passesMinSuccess(c, minSuccess));
+
+  // A threshold that would leave zero clinics (given every other active filter,
+  // and the selected age band) is offered as disabled rather than as a dead
+  // option that silently empties the table. Recomputes when the age band or any
+  // other filter changes.
+  const SUCCESS_THRESHOLDS: (number | null)[] = [null, 20, 30, 40];
+  const emptyThresholds = new Set(
+    SUCCESS_THRESHOLDS.filter(
+      (v): v is number => v !== null && !withoutMinSuccess.some((c) => passesMinSuccess(c, v))
+    )
+  );
+
+  // If the current selection becomes impossible (e.g. after switching to an age
+  // band where no clinic reaches it), fall back to "Any" so the user never sits
+  // on an empty table caused by a now-invalid filter.
+  useEffect(() => {
+    if (minSuccess !== null && emptyThresholds.has(minSuccess)) setMinSuccess(null);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [minSuccess, ageBand, location, clinicFilter, budgetRange, transparencyOnly, funding]);
 
   const activeFilterCount =
     (location !== 'all' ? 1 : 0) +
@@ -577,19 +602,30 @@ export function ClinicCostings({
             Minimum success rate
           </div>
           <div className="flex flex-wrap gap-2">
-            {[null, 20, 30, 40].map((v) => (
-              <button
-                key={String(v)}
-                onClick={() => setMinSuccess(v)}
-                className={`grain text-sm font-medium px-3.5 py-1.5 rounded-full transition-all ${
-                  minSuccess === v
-                    ? 'bg-[#2F3440] text-white'
-                    : 'bg-white/60 text-[#2F3440] hover:bg-white/80'
-                }`}
-              >
-                {v === null ? 'Any' : `${v}%+`}
-              </button>
-            ))}
+            {SUCCESS_THRESHOLDS.map((v) => {
+              const disabled = v !== null && emptyThresholds.has(v);
+              return (
+                <button
+                  key={String(v)}
+                  onClick={() => setMinSuccess(v)}
+                  disabled={disabled}
+                  title={
+                    disabled
+                      ? `No clinic reaches ${v}% for this age band and the current filters`
+                      : undefined
+                  }
+                  className={`grain text-sm font-medium px-3.5 py-1.5 rounded-full transition-all ${
+                    disabled
+                      ? 'bg-white/40 text-[#B0B6C4] cursor-not-allowed'
+                      : minSuccess === v
+                      ? 'bg-[#2F3440] text-white'
+                      : 'bg-white/60 text-[#2F3440] hover:bg-white/80'
+                  }`}
+                >
+                  {v === null ? 'Any' : `${v}%+`}
+                </button>
+              );
+            })}
           </div>
           {minSuccess !== null && (
             <p className="text-[11px] text-[#5C6478] mt-2 max-w-xs leading-relaxed">
