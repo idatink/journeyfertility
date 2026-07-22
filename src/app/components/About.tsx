@@ -1,4 +1,4 @@
-import { ArrowLeft, Search, Scale, ShieldCheck, HeartHandshake, UserRound } from 'lucide-react';
+import { ArrowLeft, Search, Scale, ShieldCheck, HeartHandshake } from 'lucide-react';
 import { Button } from './ui/button';
 
 interface AboutProps {
@@ -31,12 +31,17 @@ const PRINCIPLES = [
 ];
 
 /**
- * Placeholder identities, deliberately.
+ * Placeholder identities — imaginary, deliberately.
  *
- * An About page naming three founders is read as fact by users, press and
- * investors, so these are scaffolding for the real team rather than invented
- * people. `photo: null` renders the brand monogram; point it at an imported
- * portrait once there is one.
+ * The names below are invented stand-ins so the section reads as populated
+ * during development. They are NOT the real team, which is why the notice in
+ * the UI stays until real people replace them: an About page naming founders
+ * is read as fact by users, press and investors.
+ *
+ * `photo: null` renders a brand-styled initials avatar rather than a portrait.
+ * Real photographs of real founders go here — never a stock photo of an
+ * unrelated real person under an invented name (that misrepresents them, the
+ * same reason the testimonials carry no faces; see ATTRIBUTIONS.md).
  *
  * Each `bio` describes the role rather than the person, so it stays true
  * whoever fills it. Anything personal — including how a founder describes her
@@ -49,24 +54,41 @@ const FOUNDERS: {
   photo: string | null;
 }[] = [
   {
-    name: '[Founder name]',
+    name: 'Nadia Rahman',
     role: 'Marketing',
     bio: 'Leads how JourneyFertility talks about fertility — plainly, without the urgency and overclaiming the category is known for. Owns the promise that nothing here is written to rush a decision.',
     photo: null,
   },
   {
-    name: '[Founder name]',
+    name: 'Maya Lindqvist',
     role: 'Design',
     bio: 'Responsible for how the comparison feels to use at a difficult moment: legible pricing, honest empty states, and an interface that never pressures. Owns the design system and the accessibility standard.',
     photo: null,
   },
   {
-    name: '[Founder name]',
+    name: 'Priya Menon',
     role: 'Engineering',
     bio: 'Builds the search, the cost model and the enquiry pipeline — including the data protection that health data demands. Owns the rule that we never show a price we cannot source.',
     photo: null,
   },
 ];
+
+/** Distinct brand gradients so the three placeholder avatars read as a set, not a repeat. */
+const AVATAR_GRADIENTS = [
+  'from-[#DEE8FF] via-[#E7E2F0] to-[#F8AD7C]',
+  'from-[#F8AD7C] via-[#EFD6D0] to-[#DEE8FF]',
+  'from-[#DEE8FF] via-[#D9E4F5] to-[#B7C7EE]',
+];
+
+/** Initials from a name, e.g. "Nadia Rahman" → "NR". */
+function initialsOf(name: string): string {
+  return name
+    .split(/\s+/)
+    .map((w) => w[0])
+    .join('')
+    .slice(0, 2)
+    .toUpperCase();
+}
 
 export function About({ onBack, onExplore, onResources }: AboutProps) {
   return (
@@ -188,13 +210,14 @@ export function About({ onBack, onExplore, onResources }: AboutProps) {
         </p>
 
         <div className="glass rounded-2xl p-5 mb-8 text-sm text-[#5C6478] leading-relaxed max-w-2xl">
-          <span className="font-semibold text-[#B4762F]">Before publishing:</span> replace the
-          placeholder names, biographies and portraits below with the real founding team. Naming
-          people who do not exist on an About page is a claim, not copy.
+          <span className="font-semibold text-[#B4762F]">Placeholder team:</span> the names,
+          biographies and avatars below are illustrative stand-ins. Replace them with the real
+          founding team and their photographs before any launch or press — an About page naming
+          founders is read as fact.
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-          {FOUNDERS.map((f) => (
+          {FOUNDERS.map((f, i) => (
             <div key={f.role} className="glass rounded-2xl p-6">
               {f.photo ? (
                 <img
@@ -204,12 +227,14 @@ export function About({ onBack, onExplore, onResources }: AboutProps) {
                   loading="lazy"
                 />
               ) : (
-                /* Brand-styled stand-in so an unfilled slot reads as intentional, not broken. */
+                /* Initials on a brand gradient — a styled placeholder, never a stock face. */
                 <div
-                  className="grain relative w-20 h-20 rounded-full overflow-hidden mb-5 flex items-center justify-center bg-gradient-to-br from-[#DEE8FF] via-[#E7E2F0] to-[#F8AD7C]"
+                  className={`grain relative w-20 h-20 rounded-full overflow-hidden mb-5 flex items-center justify-center bg-gradient-to-br ${AVATAR_GRADIENTS[i % AVATAR_GRADIENTS.length]}`}
                   aria-hidden="true"
                 >
-                  <UserRound className="w-8 h-8 text-white/90" strokeWidth={1.5} />
+                  <span className="text-xl font-semibold text-white/95 tracking-wide">
+                    {initialsOf(f.name)}
+                  </span>
                 </div>
               )}
               <h3 className="text-lg font-semibold text-[#2F3440]">{f.name}</h3>
