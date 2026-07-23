@@ -11,12 +11,12 @@ import {
 } from './ui/table';
 import { AtHomeTestKitsComparison } from './AtHomeTestKitsComparison';
 import { HowTrackingWorks } from './HowTrackingWorks';
+import { FERTILITY_TESTS } from '../lib/tests';
 import { getBudgetBounds } from '../lib/budget';
 import { EnquiryFlow } from './EnquiryFlow';
 
 interface ClinicCostingsProps {
   serviceType: 'egg-freezing' | 'embryo' | 'ivf' | 'fertility';
-  atHomeOnly?: boolean;
   /** kept for the search form; geography is not filtered in the UK-only MVP */
   location?: string;
   /** clinic slug from the search form, or 'all' */
@@ -612,7 +612,6 @@ function ClinicDetail({
 
 export function ClinicCostings({
   serviceType,
-  atHomeOnly,
   clinic: clinicFilter = 'all',
   budgetRange = 'all',
   onShowPrivacy = () => {},
@@ -623,16 +622,53 @@ export function ClinicCostings({
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
   const [expandedRows, setExpandedRows] = useState<number[]>([]);
   const [enquiring, setEnquiring] = useState<{ slug: string; name: string } | null>(null);
+  // Fertility testing is mostly at-home kits, so show those first — but let
+  // people switch to testing at a clinic. The kits are never hidden.
+  const [fertilityView, setFertilityView] = useState<'kits' | 'clinics'>('kits');
 
-  // Fertility testing leads with how tracking actually works, so nobody feels
-  // they must buy an expensive panel every month before comparing anything.
-  if (serviceType === 'fertility' && atHomeOnly) {
-    return (
-      <div className="space-y-10">
-        <HowTrackingWorks />
-        <div className="pt-2 border-t border-[#2F3440]/10">
-          <AtHomeTestKitsComparison />
+  // Fertility testing leads with how tracking actually works — so nobody feels
+  // they must buy an expensive panel every month — then a toggle between
+  // at-home kits and testing at a clinic. Both are always reachable; the kits
+  // are never hidden behind a checkbox.
+  const fertilityTopMatter =
+    serviceType === 'fertility' ? (
+      <div className="space-y-6">
+        <div className="pb-6 border-b border-[#2F3440]/10">
+          <HowTrackingWorks />
         </div>
+        <div
+          role="tablist"
+          aria-label="Where to test"
+          className="inline-flex rounded-full bg-white/60 p-1 gap-1"
+        >
+          {([
+            ['kits', `At-home test kits · ${FERTILITY_TESTS.length}`],
+            ['clinics', 'Test at a clinic'],
+          ] as const).map(([id, label]) => (
+            <button
+              key={id}
+              type="button"
+              role="tab"
+              aria-selected={fertilityView === id}
+              onClick={() => setFertilityView(id)}
+              className={`grain text-sm font-semibold px-4 py-2 rounded-full transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#5B6AA5] focus-visible:ring-offset-2 ${
+                fertilityView === id
+                  ? 'bg-[#2F3440] text-white'
+                  : 'text-[#2F3440] hover:bg-white/80'
+              }`}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
+      </div>
+    ) : null;
+
+  if (serviceType === 'fertility' && fertilityView === 'kits') {
+    return (
+      <div className="space-y-8">
+        {fertilityTopMatter}
+        <AtHomeTestKitsComparison />
       </div>
     );
   }
@@ -695,15 +731,13 @@ export function ClinicCostings({
 
   return (
     <div className="space-y-6">
-      {serviceType === 'fertility' && (
-        <div className="pb-6 border-b border-[#2F3440]/10">
-          <HowTrackingWorks />
-        </div>
-      )}
+      {fertilityTopMatter}
 
       {/* Header */}
       <div>
-        <h2 className="text-3xl mb-2">Clinic Cost Comparison</h2>
+        <h2 className="text-3xl mb-2">
+          {serviceType === 'fertility' ? 'Fertility testing at a clinic' : 'Clinic Cost Comparison'}
+        </h2>
         <p className="text-[#5C6478]">
           {sortedData.length} of {allClinics.length} UK clinics
           {activeFilterCount > 0 && (

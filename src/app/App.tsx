@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { Search, PoundSterling, Menu, User, ChevronDown, Plus, ChevronRight, Building2, Snowflake, Baby, Activity, Sparkles, HeartPulse } from 'lucide-react';
 import { Button } from './components/ui/button';
 import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from './components/ui/select';
-import { Checkbox } from './components/ui/checkbox';
 import { ImageWithFallback } from './components/figma/ImageWithFallback';
 import { ClinicCostings } from './components/ClinicCostings';
 import { SelfAssessmentQuiz } from './components/SelfAssessmentQuiz';
@@ -35,6 +34,36 @@ const SERVICE_TABS = [
   { id: 'ivf', label: 'IVF Treatment' },
   { id: 'fertility', label: 'Fertility Testing' },
 ] as const;
+
+/**
+ * Per-service wording, so the UI never calls a fertility test a "clinic" or a
+ * clinic search a "test". Fertility testing is the odd one out — it's mostly
+ * at-home kits and direct-pay providers, not clinic cycles — so it gets its own
+ * copy; the three treatment services share the clinic wording.
+ */
+const CLINIC_META = {
+  compareHeading: 'Compare clinics and their all-in costs',
+  compareSub:
+    'Pick a service, then narrow by clinic and budget. Real UK clinics, each shown with its own published price where the clinic publishes one.',
+  cta: 'Search clinics',
+  learnLede: 'What would be most useful to understand right now?',
+};
+
+const SERVICE_META: Record<
+  string,
+  { compareHeading: string; compareSub: string; cta: string; learnLede: string }
+> = {
+  'egg-freezing': CLINIC_META,
+  embryo: CLINIC_META,
+  ivf: CLINIC_META,
+  fertility: {
+    compareHeading: 'Compare fertility tests and clinic checks',
+    compareSub:
+      'Start with an at-home test kit or a clinic check. Real UK providers, each shown with its own published price.',
+    cta: 'Compare fertility tests',
+    learnLede: 'Understanding your fertility health?',
+  },
+};
 
 const STAGES = [
   {
@@ -227,7 +256,6 @@ export default function App() {
   }, [serviceType]);
   const [showQuiz, setShowQuiz] = useState(false);
   const [topicIndex, setTopicIndex] = useState(0);
-  const [atHomeOnly, setAtHomeOnly] = useState(false);
   const [selectedStage, setSelectedStage] = useState<string | null>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const reduceMotion = usePrefersReducedMotion();
@@ -456,11 +484,10 @@ export default function App() {
         <div id="search" className="scroll-mt-6 mb-16">
           <div className="glass rounded-2xl p-6 md:p-8 shadow-[0_18px_60px_rgba(120,140,200,0.18)]">
             <h2 className="text-2xl md:text-3xl font-semibold tracking-tight text-[#2F3440] mb-1.5">
-              Compare clinics and their all-in costs
+              {SERVICE_META[serviceType].compareHeading}
             </h2>
             <p className="text-[#5C6478] mb-6 max-w-xl">
-              Pick a service, then narrow by clinic and budget. Real UK clinics, each shown with
-              its own published price where the clinic publishes one.
+              {SERVICE_META[serviceType].compareSub}
             </p>
 
             {/* Service selector, inside the search */}
@@ -569,23 +596,12 @@ export default function App() {
               </div>
             </div>
 
-            {serviceType === 'fertility' && (
-              <label className="flex items-center gap-2 mt-4 cursor-pointer w-fit">
-                <Checkbox
-                  className="bg-white"
-                  checked={atHomeOnly}
-                  onCheckedChange={(checked) => setAtHomeOnly(checked as boolean)}
-                />
-                <span className="text-sm text-[#2F3440]">At-home test kits only</span>
-              </label>
-            )}
-
             <Button
               className="w-full sm:w-auto mt-6 h-12 px-10 bg-[#F8AD7C] hover:bg-[#F2955F] text-[#2F3440] font-semibold text-base"
               onClick={handleSearch}
             >
               <Search className="w-4 h-4 mr-2" />
-              Search clinics
+              {SERVICE_META[serviceType].cta}
             </Button>
           </div>
         </div>
@@ -604,7 +620,6 @@ export default function App() {
             </Button>
             <ClinicCostings
               serviceType={serviceType}
-              atHomeOnly={atHomeOnly}
               location={location}
               clinic={clinic}
               budgetRange={budgetRange}
@@ -709,16 +724,13 @@ export default function App() {
                 Get to know each <span className="italic text-[#5B6AA5]">option</span>
               </h2>
               <p className="text-[#5C6478] text-lg mb-6">
-                {serviceType === 'egg-freezing' && 'What would be most useful to understand right now?'}
-                {serviceType === 'embryo' && 'Ready to preserve your embryos?'}
-                {serviceType === 'ivf' && 'Starting your IVF journey?'}
-                {serviceType === 'fertility' && 'Understanding your fertility health?'}
+                {SERVICE_META[serviceType].learnLede}
               </p>
               <p className="text-gray-600">
-                {serviceType === 'egg-freezing' && 'Explore real stories from people who\'ve walked this path. Learn about egg freezing, understand what to expect, and find the support you need.'}
-                {serviceType === 'embryo' && 'Connect with clinics that offer secure embryo storage. Learn about the process, costs, and find the right facility for your family planning needs.'}
-                {serviceType === 'ivf' && 'Discover clinics with proven IVF success rates. Learn about treatment protocols, costs, and connect with specialists who can help you achieve your dream of parenthood.'}
-                {serviceType === 'fertility' && 'Get comprehensive fertility testing to understand your options. Learn about AMH levels, egg reserve, and receive personalized recommendations for your journey.'}
+                {serviceType === 'egg-freezing' && 'Plain-language guides on how egg freezing works, what affects your chances, and what a cycle really costs.'}
+                {serviceType === 'embryo' && 'How embryo freezing and storage works, what it costs each year, and what to ask a clinic before you commit.'}
+                {serviceType === 'ivf' && 'How IVF works, what the HFEA success figures do and don\'t tell you, and what a cycle actually costs.'}
+                {serviceType === 'fertility' && 'What a fertility check measures — AMH, egg reserve and key hormones — and how to track your cycle without overspending.'}
               </p>
             </div>
 
@@ -803,7 +815,7 @@ export default function App() {
               <div
                 role="button"
                 tabIndex={0}
-                aria-label="Compare fertility testing clinics"
+                aria-label="Compare fertility tests"
                 className="relative rounded-xl overflow-hidden h-32 group cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#5B6AA5] focus-visible:ring-offset-2"
                 onClick={() => { setServiceType('fertility'); setViewMode('costings'); }}
                 onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setServiceType('fertility'); setViewMode('costings'); } }}
