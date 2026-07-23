@@ -5,9 +5,6 @@ import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from '.
 import { ImageWithFallback } from './components/figma/ImageWithFallback';
 import { ClinicCostings } from './components/ClinicCostings';
 import { SelfAssessmentQuiz } from './components/SelfAssessmentQuiz';
-import { EmbryoFreezingQuiz } from './components/EmbryoFreezingQuiz';
-import { IVFTreatmentQuiz } from './components/IVFTreatmentQuiz';
-import { FertilityTestingQuiz } from './components/FertilityTestingQuiz';
 import { Resources } from './components/Resources';
 import { BUDGET_BRACKETS } from './lib/budget';
 import { About } from './components/About';
@@ -864,11 +861,25 @@ export default function App() {
 
       </div>
 
-      {/* Self Assessment Quiz - Different quiz for each service type */}
-      {showQuiz && serviceType === 'egg-freezing' && <SelfAssessmentQuiz onClose={() => setShowQuiz(false)} />}
-      {showQuiz && serviceType === 'embryo' && <EmbryoFreezingQuiz onClose={() => setShowQuiz(false)} />}
-      {showQuiz && serviceType === 'ivf' && <IVFTreatmentQuiz onClose={() => setShowQuiz(false)} />}
-      {showQuiz && serviceType === 'fertility' && <FertilityTestingQuiz onClose={() => setShowQuiz(false)} />}
+      {/* Private self-assessment — one signpost that routes to the right
+          comparison or to the guides, whatever service is currently selected. */}
+      {showQuiz && (
+        <SelfAssessmentQuiz
+          onClose={() => setShowQuiz(false)}
+          onPick={(service) => {
+            setServiceType(service);
+            setViewMode('costings');
+            setShowQuiz(false);
+            window.scrollTo(0, 0);
+          }}
+          onResources={() => {
+            setResourcesCategory('All');
+            setViewMode('resources');
+            setShowQuiz(false);
+            window.scrollTo(0, 0);
+          }}
+        />
+      )}
 
       {/* Testimonial Modal */}
 
