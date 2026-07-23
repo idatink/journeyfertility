@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Search, PoundSterling, Menu, User, ChevronDown, Plus, ChevronRight, Building2, Snowflake, Baby, Activity, Sparkles, HeartPulse } from 'lucide-react';
+import { Search, PoundSterling, Menu, User, ChevronDown, ChevronRight, Building2, Snowflake, Baby, Activity, Sparkles, HeartPulse } from 'lucide-react';
 import { Button } from './components/ui/button';
 import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from './components/ui/select';
 import { ImageWithFallback } from './components/figma/ImageWithFallback';
@@ -17,10 +17,6 @@ import eggFreezingBanner from '../assets/SOMEDAYBANNER.jpg';
 import embryoBanner from '../assets/EMBRYOFREEZINGBANNER.jpg';
 import ivfBanner from '../assets/IVFBANNER.jpg';
 import testingBanner from '../assets/TESTINGBANNER.jpg';
-import img_149389447389110fc1e5dbd22 from '../assets/photos/photo-1493894473891-10fc1e5dbd22.jpg';
-import img_1609220136736443140cffec6 from '../assets/photos/photo-1609220136736-443140cffec6.jpg';
-import eggFreezingCard from '../assets/photos/egg-freezing-card.jpg';
-import fertilityTestingCard from '../assets/photos/fertility-testing-card.jpg';
 import story1 from '../assets/photos/story-1.jpg';
 import story2 from '../assets/photos/story-2.jpg';
 import story3 from '../assets/photos/story-3.jpg';
@@ -713,131 +709,6 @@ export default function App() {
               </div>
             </div>
           </div>
-        </div>
-
-        {/* Journey Section */}
-        <div className="mb-16 bg-[#DEE8FF]/40 rounded-2xl p-8 md:p-12">
-          <div className="grid md:grid-cols-2 gap-8 items-center">
-            {/* Left Content */}
-            <div>
-              <h2 className="text-4xl md:text-5xl font-semibold tracking-tight text-[#2F3440] mb-4">
-                Get to know each <span className="italic text-[#5B6AA5]">option</span>
-              </h2>
-              <p className="text-[#5C6478] text-lg mb-6">
-                {SERVICE_META[serviceType].learnLede}
-              </p>
-              <p className="text-gray-600">
-                {serviceType === 'egg-freezing' && 'Plain-language guides on how egg freezing works, what affects your chances, and what a cycle really costs.'}
-                {serviceType === 'embryo' && 'How embryo freezing and storage works, what it costs each year, and what to ask a clinic before you commit.'}
-                {serviceType === 'ivf' && 'How IVF works, what the HFEA success figures do and don\'t tell you, and what a cycle actually costs.'}
-                {serviceType === 'fertility' && 'What a fertility check measures — AMH, egg reserve and key hormones — and how to track your cycle without overspending.'}
-              </p>
-            </div>
-
-            {/* Right Content - Service Cards */}
-            <div className="space-y-4">
-              {/* Egg Freezing Card */}
-              <div
-                role="button"
-                tabIndex={0}
-                aria-label="Compare egg freezing clinics"
-                className="relative rounded-xl overflow-hidden h-32 group cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#5B6AA5] focus-visible:ring-offset-2"
-                onClick={() => { setServiceType('egg-freezing'); setViewMode('costings'); }}
-                onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setServiceType('egg-freezing'); setViewMode('costings'); } }}
-              >
-                <img
-                  src={eggFreezingCard}
-                  alt=""
-                  className="w-full h-full object-cover object-[50%_42%] transition-transform duration-300 group-hover:scale-105 motion-reduce:transition-none motion-reduce:group-hover:scale-100"
-                />
-                <div className={`absolute inset-0 bg-gradient-to-r from-black/70 to-black/40 flex items-center justify-between px-6 ${serviceType === 'egg-freezing' ? 'ring-4 ring-[#F8AD7C]' : ''}`}>
-                  <div>
-                    <h3 className="text-white text-xl mb-1">Egg Freezing</h3>
-                    <p className="text-white/90 text-sm">Preserve your fertility for the future</p>
-                  </div>
-                  <span aria-hidden="true" className="w-10 h-10 rounded-full bg-white/90 flex items-center justify-center shrink-0">
-                    <Plus className="w-5 h-5 text-[#2F3440]" />
-                  </span>
-                </div>
-              </div>
-
-              {/* IVF Treatment Card */}
-              <div
-                role="button"
-                tabIndex={0}
-                aria-label="Compare IVF clinics"
-                className="relative rounded-xl overflow-hidden h-32 group cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#5B6AA5] focus-visible:ring-offset-2"
-                onClick={() => { setServiceType('ivf'); setViewMode('costings'); }}
-                onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setServiceType('ivf'); setViewMode('costings'); } }}
-              >
-                <ImageWithFallback
-                  src={img_1609220136736443140cffec6}
-                  alt="IVF treatment"
-                  className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105 motion-reduce:transition-none motion-reduce:group-hover:scale-100"
-                />
-                <div className={`absolute inset-0 bg-gradient-to-r from-black/70 to-black/40 flex items-center justify-between px-6 ${serviceType === 'ivf' ? 'ring-4 ring-[#F8AD7C]' : ''}`}>
-                  <div>
-                    <h3 className="text-white text-xl mb-1">IVF Treatment</h3>
-                    <p className="text-white/90 text-sm">Building your family through assisted reproduction</p>
-                  </div>
-                  <span aria-hidden="true" className="w-10 h-10 rounded-full bg-white/90 flex items-center justify-center shrink-0">
-                    <Plus className="w-5 h-5 text-[#2F3440]" />
-                  </span>
-                </div>
-              </div>
-
-              {/* Embryo Freezing Card */}
-              <div
-                role="button"
-                tabIndex={0}
-                aria-label="Compare embryo freezing clinics"
-                className="relative rounded-xl overflow-hidden h-32 group cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#5B6AA5] focus-visible:ring-offset-2"
-                onClick={() => { setServiceType('embryo'); setViewMode('costings'); }}
-                onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setServiceType('embryo'); setViewMode('costings'); } }}
-              >
-                <ImageWithFallback
-                  src={img_149389447389110fc1e5dbd22}
-                  alt="Embryo freezing"
-                  className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105 motion-reduce:transition-none motion-reduce:group-hover:scale-100"
-                />
-                <div className={`absolute inset-0 bg-gradient-to-r from-black/70 to-black/40 flex items-center justify-between px-6 ${serviceType === 'embryo' ? 'ring-4 ring-[#F8AD7C]' : ''}`}>
-                  <div>
-                    <h3 className="text-white text-xl mb-1">Embryo Freezing</h3>
-                    <p className="text-white/90 text-sm">Preserve embryos for future family planning</p>
-                  </div>
-                  <span aria-hidden="true" className="w-10 h-10 rounded-full bg-white/90 flex items-center justify-center shrink-0">
-                    <Plus className="w-5 h-5 text-[#2F3440]" />
-                  </span>
-                </div>
-              </div>
-
-              {/* Fertility Testing Card */}
-              <div
-                role="button"
-                tabIndex={0}
-                aria-label="Compare fertility tests"
-                className="relative rounded-xl overflow-hidden h-32 group cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#5B6AA5] focus-visible:ring-offset-2"
-                onClick={() => { setServiceType('fertility'); setViewMode('costings'); }}
-                onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setServiceType('fertility'); setViewMode('costings'); } }}
-              >
-                <ImageWithFallback
-                  src={fertilityTestingCard}
-                  alt=""
-                  className="w-full h-full object-cover object-[50%_34%] transition-transform duration-300 group-hover:scale-105 motion-reduce:transition-none motion-reduce:group-hover:scale-100"
-                />
-                <div className={`absolute inset-0 bg-gradient-to-r from-black/70 to-black/40 flex items-center justify-between px-6 ${serviceType === 'fertility' ? 'ring-4 ring-[#F8AD7C]' : ''}`}>
-                  <div>
-                    <h3 className="text-white text-xl mb-1">Fertility Testing</h3>
-                    <p className="text-white/90 text-sm">Understand your fertility health and options</p>
-                  </div>
-                  <span aria-hidden="true" className="w-10 h-10 rounded-full bg-white/90 flex items-center justify-center shrink-0">
-                    <Plus className="w-5 h-5 text-[#2F3440]" />
-                  </span>
-                </div>
-              </div>
-            </div>
-          </div>
-
         </div>
 
         {/* Testimonials Section */}
