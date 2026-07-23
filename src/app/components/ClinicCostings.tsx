@@ -10,6 +10,7 @@ import {
   TableRow,
 } from './ui/table';
 import { AtHomeTestKitsComparison } from './AtHomeTestKitsComparison';
+import { HowTrackingWorks } from './HowTrackingWorks';
 import { getBudgetBounds } from '../lib/budget';
 import { EnquiryFlow } from './EnquiryFlow';
 
@@ -537,9 +538,17 @@ export function ClinicCostings({
   const [expandedRows, setExpandedRows] = useState<number[]>([]);
   const [enquiring, setEnquiring] = useState<{ slug: string; name: string } | null>(null);
 
-  // If fertility testing and at-home only selected, show at-home test kits
+  // Fertility testing leads with how tracking actually works, so nobody feels
+  // they must buy an expensive panel every month before comparing anything.
   if (serviceType === 'fertility' && atHomeOnly) {
-    return <AtHomeTestKitsComparison />;
+    return (
+      <div className="space-y-10">
+        <HowTrackingWorks />
+        <div className="pt-2 border-t border-[#2F3440]/10">
+          <AtHomeTestKitsComparison />
+        </div>
+      </div>
+    );
   }
 
   const cfg = SERVICE_CONFIG[serviceType];
@@ -603,6 +612,12 @@ export function ClinicCostings({
 
   return (
     <div className="space-y-6">
+      {serviceType === 'fertility' && (
+        <div className="pb-6 border-b border-[#2F3440]/10">
+          <HowTrackingWorks />
+        </div>
+      )}
+
       {/* Header */}
       <div>
         <h2 className="text-3xl mb-2">Clinic Cost Comparison</h2>

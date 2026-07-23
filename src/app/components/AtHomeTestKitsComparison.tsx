@@ -8,7 +8,6 @@ import {
   FERTILITY_TESTS,
   applyTestFilters,
   formatPrice,
-  isSourced,
   sourcingProgress,
   type Biomarker,
   type Collection,
@@ -68,17 +67,19 @@ export function AtHomeTestKitsComparison() {
         </p>
       </div>
 
-      {/* Sourcing status — visible while the catalogue is being filled in */}
+      {/* Provenance note. Every price and panel below is read from the
+          provider's own product page; a few secondary details are still being
+          confirmed and are left blank rather than guessed. */}
       {progress.sourced < progress.total && (
         <div className="glass rounded-2xl p-5 flex gap-3">
           <AlertCircle className="w-5 h-5 text-[#B4762F] shrink-0 mt-0.5" />
           <div className="text-sm text-[#5C6478] leading-relaxed">
             <span className="font-semibold text-[#2F3440]">
-              {progress.sourced} of {progress.total} providers sourced.
+              Prices and panels are read from each provider's own product page
+              (checked Jul 2026).
             </span>{' '}
-            Prices and panel contents are read from each provider's own published product page.
-            Entries below that have not been sourced yet are shown with their details blank rather
-            than estimated — we would rather show a gap than a number we have not verified.
+            A few secondary details — such as lab accreditation — are still being
+            confirmed and are shown blank rather than estimated.
           </div>
         </div>
       )}
@@ -217,7 +218,6 @@ export function AtHomeTestKitsComparison() {
       ) : (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
           {sorted.map((test) => {
-            const sourced = isSourced(test);
             const price = formatPrice(test);
 
             return (
@@ -240,50 +240,46 @@ export function AtHomeTestKitsComparison() {
                   </div>
                 </div>
 
-                {sourced ? (
-                  <>
-                    <div className="flex flex-wrap gap-1.5 mb-4">
-                      {test.biomarkers.map((b) => (
-                        <span
-                          key={b}
-                          className="grain text-[11px] font-semibold text-[#5B6AA5] bg-[#DEE8FF]/70 px-2.5 py-1 rounded-full"
-                        >
-                          {b}
-                        </span>
-                      ))}
-                    </div>
-
-                    <div className="flex flex-wrap gap-4 text-xs text-[#5C6478] mb-5">
-                      {test.turnaroundDays !== null && (
-                        <span className="flex items-center gap-1.5">
-                          <Clock className="w-3.5 h-3.5" />
-                          {test.turnaroundDays} day results
-                        </span>
-                      )}
-                      {test.collection && (
-                        <span className="flex items-center gap-1.5">
-                          {test.collection === 'clinic' ? (
-                            <Building2 className="w-3.5 h-3.5" />
-                          ) : (
-                            <Home className="w-3.5 h-3.5" />
-                          )}
-                          {COLLECTION_LABELS[test.collection]}
-                        </span>
-                      )}
-                      {test.clinicianReview && (
-                        <span className="flex items-center gap-1.5">
-                          <Stethoscope className="w-3.5 h-3.5" />
-                          Clinician review
-                        </span>
-                      )}
-                    </div>
-                  </>
-                ) : (
-                  <div className="text-sm text-[#5C6478] leading-relaxed mb-5">
-                    Awaiting sourcing:{' '}
-                    <span className="text-[#2F3440]">{test.needsSourcing.join(', ')}</span>.
+                {/* Show every detail we have sourced, whatever else is still
+                    outstanding. A gap in a secondary field never hides the
+                    panel a provider actually publishes. */}
+                {test.biomarkers.length > 0 && (
+                  <div className="flex flex-wrap gap-1.5 mb-4">
+                    {test.biomarkers.map((b) => (
+                      <span
+                        key={b}
+                        className="grain text-[11px] font-semibold text-[#5B6AA5] bg-[#DEE8FF]/70 px-2.5 py-1 rounded-full"
+                      >
+                        {b}
+                      </span>
+                    ))}
                   </div>
                 )}
+
+                <div className="flex flex-wrap gap-4 text-xs text-[#5C6478] mb-5">
+                  {test.turnaroundDays !== null && (
+                    <span className="flex items-center gap-1.5">
+                      <Clock className="w-3.5 h-3.5" />
+                      {test.turnaroundDays} day results
+                    </span>
+                  )}
+                  {test.collection && (
+                    <span className="flex items-center gap-1.5">
+                      {test.collection === 'clinic' ? (
+                        <Building2 className="w-3.5 h-3.5" />
+                      ) : (
+                        <Home className="w-3.5 h-3.5" />
+                      )}
+                      {COLLECTION_LABELS[test.collection]}
+                    </span>
+                  )}
+                  {test.clinicianReview && (
+                    <span className="flex items-center gap-1.5">
+                      <Stethoscope className="w-3.5 h-3.5" />
+                      Clinician review
+                    </span>
+                  )}
+                </div>
 
                 <div className="mt-auto flex items-center justify-between gap-3">
                   <a
@@ -292,7 +288,7 @@ export function AtHomeTestKitsComparison() {
                     rel="noopener noreferrer nofollow"
                     className="text-sm font-semibold text-[#5B6AA5] flex items-center gap-1.5 hover:underline"
                   >
-                    {sourced ? 'Visit provider' : 'Source details'}
+                    {price ? 'Visit provider' : 'Source details'}
                     <ExternalLink className="w-3.5 h-3.5" />
                   </a>
                   {test.lastSourced && (
