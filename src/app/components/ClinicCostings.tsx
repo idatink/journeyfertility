@@ -633,7 +633,7 @@ export function ClinicCostings({
   const [sortField, setSortField] = useState<'clinicName' | 'price'>('price');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
   const [expandedRows, setExpandedRows] = useState<number[]>([]);
-  const [enquiring, setEnquiring] = useState<{ slug: string; name: string } | null>(null);
+  const [enquiring, setEnquiring] = useState<{ slug: string; name: string }[] | null>(null);
   // Clinics the user has saved to compare side by side.
   const [shortlist, setShortlist] = useState<number[]>([]);
   const [comparing, setComparing] = useState(false);
@@ -1028,7 +1028,7 @@ export function ClinicCostings({
                           size="sm"
                           variant="outline"
                           className="border-[#F8AD7C] text-[#2F3440] hover:bg-[#F8AD7C]/15 font-semibold whitespace-nowrap"
-                          onClick={() => setEnquiring({ slug: clinic.slug, name: clinic.clinicName })}
+                          onClick={() => setEnquiring([{ slug: clinic.slug, name: clinic.clinicName }])}
                         >
                           Enquire
                         </Button>
@@ -1043,7 +1043,7 @@ export function ClinicCostings({
                           <ClinicDetail
                             clinic={clinic}
                             onEnquire={() =>
-                              setEnquiring({ slug: clinic.slug, name: clinic.clinicName })
+                              setEnquiring([{ slug: clinic.slug, name: clinic.clinicName }])
                             }
                           />
                         </div>
@@ -1132,7 +1132,7 @@ export function ClinicCostings({
                   <Button
                     size="sm"
                     className="bg-[#F8AD7C] hover:bg-[#F2955F] text-[#2F3440] font-semibold"
-                    onClick={() => setEnquiring({ slug: clinic.slug, name: clinic.clinicName })}
+                    onClick={() => setEnquiring([{ slug: clinic.slug, name: clinic.clinicName }])}
                   >
                     Enquire
                   </Button>
@@ -1182,7 +1182,7 @@ export function ClinicCostings({
                     <ClinicDetail
                       clinic={clinic}
                       onEnquire={() =>
-                        setEnquiring({ slug: clinic.slug, name: clinic.clinicName })
+                        setEnquiring([{ slug: clinic.slug, name: clinic.clinicName }])
                       }
                     />
                   </div>
@@ -1210,15 +1210,29 @@ export function ClinicCostings({
         <div className="fixed inset-x-0 bottom-0 z-40 flex justify-center px-4 pb-4 pointer-events-none">
           <div className="pointer-events-auto glass rounded-full shadow-[0_12px_40px_rgba(120,140,200,0.3)] border border-[#A8BEEB]/40 px-5 py-3 flex items-center gap-4">
             <span className="text-sm font-medium text-[#2F3440] whitespace-nowrap">
-              {shortlist.length} saved{shortlist.length < 2 ? ' · save one more' : ''}
+              {shortlist.length} saved
             </span>
             <Button
               size="sm"
-              className="bg-[#2F3440] hover:bg-[#3d434f] text-white font-semibold"
+              variant="outline"
+              className="border-[#2F3440]/20 text-[#2F3440] font-semibold"
               onClick={() => setComparing(true)}
               disabled={shortlist.length < 2}
             >
-              Compare side by side
+              Compare
+            </Button>
+            <Button
+              size="sm"
+              className="bg-[#F8AD7C] hover:bg-[#F2955F] text-[#2F3440] font-semibold whitespace-nowrap"
+              onClick={() =>
+                setEnquiring(
+                  allClinics
+                    .filter((c) => shortlist.includes(c.id))
+                    .map((c) => ({ slug: c.slug, name: c.clinicName }))
+                )
+              }
+            >
+              Enquire with {shortlist.length === 1 ? 'clinic' : `all ${shortlist.length}`}
             </Button>
             <button
               onClick={() => setShortlist([])}
@@ -1346,7 +1360,7 @@ export function ClinicCostings({
                             className="bg-[#F8AD7C] hover:bg-[#F2955F] text-[#2F3440] font-semibold"
                             onClick={() => {
                               setComparing(false);
-                              setEnquiring({ slug: c.slug, name: c.clinicName });
+                              setEnquiring([{ slug: c.slug, name: c.clinicName }]);
                             }}
                           >
                             Enquire
@@ -1357,15 +1371,31 @@ export function ClinicCostings({
                   </tbody>
                 </table>
               </div>
+
+              <div className="border-t px-6 py-4 flex items-center justify-end gap-3">
+                <span className="text-sm text-[#5C6478] mr-auto">
+                  Send one enquiry to all {shortlisted.length} and compare their quotes.
+                </span>
+                <Button
+                  className="bg-[#F8AD7C] hover:bg-[#F2955F] text-[#2F3440] font-semibold"
+                  onClick={() => {
+                    setComparing(false);
+                    setEnquiring(shortlisted.map((c) => ({ slug: c.slug, name: c.clinicName })));
+                  }}
+                >
+                  Enquire with all {shortlisted.length}
+                </Button>
+              </div>
             </div>
           </div>
         );
       })()}
 
-      {enquiring && (
+      {enquiring && enquiring.length > 0 && (
         <EnquiryFlow
-          clinicSlug={enquiring.slug}
-          clinicName={enquiring.name}
+          clinicSlug={enquiring[0].slug}
+          clinicName={enquiring[0].name}
+          clinics={enquiring}
           serviceType={serviceType}
           surface="clinic-costings"
           onShowPrivacy={onShowPrivacy}

@@ -17,6 +17,9 @@ import {
 interface EnquiryFlowProps {
   clinicSlug: string;
   clinicName: string;
+  /** When set (2+), the enquiry is sent to every clinic listed — a batch
+      enquiry. clinicSlug/clinicName are ignored in that case. */
+  clinics?: { slug: string; name: string }[];
   serviceType: string;
   surface?: string;
   onClose: () => void;
@@ -34,6 +37,7 @@ const FUNDING_OPTIONS = [
 export function EnquiryFlow({
   clinicSlug,
   clinicName,
+  clinics,
   serviceType,
   surface = 'search-results',
   onClose,
@@ -45,10 +49,18 @@ export function EnquiryFlow({
   const [submitting, setSubmitting] = useState(false);
   const [result, setResult] = useState<SubmitResult | null>(null);
 
-  // Created once per attempt so a double submit collapses server side rather
-  // than opening two enquiries with the same clinic.
-  const [attribution] = useState(() =>
-    createAttribution(clinicSlug, clinicName, serviceType, surface)
+  // One or many clinics — a single-clinic Enquire is just a batch of one.
+  const [targets] = useState(() =>
+    clinics && clinics.length > 0 ? clinics : [{ slug: clinicSlug, name: clinicName }]
+  );
+  const isBatch = targets.length > 1;
+  const targetLabel = isBatch ? `${targets.length} clinics` : targets[0].name;
+
+  // One attribution per clinic — each gets its own reference and idempotency
+  // key, so a double submit collapses server side rather than opening two
+  // enquiries with the same clinic.
+  const [attributions] = useState(() =>
+    targets.map((t) => createAttribution(t.slug, t.name, serviceType, surface))
   );
 
   const panelRef = useRef<HTMLDivElement>(null);
@@ -119,8 +131,17 @@ export function EnquiryFlow({
     if (Object.keys(found).length) return;
 
     setSubmitting(true);
-    const outcome = await submitEnquiry({ ...draft, attribution, status: 'submitted' });
-    setResult(outcome);
+    // Send one enquiry per clinic. The batch succeeds only if all do; a mixed
+    // result surfaces as an error rather than a false "all sent".
+    const outcomes = await Promise.all(
+      attributions.map((attribution) =>
+        submitEnquiry({ ...draft, attribution, status: 'submitted' })
+      )
+    );
+    const firstFailure = outcomes.find((o) => !o.ok);
+    setResult(
+      firstFailure ?? { ok: true, reference: outcomes[0].reference }
+    );
     setSubmitting(false);
   };
 
@@ -155,7 +176,7 @@ export function EnquiryFlow({
               tabIndex={-1}
               className="text-xl font-semibold tracking-tight text-[#2F3440] outline-none"
             >
-              {result?.ok ? 'Enquiry sent' : `Enquire with ${clinicName}`}
+              {result?.ok ? 'Enquiry sent' : `Enquire with ${targetLabel}`}
             </h2>
             {!result?.ok && (
               <p className="text-sm text-[#5C6478] mt-1">
@@ -199,14 +220,28 @@ export function EnquiryFlow({
               </div>
               <div>
                 <p className="text-[#2F3440] mb-2">
-                  Your reference is{' '}
-                  <span className="font-semibold">{result.reference}</span>
+                  {isBatch ? (
+                    <>Your enquiry is on its way to <span className="font-semibold">{targets.length} clinics</span>.</>
+                  ) : (
+                    <>Your reference is <span className="font-semibold">{result.reference}</span></>
+                  )}
                 </p>
                 <p className="text-sm text-[#5C6478] leading-relaxed">
-                  We will pass this to {clinicName} within {FORWARDING_SLA_HOURS} hours and email
-                  you when they reply. This is an enquiry, not a confirmed appointment — any date
-                  is arranged with the clinic directly.
+                  We will pass {isBatch ? 'it to each clinic' : `this to ${targets[0].name}`} within{' '}
+                  {FORWARDING_SLA_HOURS} hours and email you as {isBatch ? 'they' : 'they'} reply
+                  {isBatch ? ' — so you can compare their quotes' : ''}. This is an enquiry, not a
+                  confirmed appointment — any date is arranged with the clinic directly.
                 </p>
+                {isBatch && (
+                  <ul className="mt-3 space-y-1">
+                    {targets.map((t) => (
+                      <li key={t.slug} className="text-sm text-[#5C6478] flex items-center gap-2">
+                        <Check className="w-3.5 h-3.5 text-[#5B6AA5] shrink-0" />
+                        {t.name.split(' — ')[0]}
+                      </li>
+                    ))}
+                  </ul>
+                )}
               </div>
               <p className="text-xs text-[#5C6478] leading-relaxed">{RETENTION_NOTICE}</p>
               <Button
@@ -402,7 +437,10 @@ export function EnquiryFlow({
                     />
                     <span className="text-sm text-[#2F3440] leading-relaxed">
                       Send my enquiry to{' '}
-                      <span className="font-semibold">{clinicName}</span> so they can contact me.
+                      <span className="font-semibold">
+                        {isBatch ? `these ${targets.length} clinics` : targets[0].name}
+                      </span>{' '}
+                      so they can contact me.
                     </span>
                   </label>
 
