@@ -584,6 +584,53 @@ export const ARTICLES: Article[] = [
       },
     ],
   },
+  {
+    id: 'employer-fertility-benefits',
+    title: 'Does your employer or insurer cover fertility? What to check',
+    category: 'Costs & Planning',
+    readTime: '6 min',
+    excerpt:
+      'A growing number of UK employers and insurers help with the cost of fertility testing, egg freezing or IVF — but it is far from universal and the detail varies enormously. How to find out what you are actually entitled to.',
+    sections: [
+      {
+        heading: 'It is worth checking before you pay',
+        body: [
+          'Fertility benefits at work have grown quickly in the UK, but they are still patchy. Some employers offer a dedicated fertility allowance or fund; some route it through private medical insurance; some offer nothing. Two people at similar-sized companies can have completely different cover.',
+          'Because it varies so much, the only reliable answer comes from your own employer and your own policy documents — not from a general rule. It is worth five minutes with HR before you commit to a cost this size.',
+        ],
+      },
+      {
+        heading: 'What cover tends to look like, by type',
+        body: [
+          'Fertility testing is the most commonly covered, because it is the cheapest — sometimes through a health cash plan, an employee health screening benefit, or your GP on the NHS.',
+          'Egg freezing is increasingly offered as a standalone benefit, often as a capped allowance or a set number of cycles, sometimes via a specialist fertility-benefits provider rather than standard insurance.',
+          'IVF is the most valuable and the least consistently covered. Standard private medical insurance frequently excludes it, or covers only investigation and not treatment, so an employer scheme that explicitly includes cycles is the thing to look for.',
+        ],
+      },
+      {
+        heading: 'How to find out what you actually have',
+        body: [
+          'Ask HR or your benefits platform three direct questions: is there any fertility benefit at all; does it cover testing, egg freezing and IVF or only some of these; and is it delivered through insurance, a flexible-benefits allowance, or a dedicated fertility provider.',
+          'Then read the policy wording, not just the summary. Look for caps (a maximum amount or number of cycles), eligibility (waiting periods, whether partners or single people qualify, how a couple is defined), and exclusions (pre-existing conditions, age limits, or treatment abroad).',
+          'If cover runs through private medical insurance, check whether it pays for treatment or only for diagnosis — the two are often confused, and the difference is thousands of pounds.',
+        ],
+      },
+      {
+        heading: 'Check the NHS route in parallel',
+        body: [
+          'Before assuming you will pay privately, check NHS-funded eligibility where you live. Criteria and the number of funded cycles are set locally by your Integrated Care Board and vary considerably across the UK.',
+          'Employer or insurer cover can sit alongside NHS funding — for example, funding a further private cycle after NHS cycles are used, or covering egg freezing that the NHS would not.',
+        ],
+      },
+      {
+        heading: 'Confirm coverage in writing before you book',
+        body: [
+          'Whatever you are told verbally, get the specifics in writing: what is covered, up to what limit, what pre-authorisation is needed, and which clinics qualify. Some schemes only pay at particular clinics or require approval before you start.',
+          'Coverage details change, and every scheme is different — always confirm with your employer or insurer directly rather than relying on a general guide like this one.',
+        ],
+      },
+    ],
+  },
 ];
 
 const CATEGORIES = [
