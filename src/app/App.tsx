@@ -442,12 +442,13 @@ export default function App() {
                 <button
                   key={stage.id}
                   onClick={() => {
+                    // Take the user straight to the tailored comparison. A
+                    // scroll-to-search left the actual results below the fold
+                    // and read as "nothing happened".
                     setServiceType(stage.service);
                     setSelectedStage(stage.id);
-                    setTimeout(
-                      () => document.getElementById('search')?.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'start' }),
-                      100
-                    );
+                    setViewMode('costings');
+                    window.scrollTo(0, 0);
                   }}
                   className={`group text-left rounded-2xl border p-6 transition-all duration-200 motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#5B6AA5] focus-visible:ring-offset-2 ${
                     active
