@@ -1,5 +1,5 @@
-import { useState, Fragment } from 'react';
-import { ArrowUpDown, ChevronDown, ChevronUp, ExternalLink } from 'lucide-react';
+import { useState, useEffect, Fragment } from 'react';
+import { ArrowUpDown, ChevronDown, ChevronUp, ExternalLink, Bookmark, BookmarkCheck, X } from 'lucide-react';
 import { Button } from './ui/button';
 import {
   Table,
@@ -622,9 +622,25 @@ export function ClinicCostings({
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
   const [expandedRows, setExpandedRows] = useState<number[]>([]);
   const [enquiring, setEnquiring] = useState<{ slug: string; name: string } | null>(null);
+  // Clinics the user has saved to compare side by side.
+  const [shortlist, setShortlist] = useState<number[]>([]);
+  const [comparing, setComparing] = useState(false);
   // Fertility testing is mostly at-home kits, so show those first — but let
   // people switch to testing at a clinic. The kits are never hidden.
   const [fertilityView, setFertilityView] = useState<'kits' | 'clinics'>('kits');
+
+  const toggleShortlist = (id: number) =>
+    setShortlist((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]));
+
+  // Close the compare overlay on Escape, matching the enquiry dialog.
+  useEffect(() => {
+    if (!comparing) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setComparing(false);
+    };
+    document.addEventListener('keydown', onKey);
+    return () => document.removeEventListener('keydown', onKey);
+  }, [comparing]);
 
   // Fertility testing leads with how tracking actually works — so nobody feels
   // they must buy an expensive panel every month — then a toggle between
@@ -924,14 +940,33 @@ export function ClinicCostings({
                       )}
                     </TableCell>
                     <TableCell className="text-right">
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        className="border-[#F8AD7C] text-[#2F3440] hover:bg-[#F8AD7C]/15 font-semibold whitespace-nowrap"
-                        onClick={() => setEnquiring({ slug: clinic.slug, name: clinic.clinicName })}
-                      >
-                        Enquire
-                      </Button>
+                      <div className="flex items-center justify-end gap-2">
+                        <button
+                          type="button"
+                          onClick={() => toggleShortlist(clinic.id)}
+                          aria-pressed={shortlist.includes(clinic.id)}
+                          aria-label={
+                            shortlist.includes(clinic.id)
+                              ? `Remove ${clinic.clinicName} from compare`
+                              : `Save ${clinic.clinicName} to compare`
+                          }
+                          className="text-[#5B6AA5] hover:text-[#2F3440] rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#5B6AA5]"
+                        >
+                          {shortlist.includes(clinic.id) ? (
+                            <BookmarkCheck className="w-4 h-4 fill-[#DEE8FF]" />
+                          ) : (
+                            <Bookmark className="w-4 h-4" />
+                          )}
+                        </button>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          className="border-[#F8AD7C] text-[#2F3440] hover:bg-[#F8AD7C]/15 font-semibold whitespace-nowrap"
+                          onClick={() => setEnquiring({ slug: clinic.slug, name: clinic.clinicName })}
+                        >
+                          Enquire
+                        </Button>
+                      </div>
                     </TableCell>
                   </TableRow>
 
@@ -1035,11 +1070,29 @@ export function ClinicCostings({
                   >
                     Enquire
                   </Button>
+                  <button
+                    type="button"
+                    onClick={() => toggleShortlist(clinic.id)}
+                    aria-pressed={shortlist.includes(clinic.id)}
+                    className="inline-flex items-center gap-1 text-sm font-medium text-[#5B6AA5] rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#5B6AA5]"
+                  >
+                    {shortlist.includes(clinic.id) ? (
+                      <>
+                        <BookmarkCheck className="w-4 h-4 fill-[#DEE8FF]" />
+                        Saved
+                      </>
+                    ) : (
+                      <>
+                        <Bookmark className="w-4 h-4" />
+                        Save
+                      </>
+                    )}
+                  </button>
                   <a
                     href={clinic.hfeaUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1 text-sm text-[#5B6AA5] hover:underline"
+                    className="ml-auto inline-flex items-center gap-1 text-sm text-[#5B6AA5] hover:underline"
                   >
                     HFEA results
                     <ExternalLink className="w-3.5 h-3.5" />
@@ -1085,6 +1138,163 @@ export function ClinicCostings({
         </button>
         .
       </p>
+
+      {/* Sticky compare bar — appears once anything is saved */}
+      {shortlist.length > 0 && !comparing && (
+        <div className="fixed inset-x-0 bottom-0 z-40 flex justify-center px-4 pb-4 pointer-events-none">
+          <div className="pointer-events-auto glass rounded-full shadow-[0_12px_40px_rgba(120,140,200,0.3)] border border-[#A8BEEB]/40 px-5 py-3 flex items-center gap-4">
+            <span className="text-sm font-medium text-[#2F3440] whitespace-nowrap">
+              {shortlist.length} saved{shortlist.length < 2 ? ' · save one more' : ''}
+            </span>
+            <Button
+              size="sm"
+              className="bg-[#2F3440] hover:bg-[#3d434f] text-white font-semibold"
+              onClick={() => setComparing(true)}
+              disabled={shortlist.length < 2}
+            >
+              Compare side by side
+            </Button>
+            <button
+              onClick={() => setShortlist([])}
+              className="text-sm text-[#5C6478] hover:text-[#2F3440] rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#5B6AA5]"
+            >
+              Clear
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Side-by-side compare */}
+      {comparing && (() => {
+        const shortlisted = allClinics.filter((c) => shortlist.includes(c.id));
+        const componentLabels = shortlisted[0]?.components.map((c) => c.label) ?? [];
+        return (
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-label="Compare clinics side by side"
+            className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-4"
+            onClick={() => setComparing(false)}
+          >
+            <div
+              className="bg-white rounded-2xl max-w-5xl w-full max-h-[85vh] flex flex-col overflow-hidden"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="flex items-center justify-between px-6 py-4 border-b">
+                <h3 className="text-lg font-semibold text-[#2F3440]">
+                  Comparing {shortlisted.length} clinics
+                </h3>
+                <button
+                  onClick={() => setComparing(false)}
+                  aria-label="Close compare"
+                  className="text-[#5C6478] hover:text-[#2F3440] rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#5B6AA5]"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+
+              <div className="overflow-auto">
+                <table className="w-full text-sm border-collapse">
+                  <thead>
+                    <tr>
+                      <th className="sticky left-0 bg-white z-10 p-3 text-left align-bottom w-40" />
+                      {shortlisted.map((c) => (
+                        <th key={c.id} className="p-3 text-left align-bottom min-w-[10rem] border-l">
+                          <div className="font-semibold text-[#2F3440] leading-snug">
+                            {c.clinicName.split(' — ')[0]}
+                          </div>
+                          <button
+                            onClick={() => toggleShortlist(c.id)}
+                            className="mt-1 inline-flex items-center gap-1 text-xs text-[#5C6478] hover:text-[#2F3440]"
+                          >
+                            <X className="w-3 h-3" /> Remove
+                          </button>
+                        </th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr className="border-t">
+                      <td className="sticky left-0 bg-white z-10 p-3 text-[#5C6478] font-medium">Location</td>
+                      {shortlisted.map((c) => (
+                        <td key={c.id} className="p-3 border-l text-[#2F3440]">{c.city}</td>
+                      ))}
+                    </tr>
+                    <tr className="border-t">
+                      <td className="sticky left-0 bg-white z-10 p-3 text-[#5C6478] font-medium">Funding</td>
+                      {shortlisted.map((c) => (
+                        <td key={c.id} className="p-3 border-l text-[#2F3440]">
+                          {c.fundingRoutes.map((f) => FUNDING_LABEL[f]).join(' / ')}
+                        </td>
+                      ))}
+                    </tr>
+                    {componentLabels.map((label, i) => (
+                      <tr key={label} className="border-t">
+                        <td className="sticky left-0 bg-white z-10 p-3 text-[#5C6478] font-medium">{label}</td>
+                        {shortlisted.map((c) => (
+                          <td key={c.id} className="p-3 border-l text-[#2F3440]">
+                            {c.components[i]?.amount != null
+                              ? `£${c.components[i]!.amount!.toLocaleString()}`
+                              : <span className="text-gray-400">—</span>}
+                          </td>
+                        ))}
+                      </tr>
+                    ))}
+                    <tr className="border-t">
+                      <td className="sticky left-0 bg-white z-10 p-3 text-[#5C6478] font-medium">Medications</td>
+                      {shortlisted.map((c) => (
+                        <td key={c.id} className="p-3 border-l text-[#2F3440]">
+                          {c.medsIncluded ? 'Included' : 'Quoted separately'}
+                        </td>
+                      ))}
+                    </tr>
+                    <tr className="border-t bg-[#DEE8FF]/30">
+                      <td className="sticky left-0 bg-[#F1F5FF] z-10 p-3 font-semibold text-[#2F3440]">Total</td>
+                      {shortlisted.map((c) => (
+                        <td key={c.id} className="p-3 border-l font-semibold text-[#5B6AA5] whitespace-nowrap">
+                          {priceLabel(c)}
+                        </td>
+                      ))}
+                    </tr>
+                    <tr className="border-t">
+                      <td className="sticky left-0 bg-white z-10 p-3 text-[#5C6478] font-medium">Results</td>
+                      {shortlisted.map((c) => (
+                        <td key={c.id} className="p-3 border-l">
+                          <a
+                            href={c.hfeaUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-1 text-[#5B6AA5] hover:underline"
+                          >
+                            HFEA <ExternalLink className="w-3 h-3" />
+                          </a>
+                        </td>
+                      ))}
+                    </tr>
+                    <tr className="border-t">
+                      <td className="sticky left-0 bg-white z-10 p-3" />
+                      {shortlisted.map((c) => (
+                        <td key={c.id} className="p-3 border-l">
+                          <Button
+                            size="sm"
+                            className="bg-[#F8AD7C] hover:bg-[#F2955F] text-[#2F3440] font-semibold"
+                            onClick={() => {
+                              setComparing(false);
+                              setEnquiring({ slug: c.slug, name: c.clinicName });
+                            }}
+                          >
+                            Enquire
+                          </Button>
+                        </td>
+                      ))}
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        );
+      })()}
 
       {enquiring && (
         <EnquiryFlow
