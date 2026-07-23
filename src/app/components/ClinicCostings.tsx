@@ -524,6 +524,92 @@ function getServiceData(serviceType: ServiceType): PricedClinic[] {
 
 const FUNDING_LABEL: Record<string, string> = { nhs: 'NHS', private: 'Private' };
 
+const priceLabel = (c: PricedClinic) =>
+  c.fromTotal !== null ? `from £${c.fromTotal.toLocaleString()}` : 'Request a quote';
+
+/**
+ * The expanded detail for one clinic — cost breakdown, price provenance and
+ * the enquiry actions. Shared by the desktop table's expand row and the mobile
+ * card so the two can never drift apart.
+ */
+function ClinicDetail({
+  clinic,
+  onEnquire,
+}: {
+  clinic: PricedClinic;
+  onEnquire: () => void;
+}) {
+  return (
+    <div className="space-y-4">
+      <div>
+        <h4 className="mb-3 text-sm font-semibold text-[#2F3440]">
+          {clinic.priceOnRequest ? 'Pricing' : 'What makes up this total'}
+        </h4>
+        {clinic.priceOnRequest ? (
+          <p className="text-sm text-[#5C6478] leading-relaxed">
+            {clinic.clinicName.split(' — ')[0]} does not publish a price for this service.
+            Send an enquiry and they will quote you directly.
+          </p>
+        ) : (
+          <div className="space-y-2 text-sm">
+            {clinic.components.map((c) => (
+              <div key={c.key} className="flex justify-between">
+                <span className="text-[#5C6478]">{c.label}</span>
+                <span className="text-[#2F3440]">
+                  {c.amount !== null ? `£${c.amount.toLocaleString()}` : 'Not published'}
+                </span>
+              </div>
+            ))}
+            <div className="flex justify-between">
+              <span className="text-[#5C6478]">Medications</span>
+              <span className="text-[#2F3440]">
+                {clinic.medsIncluded ? 'Included' : 'Quoted separately'}
+              </span>
+            </div>
+            <div className="flex justify-between border-t pt-2 font-semibold">
+              <span className="text-[#2F3440]">Total</span>
+              <span className="text-[#2F3440]">{priceLabel(clinic)}</span>
+            </div>
+          </div>
+        )}
+        {clinic.priceSourceUrl && (
+          <p className="text-[11px] text-[#5C6478] mt-3 leading-relaxed">
+            Published price ·{' '}
+            <a
+              href={clinic.priceSourceUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-[#5B6AA5] hover:underline"
+            >
+              clinic price list
+            </a>{' '}
+            · checked {clinic.priceCheckedLabel}
+          </p>
+        )}
+      </div>
+
+      <div className="flex flex-wrap justify-end gap-3">
+        <a
+          href={clinic.hfeaUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-1.5 text-sm font-medium text-[#5B6AA5] hover:underline self-center"
+        >
+          View HFEA results
+          <ExternalLink className="w-3.5 h-3.5" />
+        </a>
+        <Button
+          size="sm"
+          className="bg-[#F8AD7C] hover:bg-[#F2955F] text-[#2F3440] font-semibold"
+          onClick={onEnquire}
+        >
+          Request consultation
+        </Button>
+      </div>
+    </div>
+  );
+}
+
 export function ClinicCostings({
   serviceType,
   atHomeOnly,
@@ -606,9 +692,6 @@ export function ClinicCostings({
 
   const toggleRowExpansion = (id: number) =>
     setExpandedRows((prev) => (prev.includes(id) ? prev.filter((r) => r !== id) : [...prev, id]));
-
-  const priceLabel = (c: PricedClinic) =>
-    c.fromTotal !== null ? `from £${c.fromTotal.toLocaleString()}` : 'Request a quote';
 
   return (
     <div className="space-y-6">
@@ -707,8 +790,12 @@ export function ClinicCostings({
         </div>
       )}
 
-      {/* Table */}
-      <div className={`border rounded-lg overflow-hidden bg-white ${sortedData.length === 0 ? 'hidden' : ''}`}>
+      {/* Table — desktop only; mobile uses the card list below */}
+      <div
+        className={`border rounded-lg overflow-hidden bg-white ${
+          sortedData.length === 0 ? 'hidden' : 'hidden md:block'
+        }`}
+      >
         <div className="overflow-x-auto">
           <Table>
             <TableHeader>
@@ -806,72 +893,13 @@ export function ClinicCostings({
                   {expandedRows.includes(clinic.id) && (
                     <TableRow className="bg-gray-50">
                       <TableCell colSpan={cfg.extras.length + 5} className="p-6">
-                        <div className="max-w-md space-y-4">
-                          <div>
-                            <h4 className="mb-3 text-sm font-semibold text-[#2F3440]">
-                              {clinic.priceOnRequest ? 'Pricing' : 'What makes up this total'}
-                            </h4>
-                            {clinic.priceOnRequest ? (
-                              <p className="text-sm text-[#5C6478] leading-relaxed">
-                                {clinic.clinicName.split(' — ')[0]} does not publish a price for this
-                                service. Send an enquiry and they will quote you directly.
-                              </p>
-                            ) : (
-                              <div className="space-y-2 text-sm">
-                                {clinic.components.map((c) => (
-                                  <div key={c.key} className="flex justify-between">
-                                    <span className="text-[#5C6478]">{c.label}</span>
-                                    <span className="text-[#2F3440]">
-                                      {c.amount !== null ? `£${c.amount.toLocaleString()}` : 'Not published'}
-                                    </span>
-                                  </div>
-                                ))}
-                                <div className="flex justify-between">
-                                  <span className="text-[#5C6478]">Medications</span>
-                                  <span className="text-[#2F3440]">
-                                    {clinic.medsIncluded ? 'Included' : 'Quoted separately'}
-                                  </span>
-                                </div>
-                                <div className="flex justify-between border-t pt-2 font-semibold">
-                                  <span className="text-[#2F3440]">Total</span>
-                                  <span className="text-[#2F3440]">{priceLabel(clinic)}</span>
-                                </div>
-                              </div>
-                            )}
-                            {clinic.priceSourceUrl && (
-                              <p className="text-[11px] text-[#5C6478] mt-3 leading-relaxed">
-                                Published price ·{' '}
-                                <a
-                                  href={clinic.priceSourceUrl}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  className="text-[#5B6AA5] hover:underline"
-                                >
-                                  clinic price list
-                                </a>{' '}
-                                · checked {clinic.priceCheckedLabel}
-                              </p>
-                            )}
-                          </div>
-
-                          <div className="flex flex-wrap justify-end gap-3">
-                            <a
-                              href={clinic.hfeaUrl}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="inline-flex items-center gap-1.5 text-sm font-medium text-[#5B6AA5] hover:underline self-center"
-                            >
-                              View HFEA results
-                              <ExternalLink className="w-3.5 h-3.5" />
-                            </a>
-                            <Button
-                              size="sm"
-                              className="bg-[#F8AD7C] hover:bg-[#F2955F] text-[#2F3440] font-semibold"
-                              onClick={() => setEnquiring({ slug: clinic.slug, name: clinic.clinicName })}
-                            >
-                              Request consultation
-                            </Button>
-                          </div>
+                        <div className="max-w-md">
+                          <ClinicDetail
+                            clinic={clinic}
+                            onEnquire={() =>
+                              setEnquiring({ slug: clinic.slug, name: clinic.clinicName })
+                            }
+                          />
                         </div>
                       </TableCell>
                     </TableRow>
@@ -882,6 +910,117 @@ export function ClinicCostings({
           </Table>
         </div>
       </div>
+
+      {/* Cards — mobile only; the table's columns don't fit a phone */}
+      {sortedData.length > 0 && (
+        <div className="md:hidden space-y-3">
+          <div className="flex items-center gap-2 text-sm">
+            <span className="text-[#5C6478]">Sort</span>
+            {([['price', 'Price'], ['clinicName', 'Name']] as const).map(([field, label]) => (
+              <button
+                key={field}
+                onClick={() => toggleSort(field)}
+                className={`grain font-medium px-3 py-1 rounded-full transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#5B6AA5] ${
+                  sortField === field
+                    ? 'bg-[#2F3440] text-white'
+                    : 'bg-white/60 text-[#2F3440]'
+                }`}
+              >
+                {label}
+                {sortField === field && (sortDirection === 'asc' ? ' ↑' : ' ↓')}
+              </button>
+            ))}
+          </div>
+
+          {sortedData.map((clinic) => {
+            const isLowest = lowestTotal !== null && clinic.fromTotal === lowestTotal;
+            const expanded = expandedRows.includes(clinic.id);
+            return (
+              <div
+                key={clinic.id}
+                className={`glass rounded-2xl p-4 ${
+                  isLowest ? 'ring-1 ring-[#5B6AA5]/40 bg-[#DEE8FF]/30' : ''
+                }`}
+              >
+                <div className="flex items-start justify-between gap-3">
+                  <div>
+                    <div className="font-medium text-[#2F3440] leading-snug">
+                      {clinic.clinicName}
+                    </div>
+                    <div className="text-xs text-gray-500 mt-0.5">
+                      {clinic.city} ·{' '}
+                      {clinic.fundingRoutes.map((f) => FUNDING_LABEL[f]).join(' / ')}
+                    </div>
+                  </div>
+                  <div className="text-right shrink-0">
+                    {clinic.fromTotal !== null ? (
+                      <>
+                        <div className="text-[#5B6AA5] font-semibold whitespace-nowrap">
+                          {priceLabel(clinic)}
+                        </div>
+                        {!clinic.medsIncluded && (
+                          <div className="text-[11px] text-[#5C6478]">+ medications</div>
+                        )}
+                      </>
+                    ) : (
+                      <span className="text-[#5C6478] text-sm">Request a quote</span>
+                    )}
+                  </div>
+                </div>
+
+                {(clinic.priceOnRequest || isLowest) && (
+                  <div className="mt-2">
+                    {clinic.priceOnRequest ? (
+                      <span className="grain text-[10px] font-semibold uppercase tracking-wide text-[#B4762F] bg-[#F8AD7C]/20 px-2 py-0.5 rounded-full">
+                        Price on request
+                      </span>
+                    ) : (
+                      <span className="grain text-[10px] font-semibold uppercase tracking-wide text-[#5B6AA5] bg-[#DEE8FF]/70 px-2 py-0.5 rounded-full">
+                        Lowest published
+                      </span>
+                    )}
+                  </div>
+                )}
+
+                <div className="mt-3 flex items-center gap-4">
+                  <a
+                    href={clinic.hfeaUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1 text-sm text-[#5B6AA5] hover:underline"
+                  >
+                    HFEA results
+                    <ExternalLink className="w-3.5 h-3.5" />
+                  </a>
+                  <button
+                    onClick={() => toggleRowExpansion(clinic.id)}
+                    aria-expanded={expanded}
+                    className="ml-auto inline-flex items-center gap-1 text-sm font-medium text-[#5B6AA5]"
+                  >
+                    {expanded ? 'Hide details' : 'View details'}
+                    {expanded ? (
+                      <ChevronUp className="w-4 h-4" />
+                    ) : (
+                      <ChevronDown className="w-4 h-4" />
+                    )}
+                  </button>
+                </div>
+
+                {expanded && (
+                  <div className="mt-4 pt-4 border-t border-[#2F3440]/10">
+                    <ClinicDetail
+                      clinic={clinic}
+                      onEnquire={() =>
+                        setEnquiring({ slug: clinic.slug, name: clinic.clinicName })
+                      }
+                    />
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      )}
 
       <p className="text-xs text-[#5C6478]">
         Success rates are shown on the{' '}
