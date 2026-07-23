@@ -857,6 +857,7 @@ export function ClinicCostings({
                     <ArrowUpDown className="w-3 h-3" />
                   </button>
                 </TableHead>
+                <TableHead className="w-px"></TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -922,11 +923,21 @@ export function ClinicCostings({
                         <span className="text-[#5C6478] text-sm">Request a quote</span>
                       )}
                     </TableCell>
+                    <TableCell className="text-right">
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        className="border-[#F8AD7C] text-[#2F3440] hover:bg-[#F8AD7C]/15 font-semibold whitespace-nowrap"
+                        onClick={() => setEnquiring({ slug: clinic.slug, name: clinic.clinicName })}
+                      >
+                        Enquire
+                      </Button>
+                    </TableCell>
                   </TableRow>
 
                   {expandedRows.includes(clinic.id) && (
                     <TableRow className="bg-gray-50">
-                      <TableCell colSpan={cfg.extras.length + 5} className="p-6">
+                      <TableCell colSpan={cfg.extras.length + 6} className="p-6">
                         <div className="max-w-md">
                           <ClinicDetail
                             clinic={clinic}
@@ -1016,7 +1027,14 @@ export function ClinicCostings({
                   </div>
                 )}
 
-                <div className="mt-3 flex items-center gap-4">
+                <div className="mt-3 flex items-center gap-3">
+                  <Button
+                    size="sm"
+                    className="bg-[#F8AD7C] hover:bg-[#F2955F] text-[#2F3440] font-semibold"
+                    onClick={() => setEnquiring({ slug: clinic.slug, name: clinic.clinicName })}
+                  >
+                    Enquire
+                  </Button>
                   <a
                     href={clinic.hfeaUrl}
                     target="_blank"
