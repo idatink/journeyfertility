@@ -738,12 +738,19 @@ export function ClinicCostings({
     if (clinicFilter !== 'all' && c.slug !== clinicFilter) return false;
     if (funding !== 'all' && !c.fundingRoutes.includes(funding)) return false;
     if (publishedOnly && c.priceOnRequest) return false;
-    if (budget) {
-      if (c.fromTotal === null) return false;
-      if (c.fromTotal < budget.min || c.fromTotal >= budget.max) return false;
+    // Budget only rules out a clinic that publishes a price outside the range.
+    // A clinic that quotes on enquiry can't be ruled out — we don't know its
+    // price — so it stays, flagged rather than filtered. This is what stops a
+    // budget on a quote-only service (e.g. embryo) collapsing to zero results.
+    if (budget && c.fromTotal !== null && (c.fromTotal < budget.min || c.fromTotal >= budget.max)) {
+      return false;
     }
     return true;
   });
+
+  // When a budget is applied and some results are quote-only, say so — those
+  // clinics appear because we can't confirm they are outside the budget.
+  const budgetIncludesQuoteOnly = budget !== null && filteredData.some((c) => c.priceOnRequest);
 
   const activeFilterCount =
     (clinicFilter !== 'all' ? 1 : 0) +
@@ -811,6 +818,14 @@ export function ClinicCostings({
             <> · {activeFilterCount} filter{activeFilterCount > 1 ? 's' : ''} applied</>
           )}
         </p>
+        {budgetIncludesQuoteOnly && (
+          <p className="text-sm text-[#5C6478] mt-2 max-w-2xl leading-relaxed">
+            <span className="font-medium text-[#2F3440]">Clinics that quote on enquiry are shown too.</span>{' '}
+            They don&rsquo;t publish a price, so we can&rsquo;t confirm they fit your budget until you
+            ask — send an enquiry to find out. Tick <em>&ldquo;only clinics that publish a price&rdquo;</em>{' '}
+            to hide them.
+          </p>
+        )}
       </div>
 
       {/* Summary Cards */}
