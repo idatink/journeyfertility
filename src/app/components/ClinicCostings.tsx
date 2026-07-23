@@ -25,9 +25,19 @@ interface ClinicCostingsProps {
   /** budget bracket id from the search form, or 'all' */
   budgetRange?: string;
   onShowPrivacy?: () => void;
+  /** switch the comparison to another service without leaving the results */
+  onServiceChange?: (service: 'egg-freezing' | 'embryo' | 'ivf' | 'fertility') => void;
 }
 
 type ServiceType = ClinicCostingsProps['serviceType'];
+
+// Fertility first — it's the usual entry — then the treatments.
+const RESULTS_SERVICE_TABS: { id: ServiceType; label: string }[] = [
+  { id: 'fertility', label: 'Fertility Testing' },
+  { id: 'egg-freezing', label: 'Egg Freezing' },
+  { id: 'ivf', label: 'IVF Treatment' },
+  { id: 'embryo', label: 'Embryo Freezing' },
+];
 
 /**
  * Real, HFEA-licensed UK clinics.
@@ -616,6 +626,7 @@ export function ClinicCostings({
   clinic: clinicFilter = 'all',
   budgetRange = 'all',
   onShowPrivacy = () => {},
+  onServiceChange,
 }: ClinicCostingsProps) {
   const [funding, setFunding] = useState<'all' | 'nhs' | 'private'>('all');
   const [publishedOnly, setPublishedOnly] = useState(false);
@@ -642,6 +653,34 @@ export function ClinicCostings({
     document.addEventListener('keydown', onKey);
     return () => document.removeEventListener('keydown', onKey);
   }, [comparing]);
+
+  // Switch the whole comparison to another service without going back to the
+  // search — so "I want to compare IVF instead" is one click, not a detour.
+  const serviceSwitcher = onServiceChange ? (
+    <div
+      role="tablist"
+      aria-label="Compare a different service"
+      className="flex flex-wrap gap-1.5 p-1.5 rounded-2xl bg-white/50"
+    >
+      {RESULTS_SERVICE_TABS.map((s) => {
+        const active = serviceType === s.id;
+        return (
+          <button
+            key={s.id}
+            type="button"
+            role="tab"
+            aria-selected={active}
+            onClick={() => onServiceChange(s.id)}
+            className={`grain flex-1 min-w-[8rem] text-sm font-semibold px-4 py-2.5 rounded-xl transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#5B6AA5] focus-visible:ring-offset-2 ${
+              active ? 'bg-[#2F3440] text-white shadow-sm' : 'text-[#2F3440] hover:bg-white/70'
+            }`}
+          >
+            {s.label}
+          </button>
+        );
+      })}
+    </div>
+  ) : null;
 
   // Fertility testing leads with how tracking actually works — so nobody feels
   // they must buy an expensive panel every month — then a toggle between
@@ -684,6 +723,7 @@ export function ClinicCostings({
   if (serviceType === 'fertility' && fertilityView === 'kits') {
     return (
       <div className="space-y-8">
+        {serviceSwitcher}
         {fertilityTopMatter}
         <AtHomeTestKitsComparison />
       </div>
@@ -748,6 +788,7 @@ export function ClinicCostings({
 
   return (
     <div className="space-y-6">
+      {serviceSwitcher}
       {fertilityTopMatter}
 
       {/* Learn-more step: every non-fertility path leads with how the treatment

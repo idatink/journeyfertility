@@ -512,6 +512,10 @@ export default function App() {
                 setViewMode('privacy');
                 window.scrollTo(0, 0);
               }}
+              onServiceChange={(service) => {
+                setServiceType(service);
+                window.scrollTo(0, 0);
+              }}
             />
           </div>
         )}
