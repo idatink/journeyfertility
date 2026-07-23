@@ -1,5 +1,16 @@
-import { useState } from 'react';
-import { ExternalLink, Clock, Stethoscope, Home, Building2, AlertCircle } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import {
+  ExternalLink,
+  Clock,
+  Stethoscope,
+  Home,
+  Building2,
+  AlertCircle,
+  Bookmark,
+  BookmarkCheck,
+  Check,
+  X,
+} from 'lucide-react';
 import { Button } from './ui/button';
 import {
   BIOMARKERS,
@@ -13,6 +24,11 @@ import {
   type Collection,
   type TestFilters,
 } from '../lib/tests';
+
+const SAMPLE_LABEL: Record<string, string> = {
+  'finger-prick': 'Finger-prick',
+  'venous-draw': 'Venous draw',
+};
 
 const COLLECTION_OPTIONS: { id: Collection | 'all'; label: string }[] = [
   { id: 'all', label: 'Any' },
@@ -30,6 +46,20 @@ const TURNAROUND_OPTIONS: { id: number | null; label: string }[] = [
 export function AtHomeTestKitsComparison() {
   const [filters, setFilters] = useState<TestFilters>(DEFAULT_TEST_FILTERS);
   const [sort, setSort] = useState<'price' | 'panel'>('price');
+  const [shortlist, setShortlist] = useState<string[]>([]);
+  const [comparing, setComparing] = useState(false);
+
+  const toggleShortlist = (id: string) =>
+    setShortlist((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]));
+
+  useEffect(() => {
+    if (!comparing) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setComparing(false);
+    };
+    document.addEventListener('keydown', onKey);
+    return () => document.removeEventListener('keydown', onKey);
+  }, [comparing]);
 
   const providers = ['all', ...Array.from(new Set(FERTILITY_TESTS.map((t) => t.provider)))];
   const progress = sourcingProgress(FERTILITY_TESTS);
@@ -282,15 +312,35 @@ export function AtHomeTestKitsComparison() {
                 </div>
 
                 <div className="mt-auto flex items-center justify-between gap-3">
-                  <a
-                    href={test.providerUrl}
-                    target="_blank"
-                    rel="noopener noreferrer nofollow"
-                    className="text-sm font-semibold text-[#5B6AA5] flex items-center gap-1.5 hover:underline"
-                  >
-                    {price ? 'Visit provider' : 'Source details'}
-                    <ExternalLink className="w-3.5 h-3.5" />
-                  </a>
+                  <div className="flex items-center gap-4">
+                    <button
+                      type="button"
+                      onClick={() => toggleShortlist(test.id)}
+                      aria-pressed={shortlist.includes(test.id)}
+                      className="inline-flex items-center gap-1 text-sm font-medium text-[#5B6AA5] rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#5B6AA5]"
+                    >
+                      {shortlist.includes(test.id) ? (
+                        <>
+                          <BookmarkCheck className="w-4 h-4 fill-[#DEE8FF]" />
+                          Saved
+                        </>
+                      ) : (
+                        <>
+                          <Bookmark className="w-4 h-4" />
+                          Compare
+                        </>
+                      )}
+                    </button>
+                    <a
+                      href={test.providerUrl}
+                      target="_blank"
+                      rel="noopener noreferrer nofollow"
+                      className="text-sm font-semibold text-[#5B6AA5] flex items-center gap-1.5 hover:underline"
+                    >
+                      {price ? 'Visit provider' : 'Source details'}
+                      <ExternalLink className="w-3.5 h-3.5" />
+                    </a>
+                  </div>
                   {test.lastSourced && (
                     <span className="text-[11px] text-[#5C6478]">
                       Checked {new Date(test.lastSourced).toLocaleDateString('en-GB', {
@@ -311,6 +361,166 @@ export function AtHomeTestKitsComparison() {
         confirm on the provider's own site before buying. A test result is not a diagnosis — discuss
         anything unexpected with a qualified clinician.
       </p>
+
+      {/* Sticky compare bar */}
+      {shortlist.length > 0 && !comparing && (
+        <div className="fixed inset-x-0 bottom-0 z-40 flex justify-center px-4 pb-4 pointer-events-none">
+          <div className="pointer-events-auto glass rounded-full shadow-[0_12px_40px_rgba(120,140,200,0.3)] border border-[#A8BEEB]/40 px-5 py-3 flex items-center gap-4">
+            <span className="text-sm font-medium text-[#2F3440] whitespace-nowrap">
+              {shortlist.length} saved{shortlist.length < 2 ? ' · save one more' : ''}
+            </span>
+            <Button
+              size="sm"
+              className="bg-[#2F3440] hover:bg-[#3d434f] text-white font-semibold"
+              onClick={() => setComparing(true)}
+              disabled={shortlist.length < 2}
+            >
+              Compare side by side
+            </Button>
+            <button
+              onClick={() => setShortlist([])}
+              className="text-sm text-[#5C6478] hover:text-[#2F3440] rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#5B6AA5]"
+            >
+              Clear
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Side-by-side compare */}
+      {comparing && (() => {
+        const shortlisted = FERTILITY_TESTS.filter((t) => shortlist.includes(t.id));
+        const markerRows = BIOMARKERS.filter((b) => shortlisted.some((t) => t.biomarkers.includes(b)));
+        return (
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-label="Compare fertility tests side by side"
+            className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-4"
+            onClick={() => setComparing(false)}
+          >
+            <div
+              className="bg-white rounded-2xl max-w-4xl w-full max-h-[85vh] flex flex-col overflow-hidden"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="flex items-center justify-between px-6 py-4 border-b">
+                <h3 className="text-lg font-semibold text-[#2F3440]">
+                  Comparing {shortlisted.length} tests
+                </h3>
+                <button
+                  onClick={() => setComparing(false)}
+                  aria-label="Close compare"
+                  className="text-[#5C6478] hover:text-[#2F3440] rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#5B6AA5]"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+
+              <div className="overflow-auto">
+                <table className="w-full text-sm border-collapse">
+                  <thead>
+                    <tr>
+                      <th className="sticky left-0 bg-white z-10 p-3 text-left align-bottom w-40" />
+                      {shortlisted.map((t) => (
+                        <th key={t.id} className="p-3 text-left align-bottom min-w-[9rem] border-l">
+                          <div className="font-semibold text-[#2F3440] leading-snug">{t.provider}</div>
+                          <button
+                            onClick={() => toggleShortlist(t.id)}
+                            className="mt-1 inline-flex items-center gap-1 text-xs text-[#5C6478] hover:text-[#2F3440]"
+                          >
+                            <X className="w-3 h-3" /> Remove
+                          </button>
+                        </th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr className="border-t bg-[#DEE8FF]/30">
+                      <td className="sticky left-0 bg-[#F1F5FF] z-10 p-3 font-semibold text-[#2F3440]">Price</td>
+                      {shortlisted.map((t) => (
+                        <td key={t.id} className="p-3 border-l font-semibold text-[#2F3440] whitespace-nowrap">
+                          {formatPrice(t) ?? <span className="text-gray-400">—</span>}
+                        </td>
+                      ))}
+                    </tr>
+                    <tr className="border-t">
+                      <td className="sticky left-0 bg-white z-10 p-3 text-[#5C6478] font-medium">Sample</td>
+                      {shortlisted.map((t) => (
+                        <td key={t.id} className="p-3 border-l text-[#2F3440]">
+                          {t.sampleType ? SAMPLE_LABEL[t.sampleType] : <span className="text-gray-400">—</span>}
+                        </td>
+                      ))}
+                    </tr>
+                    <tr className="border-t">
+                      <td className="sticky left-0 bg-white z-10 p-3 text-[#5C6478] font-medium">Collection</td>
+                      {shortlisted.map((t) => (
+                        <td key={t.id} className="p-3 border-l text-[#2F3440]">
+                          {t.collection ? COLLECTION_LABELS[t.collection] : <span className="text-gray-400">—</span>}
+                        </td>
+                      ))}
+                    </tr>
+                    <tr className="border-t">
+                      <td className="sticky left-0 bg-white z-10 p-3 text-[#5C6478] font-medium">Clinician review</td>
+                      {shortlisted.map((t) => (
+                        <td key={t.id} className="p-3 border-l text-[#2F3440]">
+                          {t.clinicianReview === null ? <span className="text-gray-400">—</span> : t.clinicianReview ? 'Yes' : 'No'}
+                        </td>
+                      ))}
+                    </tr>
+                    <tr className="border-t">
+                      <td className="sticky left-0 bg-white z-10 p-3 text-[#5C6478] font-medium">Results back</td>
+                      {shortlisted.map((t) => (
+                        <td key={t.id} className="p-3 border-l text-[#2F3440]">
+                          {t.turnaroundDays !== null ? `${t.turnaroundDays} days` : <span className="text-gray-400">—</span>}
+                        </td>
+                      ))}
+                    </tr>
+
+                    <tr className="border-t">
+                      <td
+                        colSpan={shortlisted.length + 1}
+                        className="p-3 pt-4 text-xs font-semibold uppercase tracking-wide text-[#5B6AA5]"
+                      >
+                        Measures
+                      </td>
+                    </tr>
+                    {markerRows.map((b) => (
+                      <tr key={b} className="border-t">
+                        <td className="sticky left-0 bg-white z-10 p-3 text-[#5C6478] font-medium">{b}</td>
+                        {shortlisted.map((t) => (
+                          <td key={t.id} className="p-3 border-l">
+                            {t.biomarkers.includes(b) ? (
+                              <Check className="w-4 h-4 text-[#5B6AA5]" aria-label="included" />
+                            ) : (
+                              <span className="text-gray-300" aria-label="not included">—</span>
+                            )}
+                          </td>
+                        ))}
+                      </tr>
+                    ))}
+
+                    <tr className="border-t">
+                      <td className="sticky left-0 bg-white z-10 p-3" />
+                      {shortlisted.map((t) => (
+                        <td key={t.id} className="p-3 border-l">
+                          <a
+                            href={t.providerUrl}
+                            target="_blank"
+                            rel="noopener noreferrer nofollow"
+                            className="inline-flex items-center gap-1 text-sm font-semibold text-[#5B6AA5] hover:underline"
+                          >
+                            Visit <ExternalLink className="w-3 h-3" />
+                          </a>
+                        </td>
+                      ))}
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        );
+      })()}
     </div>
   );
 }
