@@ -262,7 +262,9 @@ const REAL_CLINICS: Clinic[] = [
     fundingRoutes: ['private'],
     ivfCycle: null,
     eggFreezingCycle: 6100,
-    embryoCycle: null,
+    // Published embryo-freezing cycle "from" price (first cycle; £3,650 second,
+    // £3,450 third). Medications separate, as with every cycle price here.
+    embryoCycle: 3950,
     testingFee: null,
     consultation: null,
     storagePerYear: null,
