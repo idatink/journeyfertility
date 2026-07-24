@@ -121,15 +121,22 @@ const REAL_CLINICS: Clinic[] = [
     city: 'Manchester',
     hfeaUrl: HFEA,
     fundingRoutes: ['private'],
-    ivfCycle: null,
-    eggFreezingCycle: 4995,
-    embryoCycle: null,
+    // All from Manchester Fertility's own patient price list PDF. Its egg
+    // freezing figure (£4,200) is lower than the £4,995 we had from a later web
+    // read, i.e. prices have since risen — so the whole entry is dated to the
+    // PDF rather than mixing vintages under a single "checked" label.
+    ivfCycle: 4150,
+    eggFreezingCycle: 4200,
+    // "Elective Embryo Freezing" — includes freezing + first year storage and a
+    // first frozen transfer; medications (£985–£2,600) quoted separately.
+    embryoCycle: 4675,
     testingFee: null,
     consultation: null,
-    storagePerYear: null,
+    storagePerYear: 365,
     medsIncluded: false,
-    priceSourceUrl: 'https://www.manchesterfertility.com/prices/',
-    priceCheckedLabel: 'Jul 2026',
+    priceSourceUrl:
+      'https://www.manchesterfertility.com/media/filer_public/d3/fb/d3fbf6e4-da3f-48e9-a224-42cf886d0e0b/manchester_fertility_price_list_jan_2024.pdf',
+    priceCheckedLabel: 'Jan 2024 list',
   },
   {
     id: 4,
@@ -183,13 +190,20 @@ const REAL_CLINICS: Clinic[] = [
     city: 'Cambridge',
     hfeaUrl: HFEA,
     fundingRoutes: ['nhs', 'private'],
-    ivfCycle: null,
+    // Bourn Hall does not sell a standalone "elective embryo freezing" product.
+    // The cost to create and freeze embryos is the IVF package (£4,495), which
+    // includes the freeze fee, first year of storage and a transfer; medication
+    // is separate, and storage after year one is £420/yr. From their patient
+    // price list.
+    ivfCycle: 4495,
     eggFreezingCycle: null,
-    embryoCycle: null,
+    embryoCycle: 4495,
     testingFee: null,
-    consultation: null,
-    storagePerYear: null,
+    consultation: 275,
+    storagePerYear: 420,
     medsIncluded: false,
+    priceSourceUrl: 'https://www.bournhall.co.uk/fees-funding/our-prices/',
+    priceCheckedLabel: '2024 list',
   },
   {
     id: 8,
