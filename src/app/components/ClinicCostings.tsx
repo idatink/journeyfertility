@@ -12,6 +12,7 @@ import {
 import { AtHomeTestKitsComparison } from './AtHomeTestKitsComparison';
 import { HowTrackingWorks } from './HowTrackingWorks';
 import { ServiceExplainer } from './ServiceExplainer';
+import { AllInCostEstimator } from './AllInCostEstimator';
 import { FERTILITY_TESTS } from '../lib/tests';
 import { getBudgetBounds } from '../lib/budget';
 import { EnquiryFlow } from './EnquiryFlow';
@@ -1220,6 +1221,10 @@ export function ClinicCostings({
         </button>
         .
       </p>
+
+      {/* All-in cost model — the spreadsheet people build by hand. Egg freezing
+          is where the UK-vs-abroad cost question comes up most. */}
+      {serviceType === 'egg-freezing' && <AllInCostEstimator />}
 
       {/* Sticky compare bar — appears once anything is saved */}
       {shortlist.length > 0 && !comparing && (
