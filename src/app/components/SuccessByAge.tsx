@@ -55,6 +55,11 @@ export function SuccessByAge() {
         </p>
       </div>
 
+      <p className="text-sm text-[#2F3440] leading-relaxed mb-4 max-w-2xl font-medium">
+        The steepest drop is through your late thirties — so if you&rsquo;re near or past 35,
+        deciding sooner rather than later makes a real difference to your chances.
+      </p>
+
       <a
         href={HFEA_REGISTER}
         target="_blank"

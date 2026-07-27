@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Search, PoundSterling, Menu, User, ChevronDown, ChevronRight, Building2, Snowflake, Baby, Activity, Sparkles, HeartPulse } from 'lucide-react';
+import { Search, PoundSterling, Menu, User, ChevronDown, ChevronRight, Building2, Snowflake, Baby, Activity, Sparkles, HeartPulse, Clock } from 'lucide-react';
 import { Button } from './components/ui/button';
 import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from './components/ui/select';
 import { ImageWithFallback } from './components/figma/ImageWithFallback';
@@ -91,6 +91,14 @@ const STAGES = [
     tag: 'Start with fertility testing',
     icon: Sparkles,
     statement: "I might freeze my eggs someday.",
+  },
+  {
+    id: 'single-35',
+    age: '35',
+    service: 'fertility',
+    tag: 'Start with fertility testing',
+    icon: Clock,
+    statement: "I'm single and want to keep my options open.",
   },
   {
     id: 'embryo-40',
