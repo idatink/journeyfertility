@@ -21,9 +21,19 @@ type Loc = 'uk' | 'eu';
 
 const MODEL: Record<Loc, { cycle: [number, number]; meds: [number, number]; storage: [number, number]; travel: [number, number] }> = {
   uk: { cycle: [3195, 6100], meds: [800, 2600], storage: [200, 425], travel: [0, 0] },
-  eu: { cycle: [1600, 3000], meds: [900, 1800], storage: [200, 300], travel: [600, 1500] },
+  // Europe grounded in published clinic prices (see EU_EXAMPLES): treatment
+  // ~€2,000–€3,000, meds ~€880–€1,405, storage ~€175–€485/yr, converted ~€1=£0.86.
+  eu: { cycle: [1700, 2600], meds: [800, 1300], storage: [150, 420], travel: [600, 1500] },
 };
 const SHIP_BACK = 3000;
+
+// Real, published egg-freezing prices from named European clinics — the honest
+// basis for the Europe range above. Prices in EUR as the clinic publishes them.
+const EU_EXAMPLES: { clinic: string; city: string; price: string; url: string }[] = [
+  { clinic: 'Institut Marquès', city: 'Barcelona', price: '€2,695 (incl. 2 yrs storage)', url: 'https://institutomarques.com/en/es/prices-and-financing/treatment-prices/' },
+  { clinic: 'Embio Medical Center', city: 'Athens', price: '~€2,500 package', url: 'https://www.embio.gr/en/' },
+  { clinic: 'Czech clinics (e.g. Brno)', city: 'Czechia', price: '~€2,000–€3,000', url: 'https://www.reprofit.cz/en/' },
+];
 
 function total(loc: Loc, cycles: number, years: number, shipBack: boolean) {
   const m = MODEL[loc];
@@ -157,14 +167,34 @@ export function AllInCostEstimator() {
         </p>
       )}
 
+      <div>
+        <div className="text-xs font-semibold uppercase tracking-wide text-[#5C6478] mb-2">
+          Real published Europe prices behind these ranges
+        </div>
+        <div className="flex flex-wrap gap-2">
+          {EU_EXAMPLES.map((e) => (
+            <a
+              key={e.clinic}
+              href={e.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="grain text-xs bg-white/70 hover:bg-white rounded-full px-3 py-1.5 text-[#2F3440] transition-colors"
+            >
+              <span className="font-semibold">{e.clinic}</span>{' '}
+              <span className="text-[#5C6478]">· {e.city} · {e.price}</span>
+            </a>
+          ))}
+        </div>
+      </div>
+
       <div className="flex gap-3 rounded-xl bg-[#F8AD7C]/10 p-4">
         <Info className="w-5 h-5 text-[#B4762F] shrink-0 mt-0.5" />
         <p className="text-xs text-[#5C6478] leading-relaxed">
           <span className="font-semibold text-[#2F3440]">Indicative estimates, not quotes.</span>{' '}
-          UK ranges come from the real clinic prices sourced in this tool; Europe ranges are typical
-          published Spain / Greece / Czechia clinic prices (no clinic is named here) converted at
+          UK ranges come from the real clinic prices sourced in this tool; Europe ranges are built
+          from the published clinic prices shown above (Spain / Greece / Czechia), converted at
           roughly €1 = £0.86. Medication depends on your AMH and protocol; success rates vary sharply
-          with age. Confirm real figures with a clinic — send an enquiry to get a quote.
+          with age. Confirm current figures with a clinic — send an enquiry to get a quote.
         </p>
       </div>
     </section>

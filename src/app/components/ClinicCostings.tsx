@@ -13,6 +13,7 @@ import { AtHomeTestKitsComparison } from './AtHomeTestKitsComparison';
 import { HowTrackingWorks } from './HowTrackingWorks';
 import { ServiceExplainer } from './ServiceExplainer';
 import { AllInCostEstimator } from './AllInCostEstimator';
+import { SuccessByAge } from './SuccessByAge';
 import { FERTILITY_TESTS } from '../lib/tests';
 import { getBudgetBounds } from '../lib/budget';
 import { EnquiryFlow } from './EnquiryFlow';
@@ -819,8 +820,9 @@ export function ClinicCostings({
           works before the price table. Fertility leads with HowTrackingWorks
           via fertilityTopMatter instead. */}
       {serviceType !== 'fertility' && (
-        <div className="pb-2 border-b border-[#2F3440]/10">
+        <div className="space-y-4 pb-2 border-b border-[#2F3440]/10">
           <ServiceExplainer serviceType={serviceType} />
+          <SuccessByAge />
         </div>
       )}
 

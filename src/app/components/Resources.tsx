@@ -616,6 +616,14 @@ export const ARTICLES: Article[] = [
         ],
       },
       {
+        heading: 'Named providers worth asking your HR about',
+        body: [
+          'A growing number of UK employers deliver fertility benefits through a dedicated provider rather than through standard health insurance. Three come up most — and they are not the same kind of benefit, which is the important part to check.',
+          'Carrot (get-carrot.com) is a family-building benefit that can fund or reimburse treatment — fertility testing, egg, sperm and embryo freezing, IVF, adoption and surrogacy — alongside guidance; it typically suggests lower-cost options first. Fertifa (fertifa.com) is a UK reproductive-health provider that similarly combines clinical support with reimbursement or financing for treatment such as egg freezing and IVF.',
+          'Peppy (peppy.health) is different: it provides fertility guidance, specialist clinician access and emotional support — genuinely useful, but it does not fund treatment. So "we offer Peppy" is not the same as "we pay for IVF". Ask which type your employer offers, and exactly what it pays for.',
+        ],
+      },
+      {
         heading: 'Check the NHS route in parallel',
         body: [
           'Before assuming you will pay privately, check NHS-funded eligibility where you live. Criteria and the number of funded cycles are set locally by your Integrated Care Board and vary considerably across the UK.',
