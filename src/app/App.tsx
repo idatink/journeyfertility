@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Search, PoundSterling, Menu, User, ChevronDown, ChevronRight, Building2, Snowflake, Baby, Activity, Sparkles, HeartPulse, Clock } from 'lucide-react';
+import { Search, PoundSterling, Menu, User, ChevronDown, ChevronRight, Building2, Snowflake, Baby, Activity, Sparkles, HeartPulse, Clock, Heart, Users, Sprout } from 'lucide-react';
 import { Button } from './components/ui/button';
 import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from './components/ui/select';
 import { ImageWithFallback } from './components/figma/ImageWithFallback';
@@ -83,6 +83,30 @@ const STAGES = [
     tag: 'IVF treatment',
     icon: Baby,
     statement: "I'd love to have more kids soon.",
+  },
+  {
+    id: 'trying-34',
+    age: '34',
+    service: 'ivf',
+    tag: 'Compare IVF clinics',
+    icon: Users,
+    statement: "We've been trying for a baby without success.",
+  },
+  {
+    id: 'same-sex-32',
+    age: '32',
+    service: 'ivf',
+    tag: 'Compare IVF clinics',
+    icon: Heart,
+    statement: "We're a same-sex couple ready to start our family.",
+  },
+  {
+    id: 'secondary-38',
+    age: '38',
+    service: 'ivf',
+    tag: 'Compare IVF clinics',
+    icon: Sprout,
+    statement: "We have a child, but a second isn't happening.",
   },
   {
     id: 'eggs-25',
