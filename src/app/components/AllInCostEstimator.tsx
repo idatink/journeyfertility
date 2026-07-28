@@ -28,11 +28,13 @@ const MODEL: Record<Loc, { cycle: [number, number]; meds: [number, number]; stor
 const SHIP_BACK = 3000;
 
 // Real, published egg-freezing prices from named European clinics — the honest
-// basis for the Europe range above. Prices in EUR as the clinic publishes them.
-const EU_EXAMPLES: { clinic: string; city: string; price: string; url: string }[] = [
-  { clinic: 'Institut Marquès', city: 'Barcelona', price: '€2,695 (incl. 2 yrs storage)', url: 'https://institutomarques.com/en/es/prices-and-financing/treatment-prices/' },
-  { clinic: 'Embio Medical Center', city: 'Athens', price: '~€2,500 package', url: 'https://www.embio.gr/en/' },
-  { clinic: 'Czech clinics (e.g. Brno)', city: 'Czechia', price: '~€2,000–€3,000', url: 'https://www.reprofit.cz/en/' },
+// basis for the Europe range above, each read from the clinic's own site.
+// Prices in EUR as the clinic publishes them; sorted cheapest first.
+const EU_CLINICS: { clinic: string; place: string; price: string; note: string; url: string }[] = [
+  { clinic: 'Europe IVF', place: 'Prague, Czechia', price: '€1,990', note: 'from · meds from €600', url: 'https://europeivf.com/en/ivf-cost/' },
+  { clinic: 'Newlife IVF', place: 'Thessaloniki, Greece', price: '€2,480', note: 'incl. 1 yr storage · meds separate', url: 'https://www.newlife-ivf.co.uk/ivf-costs' },
+  { clinic: 'Fertilab', place: 'Barcelona, Spain', price: '€2,570', note: 'incl. 3 yrs storage', url: 'https://fertilab.com/en/pricing/' },
+  { clinic: 'Institut Marquès', place: 'Barcelona, Spain', price: '€2,695', note: 'incl. 2 yrs storage', url: 'https://institutomarques.com/en/es/prices-and-financing/treatment-prices/' },
 ];
 
 function total(loc: Loc, cycles: number, years: number, shipBack: boolean) {
@@ -171,17 +173,20 @@ export function AllInCostEstimator() {
         <div className="text-xs font-semibold uppercase tracking-wide text-[#5C6478] mb-2">
           Real published Europe prices behind these ranges
         </div>
-        <div className="flex flex-wrap gap-2">
-          {EU_EXAMPLES.map((e) => (
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+          {EU_CLINICS.map((c) => (
             <a
-              key={e.clinic}
-              href={e.url}
+              key={c.clinic}
+              href={c.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="grain text-xs bg-white/70 hover:bg-white rounded-full px-3 py-1.5 text-[#2F3440] transition-colors"
+              className="grain flex items-center justify-between gap-3 bg-white/70 hover:bg-white rounded-xl px-4 py-3 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#5B6AA5]"
             >
-              <span className="font-semibold">{e.clinic}</span>{' '}
-              <span className="text-[#5C6478]">· {e.city} · {e.price}</span>
+              <span className="min-w-0">
+                <span className="block font-semibold text-[#2F3440] truncate">{c.clinic}</span>
+                <span className="block text-xs text-[#5C6478] truncate">{c.place} · {c.note}</span>
+              </span>
+              <span className="font-bold text-[#5B6AA5] whitespace-nowrap">{c.price}</span>
             </a>
           ))}
         </div>
