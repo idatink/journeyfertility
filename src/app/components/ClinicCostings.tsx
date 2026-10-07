@@ -29,6 +29,8 @@ interface ClinicCostingsProps {
   onShowPrivacy?: () => void;
   /** switch the comparison to another service without leaving the results */
   onServiceChange?: (service: 'egg-freezing' | 'embryo' | 'ivf' | 'fertility') => void;
+  /** open the "which option is right for you?" comparison */
+  onCompareOptions?: () => void;
 }
 
 type ServiceType = ClinicCostingsProps['serviceType'];
@@ -645,6 +647,7 @@ export function ClinicCostings({
   budgetRange = 'all',
   onShowPrivacy = () => {},
   onServiceChange,
+  onCompareOptions,
 }: ClinicCostingsProps) {
   const [funding, setFunding] = useState<'all' | 'nhs' | 'private'>('all');
   const [publishedOnly, setPublishedOnly] = useState(false);
@@ -675,11 +678,12 @@ export function ClinicCostings({
   // Switch the whole comparison to another service without going back to the
   // search — so "I want to compare IVF instead" is one click, not a detour.
   const serviceSwitcher = onServiceChange ? (
-    <div
-      role="tablist"
-      aria-label="Compare a different service"
-      className="flex flex-wrap gap-1.5 p-1.5 rounded-2xl bg-white/50"
-    >
+    <div className="space-y-2">
+      <div
+        role="tablist"
+        aria-label="Compare a different service"
+        className="flex flex-wrap gap-1.5 p-1.5 rounded-2xl bg-white/50"
+      >
       {RESULTS_SERVICE_TABS.map((s) => {
         const active = serviceType === s.id;
         return (
@@ -697,6 +701,16 @@ export function ClinicCostings({
           </button>
         );
       })}
+      </div>
+      {onCompareOptions && (
+        <button
+          type="button"
+          onClick={onCompareOptions}
+          className="text-sm font-semibold text-[#C2542E] hover:underline rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C2542E] focus-visible:ring-offset-2"
+        >
+          Not sure which is right for you? Compare the options
+        </button>
+      )}
     </div>
   ) : null;
 

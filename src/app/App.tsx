@@ -1,10 +1,11 @@
 import { useState, useEffect, useRef } from 'react';
-import { Search, PoundSterling, Menu, User, ChevronDown, ChevronRight, Building2, Snowflake, Baby, Activity, Sparkles, HeartPulse, Clock, Heart, Users, Sprout } from 'lucide-react';
+import { Search, PoundSterling, Menu, User, ChevronDown, ChevronRight, Building2, Snowflake, Baby, Activity, Sparkles, HeartPulse, Clock, Heart, Users, Sprout, X } from 'lucide-react';
 import { Button } from './components/ui/button';
 import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from './components/ui/select';
 import { ImageWithFallback } from './components/figma/ImageWithFallback';
 import { ClinicCostings } from './components/ClinicCostings';
 import { ServiceExplainer } from './components/ServiceExplainer';
+import { OptionsComparison } from './components/OptionsComparison';
 import { SelfAssessmentQuiz } from './components/SelfAssessmentQuiz';
 import { Resources } from './components/Resources';
 import { BUDGET_BRACKETS } from './lib/budget';
@@ -196,6 +197,7 @@ export default function App() {
     setLocation('all');
   }, [serviceType]);
   const [showQuiz, setShowQuiz] = useState(false);
+  const [showOptions, setShowOptions] = useState(false);
   const [topicIndex, setTopicIndex] = useState(0);
   const [selectedStage, setSelectedStage] = useState<string | null>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -246,6 +248,24 @@ export default function App() {
     const card = el.querySelector('button');
     const amount = card ? card.offsetWidth + 16 : 300;
     el.scrollBy({ left: amount * dir, behavior: reduceMotion ? 'auto' : 'smooth' });
+  };
+
+  // Close the options modal on Escape.
+  useEffect(() => {
+    if (!showOptions) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setShowOptions(false);
+    };
+    document.addEventListener('keydown', onKey);
+    return () => document.removeEventListener('keydown', onKey);
+  }, [showOptions]);
+
+  // Choose a service from the options comparison (landing or the results modal).
+  const pickService = (service: 'fertility' | 'egg-freezing' | 'ivf' | 'embryo') => {
+    setServiceType(service);
+    setViewMode('costings');
+    setShowOptions(false);
+    window.scrollTo(0, 0);
   };
 
   return (
@@ -456,6 +476,11 @@ export default function App() {
           </div>
         </div>
 
+        {/* Choose between the options (not just switch) */}
+        <div className="mb-16">
+          <OptionsComparison onPick={pickService} />
+        </div>
+
         {/* Search */}
         <div id="search" className="scroll-mt-6 mb-16">
           <div className="glass rounded-2xl p-6 md:p-8 shadow-[0_18px_60px_rgba(120,140,200,0.18)]">
@@ -582,6 +607,7 @@ export default function App() {
                 setServiceType(service);
                 window.scrollTo(0, 0);
               }}
+              onCompareOptions={() => setShowOptions(true)}
             />
           </div>
         )}
@@ -842,7 +868,32 @@ export default function App() {
         />
       )}
 
-      {/* Testimonial Modal */}
+      {/* Options comparison — opened from the results "not sure which?" link */}
+      {showOptions && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-label="Compare your options"
+          className="fixed inset-0 z-50 bg-black/40 flex items-start justify-center p-4 overflow-y-auto"
+          onClick={() => setShowOptions(false)}
+        >
+          <div
+            className="bg-[#F7F5F2] rounded-2xl max-w-5xl w-full my-8 p-6 md:p-8"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex justify-end -mt-2 -mr-2 mb-1">
+              <button
+                onClick={() => setShowOptions(false)}
+                aria-label="Close"
+                className="text-[#665F58] hover:text-[#2F2C2A] rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C2542E] p-1"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            <OptionsComparison onPick={pickService} />
+          </div>
+        </div>
+      )}
 
       {/* Footer */}
       <footer className="bg-[#2F2C2A] text-[#F7F5F2] mt-20">
