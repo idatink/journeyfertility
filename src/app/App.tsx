@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Search, PoundSterling, Menu, User, ChevronDown, ChevronRight, Building2, Snowflake, Baby, Activity, Sparkles, HeartPulse, Clock, Heart, Users, Sprout } from 'lucide-react';
 import { Button } from './components/ui/button';
 import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from './components/ui/select';
@@ -237,6 +237,17 @@ export default function App() {
     setViewMode('costings');
   };
 
+  // "Where are you right now?" is a horizontal carousel so nine situations don't
+  // eat three rows of vertical space. The arrows nudge it one card at a time.
+  const stagesRef = useRef<HTMLDivElement>(null);
+  const scrollStages = (dir: 1 | -1) => {
+    const el = stagesRef.current;
+    if (!el) return;
+    const card = el.querySelector('button');
+    const amount = card ? card.offsetWidth + 16 : 300;
+    el.scrollBy({ left: amount * dir, behavior: reduceMotion ? 'auto' : 'smooth' });
+  };
+
   return (
     <div className="min-h-screen text-[#2F2C2A]">
       {/* Header */}
@@ -371,15 +382,38 @@ export default function App() {
 
         {/* Stage selector */}
         <div className="mb-16 md:mb-24">
-          <div className="max-w-2xl mb-8">
-            <h2 className="text-3xl md:text-4xl font-semibold tracking-tight text-[#2F2C2A] mb-3">
-              Where are you right now?
-            </h2>
-            <p className="text-[#665F58] text-lg leading-relaxed">
-              Everyone's journey looks different. Pick the line that sounds most like you and we'll tailor your search.
-            </p>
+          <div className="flex items-end justify-between gap-6 mb-6">
+            <div className="max-w-2xl">
+              <h2 className="text-3xl md:text-4xl font-semibold tracking-tight text-[#2F2C2A] mb-3">
+                Where are you right now?
+              </h2>
+              <p className="text-[#665F58] text-lg leading-relaxed">
+                Everyone's journey looks different. Pick the line that sounds most like you and we'll tailor your search.
+              </p>
+            </div>
+            <div className="hidden sm:flex gap-2 shrink-0 pb-1">
+              <button
+                type="button"
+                aria-label="Previous situations"
+                onClick={() => scrollStages(-1)}
+                className="w-10 h-10 rounded-full glass flex items-center justify-center text-[#2F2C2A] hover:bg-white/80 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C2542E] focus-visible:ring-offset-2"
+              >
+                <ChevronRight className="w-5 h-5 rotate-180" />
+              </button>
+              <button
+                type="button"
+                aria-label="More situations"
+                onClick={() => scrollStages(1)}
+                className="w-10 h-10 rounded-full glass flex items-center justify-center text-[#2F2C2A] hover:bg-white/80 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C2542E] focus-visible:ring-offset-2"
+              >
+                <ChevronRight className="w-5 h-5" />
+              </button>
+            </div>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div
+            ref={stagesRef}
+            className="flex gap-4 overflow-x-auto snap-x snap-mandatory pb-3 -mx-1 px-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+          >
             {STAGES.map((stage) => {
               const Icon = stage.icon;
               const active = selectedStage === stage.id;
@@ -395,7 +429,7 @@ export default function App() {
                     setViewMode('costings');
                     window.scrollTo(0, 0);
                   }}
-                  className={`group text-left rounded-2xl border p-6 transition-all duration-200 motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C2542E] focus-visible:ring-offset-2 ${
+                  className={`group snap-start shrink-0 w-[82vw] max-w-[300px] sm:w-[300px] text-left rounded-2xl border p-6 transition-all duration-200 motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C2542E] focus-visible:ring-offset-2 ${
                     active
                       ? 'border-[#F4A28C] bg-[#FBEAE4] ring-2 ring-[#F4A28C]'
                       : 'glass hover:-translate-y-0.5 hover:shadow-[0_12px_40px_rgba(120,140,200,0.22)]'
