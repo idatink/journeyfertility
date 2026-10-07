@@ -145,7 +145,7 @@ export function EnquiryFlow({
     setSubmitting(false);
   };
 
-  const field = 'w-full rounded-lg border border-[#CBD8F5] bg-white/80 px-3.5 py-2.5 text-[#2F3440] outline-none focus:border-[#2F3440] transition-colors';
+  const field = 'w-full rounded-lg border border-[#C3D3E2] bg-white/80 px-3.5 py-2.5 text-[#2F2C2A] outline-none focus:border-[#2F2C2A] transition-colors';
   const errorText = (msg?: string) =>
     msg ? (
       <p role="alert" className="text-xs font-medium text-[#B42318] mt-1.5">
@@ -174,12 +174,12 @@ export function EnquiryFlow({
               id="enquiry-heading"
               ref={headingRef}
               tabIndex={-1}
-              className="text-xl font-semibold tracking-tight text-[#2F3440] outline-none"
+              className="text-xl font-semibold tracking-tight text-[#2F2C2A] outline-none"
             >
               {result?.ok ? 'Enquiry sent' : `Enquire with ${targetLabel}`}
             </h2>
             {!result?.ok && (
-              <p className="text-sm text-[#5C6478] mt-1">
+              <p className="text-sm text-[#665F58] mt-1">
                 Step {step + 1} of 3 · {STEPS[step]}
               </p>
             )}
@@ -188,7 +188,7 @@ export function EnquiryFlow({
             type="button"
             onClick={onClose}
             aria-label="Close"
-            className="text-[#5C6478] hover:text-[#2F3440] shrink-0 rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#5B6AA5] focus-visible:ring-offset-2"
+            className="text-[#665F58] hover:text-[#2F2C2A] shrink-0 rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C2542E] focus-visible:ring-offset-2"
           >
             <X className="w-5 h-5" />
           </button>
@@ -205,7 +205,7 @@ export function EnquiryFlow({
             aria-label={`Step ${step + 1} of 3`}
           >
             <div
-              className="h-1 bg-[#F8AD7C] transition-all duration-300"
+              className="h-1 bg-[#F4A28C] transition-all duration-300"
               style={{ width: `${((step + 1) / 3) * 100}%` }}
             />
           </div>
@@ -215,18 +215,18 @@ export function EnquiryFlow({
           {/* ---------------------------------------------------- Confirmation */}
           {result?.ok ? (
             <div className="space-y-5">
-              <div className="w-12 h-12 rounded-full bg-[#DEE8FF] flex items-center justify-center text-[#5B6AA5]">
+              <div className="w-12 h-12 rounded-full bg-[#DCE6F0] flex items-center justify-center text-[#C2542E]">
                 <Check className="w-6 h-6" />
               </div>
               <div>
-                <p className="text-[#2F3440] mb-2">
+                <p className="text-[#2F2C2A] mb-2">
                   {isBatch ? (
                     <>Your enquiry is on its way to <span className="font-semibold">{targets.length} clinics</span>.</>
                   ) : (
                     <>Your reference is <span className="font-semibold">{result.reference}</span></>
                   )}
                 </p>
-                <p className="text-sm text-[#5C6478] leading-relaxed">
+                <p className="text-sm text-[#665F58] leading-relaxed">
                   We will pass {isBatch ? 'it to each clinic' : `this to ${targets[0].name}`} within{' '}
                   {FORWARDING_SLA_HOURS} hours and email you as {isBatch ? 'they' : 'they'} reply
                   {isBatch ? ' — so you can compare their quotes' : ''}. This is an enquiry, not a
@@ -235,17 +235,17 @@ export function EnquiryFlow({
                 {isBatch && (
                   <ul className="mt-3 space-y-1">
                     {targets.map((t) => (
-                      <li key={t.slug} className="text-sm text-[#5C6478] flex items-center gap-2">
-                        <Check className="w-3.5 h-3.5 text-[#5B6AA5] shrink-0" />
+                      <li key={t.slug} className="text-sm text-[#665F58] flex items-center gap-2">
+                        <Check className="w-3.5 h-3.5 text-[#C2542E] shrink-0" />
                         {t.name.split(' — ')[0]}
                       </li>
                     ))}
                   </ul>
                 )}
               </div>
-              <p className="text-xs text-[#5C6478] leading-relaxed">{RETENTION_NOTICE}</p>
+              <p className="text-xs text-[#665F58] leading-relaxed">{RETENTION_NOTICE}</p>
               <Button
-                className="bg-[#F8AD7C] hover:bg-[#F2955F] text-[#2F3440] font-semibold w-full h-11"
+                className="bg-[#F4A28C] hover:bg-[#E0714A] text-[#2F2C2A] font-semibold w-full h-11"
                 onClick={onClose}
               >
                 Done
@@ -257,7 +257,7 @@ export function EnquiryFlow({
               {step === 0 && (
                 <div className="space-y-4">
                   <div>
-                    <label htmlFor="enq-name" className="text-sm font-medium text-[#2F3440] block mb-1.5">
+                    <label htmlFor="enq-name" className="text-sm font-medium text-[#2F2C2A] block mb-1.5">
                       Full name
                     </label>
                     <input
@@ -272,7 +272,7 @@ export function EnquiryFlow({
                   </div>
 
                   <div>
-                    <label htmlFor="enq-email" className="text-sm font-medium text-[#2F3440] block mb-1.5">Email</label>
+                    <label htmlFor="enq-email" className="text-sm font-medium text-[#2F2C2A] block mb-1.5">Email</label>
                     <input
                       id="enq-email"
                       className={field}
@@ -286,8 +286,8 @@ export function EnquiryFlow({
                   </div>
 
                   <div>
-                    <label htmlFor="enq-phone" className="text-sm font-medium text-[#2F3440] block mb-1.5">
-                      Phone <span className="text-[#5C6478] font-normal">(optional)</span>
+                    <label htmlFor="enq-phone" className="text-sm font-medium text-[#2F2C2A] block mb-1.5">
+                      Phone <span className="text-[#665F58] font-normal">(optional)</span>
                     </label>
                     <input
                       id="enq-phone"
@@ -302,7 +302,7 @@ export function EnquiryFlow({
                   </div>
 
                   <div>
-                    <div id="pref-contact-label" className="text-sm font-medium text-[#2F3440] mb-2">
+                    <div id="pref-contact-label" className="text-sm font-medium text-[#2F2C2A] mb-2">
                       How should the clinic contact you?
                     </div>
                     <div className="flex gap-2" role="radiogroup" aria-labelledby="pref-contact-label">
@@ -313,10 +313,10 @@ export function EnquiryFlow({
                           role="radio"
                           aria-checked={draft.preferredContact === m}
                           onClick={() => set('preferredContact', m)}
-                          className={`grain text-sm font-medium px-4 py-2 rounded-full capitalize transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#5B6AA5] focus-visible:ring-offset-2 ${
+                          className={`grain text-sm font-medium px-4 py-2 rounded-full capitalize transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C2542E] focus-visible:ring-offset-2 ${
                             draft.preferredContact === m
-                              ? 'bg-[#2F3440] text-white'
-                              : 'bg-white/60 text-[#2F3440] hover:bg-white/80'
+                              ? 'bg-[#2F2C2A] text-white'
+                              : 'bg-white/60 text-[#2F2C2A] hover:bg-white/80'
                           }`}
                         >
                           {m}
@@ -331,7 +331,7 @@ export function EnquiryFlow({
               {step === 1 && (
                 <div className="space-y-5">
                   <div>
-                    <div id="timing-label" className="text-sm font-medium text-[#2F3440] mb-2">
+                    <div id="timing-label" className="text-sm font-medium text-[#2F2C2A] mb-2">
                       When are you hoping to start?
                     </div>
                     <div className="flex flex-wrap gap-2" role="radiogroup" aria-labelledby="timing-label">
@@ -342,10 +342,10 @@ export function EnquiryFlow({
                           role="radio"
                           aria-checked={draft.timing === t.id}
                           onClick={() => set('timing', t.id)}
-                          className={`grain text-sm font-medium px-4 py-2 rounded-full transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#5B6AA5] focus-visible:ring-offset-2 ${
+                          className={`grain text-sm font-medium px-4 py-2 rounded-full transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C2542E] focus-visible:ring-offset-2 ${
                             draft.timing === t.id
-                              ? 'bg-[#2F3440] text-white'
-                              : 'bg-white/60 text-[#2F3440] hover:bg-white/80'
+                              ? 'bg-[#2F2C2A] text-white'
+                              : 'bg-white/60 text-[#2F2C2A] hover:bg-white/80'
                           }`}
                         >
                           {t.label}
@@ -356,7 +356,7 @@ export function EnquiryFlow({
                   </div>
 
                   <div>
-                    <div id="funding-label" className="text-sm font-medium text-[#2F3440] mb-2">
+                    <div id="funding-label" className="text-sm font-medium text-[#2F2C2A] mb-2">
                       How are you planning to pay?
                     </div>
                     <div className="flex flex-wrap gap-2" role="radiogroup" aria-labelledby="funding-label">
@@ -367,10 +367,10 @@ export function EnquiryFlow({
                           role="radio"
                           aria-checked={draft.fundingRoute === f.id}
                           onClick={() => set('fundingRoute', f.id)}
-                          className={`grain text-sm font-medium px-4 py-2 rounded-full transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#5B6AA5] focus-visible:ring-offset-2 ${
+                          className={`grain text-sm font-medium px-4 py-2 rounded-full transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C2542E] focus-visible:ring-offset-2 ${
                             draft.fundingRoute === f.id
-                              ? 'bg-[#2F3440] text-white'
-                              : 'bg-white/60 text-[#2F3440] hover:bg-white/80'
+                              ? 'bg-[#2F2C2A] text-white'
+                              : 'bg-white/60 text-[#2F2C2A] hover:bg-white/80'
                           }`}
                         >
                           {f.label}
@@ -381,9 +381,9 @@ export function EnquiryFlow({
                   </div>
 
                   <div>
-                    <label htmlFor="enq-message" className="text-sm font-medium text-[#2F3440] block mb-1.5">
+                    <label htmlFor="enq-message" className="text-sm font-medium text-[#2F2C2A] block mb-1.5">
                       Anything you want to ask?{' '}
-                      <span className="text-[#5C6478] font-normal">(optional)</span>
+                      <span className="text-[#665F58] font-normal">(optional)</span>
                     </label>
                     <textarea
                       id="enq-message"
@@ -392,7 +392,7 @@ export function EnquiryFlow({
                       onChange={(e) => set('message', e.target.value)}
                       placeholder="e.g. what is included in your quoted price?"
                     />
-                    <p className="text-xs text-[#5C6478] mt-1.5 leading-relaxed">
+                    <p className="text-xs text-[#665F58] mt-1.5 leading-relaxed">
                       Please leave out medical history and test results. The clinic will take those
                       securely once you are in their care.
                     </p>
@@ -403,8 +403,8 @@ export function EnquiryFlow({
               {/* ------------------------------------------------ Step 3 */}
               {step === 2 && (
                 <div className="space-y-5">
-                  <div className="glass rounded-xl p-4 text-sm text-[#5C6478] leading-relaxed">
-                    <div className="flex items-center gap-2 text-[#2F3440] font-semibold mb-2">
+                  <div className="glass rounded-xl p-4 text-sm text-[#665F58] leading-relaxed">
+                    <div className="flex items-center gap-2 text-[#2F2C2A] font-semibold mb-2">
                       <ShieldCheck className="w-4 h-4" />
                       What you are agreeing to
                     </div>
@@ -419,9 +419,9 @@ export function EnquiryFlow({
                       onChange={(e) =>
                         set('consent', { ...draft.consent, processEnquiry: e.target.checked })
                       }
-                      className="accent-[#F8AD7C] w-4 h-4 mt-0.5 shrink-0"
+                      className="accent-[#F4A28C] w-4 h-4 mt-0.5 shrink-0"
                     />
-                    <span className="text-sm text-[#2F3440] leading-relaxed">
+                    <span className="text-sm text-[#2F2C2A] leading-relaxed">
                       I consent to JourneyFertility handling this enquiry, which concerns my health.
                     </span>
                   </label>
@@ -433,9 +433,9 @@ export function EnquiryFlow({
                       onChange={(e) =>
                         set('consent', { ...draft.consent, shareWithClinic: e.target.checked })
                       }
-                      className="accent-[#F8AD7C] w-4 h-4 mt-0.5 shrink-0"
+                      className="accent-[#F4A28C] w-4 h-4 mt-0.5 shrink-0"
                     />
-                    <span className="text-sm text-[#2F3440] leading-relaxed">
+                    <span className="text-sm text-[#2F2C2A] leading-relaxed">
                       Send my enquiry to{' '}
                       <span className="font-semibold">
                         {isBatch ? `these ${targets.length} clinics` : targets[0].name}
@@ -451,20 +451,20 @@ export function EnquiryFlow({
                       onChange={(e) =>
                         set('consent', { ...draft.consent, marketing: e.target.checked })
                       }
-                      className="accent-[#F8AD7C] w-4 h-4 mt-0.5 shrink-0"
+                      className="accent-[#F4A28C] w-4 h-4 mt-0.5 shrink-0"
                     />
-                    <span className="text-sm text-[#5C6478] leading-relaxed">
+                    <span className="text-sm text-[#665F58] leading-relaxed">
                       Optional: email me guides and updates. Not required, and you can stop any time.
                     </span>
                   </label>
 
                   {errorText(errors.consent)}
-                  <p className="text-xs text-[#5C6478] leading-relaxed">
+                  <p className="text-xs text-[#665F58] leading-relaxed">
                     {RETENTION_NOTICE}{' '}
                     <button
                       type="button"
                       onClick={onShowPrivacy}
-                      className="font-semibold text-[#5B6AA5] hover:underline"
+                      className="font-semibold text-[#C2542E] hover:underline"
                     >
                       Read how we handle your information
                     </button>
@@ -473,9 +473,9 @@ export function EnquiryFlow({
 
                   {result && !result.ok && (
                     <div role="alert" className="glass rounded-xl p-4 flex gap-3">
-                      <AlertCircle className="w-5 h-5 text-[#B4762F] shrink-0 mt-0.5" />
-                      <div className="text-sm text-[#5C6478] leading-relaxed">
-                        <span className="font-semibold text-[#2F3440]">
+                      <AlertCircle className="w-5 h-5 text-[#B4552B] shrink-0 mt-0.5" />
+                      <div className="text-sm text-[#665F58] leading-relaxed">
+                        <span className="font-semibold text-[#2F2C2A]">
                           {result.notConfigured ? 'Not connected yet.' : 'Could not send.'}
                         </span>{' '}
                         {result.notConfigured
@@ -492,7 +492,7 @@ export function EnquiryFlow({
                 <Button
                   variant="ghost"
                   onClick={() => (step === 0 ? onClose() : setStep((s) => s - 1))}
-                  className="text-[#5C6478]"
+                  className="text-[#665F58]"
                 >
                   {step === 0 ? (
                     'Cancel'
@@ -507,7 +507,7 @@ export function EnquiryFlow({
                 {step < 2 ? (
                   <Button
                     onClick={next}
-                    className="bg-[#2F3440] text-white hover:bg-[#434A5C] px-6"
+                    className="bg-[#2F2C2A] text-white hover:bg-[#46423F] px-6"
                   >
                     Continue
                     <ArrowRight className="w-4 h-4 ml-2" />
@@ -516,7 +516,7 @@ export function EnquiryFlow({
                   <Button
                     onClick={send}
                     disabled={submitting}
-                    className="bg-[#F8AD7C] hover:bg-[#F2955F] text-[#2F3440] font-semibold px-6"
+                    className="bg-[#F4A28C] hover:bg-[#E0714A] text-[#2F2C2A] font-semibold px-6"
                   >
                     {submitting ? 'Sending…' : 'Send enquiry'}
                   </Button>

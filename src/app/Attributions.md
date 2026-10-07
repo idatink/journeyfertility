@@ -2,9 +2,10 @@
 
 ## Typeface
 
-Hanken Grotesk by Alfredo Marco Pradil / Hanken Design Co., used under the
-[SIL Open Font License 1.1](https://openfontlicense.org). The licence text is
-included at `src/assets/fonts/OFL.txt` as the licence requires.
+Arimo (by Steve Matteson / Ascender Corporation), used under the
+[Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0). The licence
+text is included at `src/assets/fonts/ARIMO-LICENSE.txt`. Only the Latin 400 and
+700 weights are shipped (`arimo-400.woff2`, `arimo-700.woff2`).
 
 Self-hosted rather than loaded from a font CDN, so that no third party receives
 visitors' IP addresses.

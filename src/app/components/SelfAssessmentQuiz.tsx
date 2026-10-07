@@ -147,8 +147,8 @@ export function SelfAssessmentQuiz({ onClose, onPick, onResources }: SelfAssessm
       type="button"
       onClick={onSelect}
       aria-pressed={active}
-      className={`w-full p-4 border-2 rounded-xl text-left transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#5B6AA5] focus-visible:ring-offset-2 ${
-        active ? 'border-[#F8AD7C] bg-[#FDEEE1]' : 'border-gray-200 hover:border-gray-300'
+      className={`w-full p-4 border-2 rounded-xl text-left transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C2542E] focus-visible:ring-offset-2 ${
+        active ? 'border-[#F4A28C] bg-[#FBEAE4]' : 'border-gray-200 hover:border-gray-300'
       }`}
     >
       {children}
@@ -169,10 +169,10 @@ export function SelfAssessmentQuiz({ onClose, onPick, onResources }: SelfAssessm
       >
         <div className="sticky top-0 bg-white border-b border-gray-200 p-6 flex items-start justify-between gap-4">
           <div>
-            <h2 id="assessment-title" className="text-2xl font-semibold tracking-tight text-[#2F3440]">
+            <h2 id="assessment-title" className="text-2xl font-semibold tracking-tight text-[#2F2C2A]">
               {showResult ? 'Where to start' : 'A quick way to find your starting point'}
             </h2>
-            <p className="text-sm text-[#5C6478] mt-1 flex items-center gap-1.5">
+            <p className="text-sm text-[#665F58] mt-1 flex items-center gap-1.5">
               <Lock className="w-3.5 h-3.5" />
               Private — your answers stay in your browser.
             </p>
@@ -181,7 +181,7 @@ export function SelfAssessmentQuiz({ onClose, onPick, onResources }: SelfAssessm
             ref={closeRef}
             onClick={onClose}
             aria-label="Close"
-            className="text-gray-500 hover:text-gray-700 rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#5B6AA5]"
+            className="text-gray-500 hover:text-gray-700 rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C2542E]"
           >
             <X className="w-6 h-6" />
           </button>
@@ -191,12 +191,12 @@ export function SelfAssessmentQuiz({ onClose, onPick, onResources }: SelfAssessm
           <>
             <div className="px-6 pt-4">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-sm text-[#5C6478]">Question {step} of {totalSteps}</span>
-                <span className="text-sm text-[#5C6478]">{Math.round((step / totalSteps) * 100)}%</span>
+                <span className="text-sm text-[#665F58]">Question {step} of {totalSteps}</span>
+                <span className="text-sm text-[#665F58]">{Math.round((step / totalSteps) * 100)}%</span>
               </div>
               <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden" role="progressbar" aria-valuenow={step} aria-valuemin={1} aria-valuemax={totalSteps}>
                 <div
-                  className="h-full bg-[#F8AD7C] transition-all duration-300 motion-reduce:transition-none"
+                  className="h-full bg-[#F4A28C] transition-all duration-300 motion-reduce:transition-none"
                   style={{ width: `${(step / totalSteps) * 100}%` }}
                 />
               </div>
@@ -205,7 +205,7 @@ export function SelfAssessmentQuiz({ onClose, onPick, onResources }: SelfAssessm
             <div className="p-6 space-y-3">
               {step === 1 && (
                 <>
-                  <h3 className="text-lg font-semibold text-[#2F3440] mb-2">What brings you here?</h3>
+                  <h3 className="text-lg font-semibold text-[#2F2C2A] mb-2">What brings you here?</h3>
                   {GOAL_OPTIONS.map((o) => (
                     <Option key={o.value} active={goal === o.value} onSelect={() => setGoal(o.value)}>
                       {o.label}
@@ -216,7 +216,7 @@ export function SelfAssessmentQuiz({ onClose, onPick, onResources }: SelfAssessm
 
               {step === 2 && (
                 <>
-                  <h3 className="text-lg font-semibold text-[#2F3440] mb-2">
+                  <h3 className="text-lg font-semibold text-[#2F2C2A] mb-2">
                     Have you had a fertility check, like an AMH test?
                   </h3>
                   {TESTED_OPTIONS.map((o) => (
@@ -229,7 +229,7 @@ export function SelfAssessmentQuiz({ onClose, onPick, onResources }: SelfAssessm
 
               {step === 3 && (
                 <>
-                  <h3 className="text-lg font-semibold text-[#2F3440] mb-2">
+                  <h3 className="text-lg font-semibold text-[#2F2C2A] mb-2">
                     What matters most as you compare?
                   </h3>
                   {PRIORITY_OPTIONS.map((o) => (
@@ -249,7 +249,7 @@ export function SelfAssessmentQuiz({ onClose, onPick, onResources }: SelfAssessm
               <Button
                 onClick={next}
                 disabled={!canAdvance}
-                className="bg-[#2F3440] text-white hover:bg-[#3d434f]"
+                className="bg-[#2F2C2A] text-white hover:bg-[#46423F]"
               >
                 {step === totalSteps ? 'See where to start' : 'Next'}
                 {step !== totalSteps && <ChevronRight className="w-4 h-4 ml-2" />}
@@ -261,21 +261,21 @@ export function SelfAssessmentQuiz({ onClose, onPick, onResources }: SelfAssessm
             const rec = buildRecommendation(goal!, tested!);
             return (
               <div className="p-6 space-y-5">
-                <div className="rounded-2xl bg-[#DEE8FF]/40 border border-[#A8BEEB]/30 p-5">
-                  <h3 className="text-lg font-semibold text-[#2F3440] mb-1.5">{rec.title}</h3>
-                  <p className="text-sm text-[#5C6478] leading-relaxed">{rec.body}</p>
+                <div className="rounded-2xl bg-[#DCE6F0]/40 border border-[#C3D3E2]/30 p-5">
+                  <h3 className="text-lg font-semibold text-[#2F2C2A] mb-1.5">{rec.title}</h3>
+                  <p className="text-sm text-[#665F58] leading-relaxed">{rec.body}</p>
                 </div>
 
                 {priority && (
-                  <p className="text-sm text-[#5C6478] leading-relaxed">
-                    <span className="font-semibold text-[#5B6AA5]">Tip:</span> {PRIORITY_TIP[priority]}
+                  <p className="text-sm text-[#665F58] leading-relaxed">
+                    <span className="font-semibold text-[#C2542E]">Tip:</span> {PRIORITY_TIP[priority]}
                   </p>
                 )}
 
                 <div className="space-y-3">
                   <Button
                     onClick={() => onPick(rec.primary.service)}
-                    className="w-full h-12 bg-[#F8AD7C] hover:bg-[#F2955F] text-[#2F3440] font-semibold"
+                    className="w-full h-12 bg-[#F4A28C] hover:bg-[#E0714A] text-[#2F2C2A] font-semibold"
                   >
                     {rec.primary.label}
                     <ArrowRight className="w-4 h-4 ml-2" />
@@ -291,18 +291,18 @@ export function SelfAssessmentQuiz({ onClose, onPick, onResources }: SelfAssessm
                   )}
                   <button
                     onClick={onResources}
-                    className="w-full text-sm font-medium text-[#5B6AA5] hover:underline py-1"
+                    className="w-full text-sm font-medium text-[#C2542E] hover:underline py-1"
                   >
                     Or read the guides first
                   </button>
                 </div>
 
-                <p className="text-xs text-[#5C6478] leading-relaxed border-t border-gray-100 pt-4">
+                <p className="text-xs text-[#665F58] leading-relaxed border-t border-gray-100 pt-4">
                   This isn’t medical advice — it just points you to the right part of the site.
                   For anything about your own health, speak to your GP or a fertility specialist.
                 </p>
 
-                <button onClick={() => setShowResult(false)} className="text-sm text-[#5C6478] hover:text-[#2F3440]">
+                <button onClick={() => setShowResult(false)} className="text-sm text-[#665F58] hover:text-[#2F2C2A]">
                   ← Change my answers
                 </button>
               </div>

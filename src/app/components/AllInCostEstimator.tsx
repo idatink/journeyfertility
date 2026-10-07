@@ -63,8 +63,8 @@ export function AllInCostEstimator() {
       type="button"
       onClick={onClick}
       aria-pressed={active}
-      className={`grain text-sm font-semibold px-4 py-2 rounded-full transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#5B6AA5] focus-visible:ring-offset-2 ${
-        active ? 'bg-[#2F3440] text-white' : 'bg-white/70 text-[#2F3440] hover:bg-white'
+      className={`grain text-sm font-semibold px-4 py-2 rounded-full transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C2542E] focus-visible:ring-offset-2 ${
+        active ? 'bg-[#2F2C2A] text-white' : 'bg-white/70 text-[#2F2C2A] hover:bg-white'
       }`}
     >
       {children}
@@ -94,19 +94,19 @@ export function AllInCostEstimator() {
       if (ship) rows.push(['Ship eggs to the UK', gbp(SHIP_BACK)]);
     }
     return (
-      <div className={`rounded-2xl p-5 ${loc === 'uk' ? 'bg-white/70' : 'bg-[#DEE8FF]/40'} border border-[#A8BEEB]/30`}>
+      <div className={`rounded-2xl p-5 ${loc === 'uk' ? 'bg-white/70' : 'bg-[#DCE6F0]/40'} border border-[#C3D3E2]/30`}>
         <div className="flex items-center gap-2 mb-3">
-          <span className="text-[#5B6AA5]">{icon}</span>
-          <h4 className="font-semibold text-[#2F3440]">{label}</h4>
+          <span className="text-[#C2542E]">{icon}</span>
+          <h4 className="font-semibold text-[#2F2C2A]">{label}</h4>
         </div>
-        <div className="text-2xl font-bold text-[#2F3440] mb-3 whitespace-nowrap">
+        <div className="text-2xl font-bold text-[#2F2C2A] mb-3 whitespace-nowrap">
           {gbp(range.low)} – {gbp(range.high)}
         </div>
         <dl className="space-y-1.5 text-sm">
           {rows.map(([k, v]) => (
             <div key={k} className="flex justify-between gap-3">
-              <dt className="text-[#5C6478]">{k}</dt>
-              <dd className="text-[#2F3440] whitespace-nowrap">{v}</dd>
+              <dt className="text-[#665F58]">{k}</dt>
+              <dd className="text-[#2F2C2A] whitespace-nowrap">{v}</dd>
             </div>
           ))}
         </dl>
@@ -117,10 +117,10 @@ export function AllInCostEstimator() {
   return (
     <section className="glass rounded-2xl p-6 md:p-8 space-y-6" aria-labelledby="allin-heading">
       <div className="max-w-2xl">
-        <h3 id="allin-heading" className="text-2xl font-semibold tracking-tight text-[#2F3440] mb-2">
+        <h3 id="allin-heading" className="text-2xl font-semibold tracking-tight text-[#2F2C2A] mb-2">
           The true all-in cost — UK vs Europe
         </h3>
-        <p className="text-sm text-[#5C6478] leading-relaxed">
+        <p className="text-sm text-[#665F58] leading-relaxed">
           The headline cycle fee is only part of it. This is the realistic total once medication,
           storage over time and — for treatment abroad — travel and shipping your eggs home are
           included. Indicative ranges, not a quote.
@@ -130,7 +130,7 @@ export function AllInCostEstimator() {
       {/* Controls */}
       <div className="flex flex-wrap gap-x-8 gap-y-4">
         <div>
-          <div className="text-xs font-semibold uppercase tracking-wide text-[#5C6478] mb-2">Cycles</div>
+          <div className="text-xs font-semibold uppercase tracking-wide text-[#665F58] mb-2">Cycles</div>
           <div className="flex gap-2">
             {CYCLES.map((c) => (
               <Pill key={c} active={cycles === c} onClick={() => setCycles(c)}>{c}</Pill>
@@ -138,7 +138,7 @@ export function AllInCostEstimator() {
           </div>
         </div>
         <div>
-          <div className="text-xs font-semibold uppercase tracking-wide text-[#5C6478] mb-2">Years of storage</div>
+          <div className="text-xs font-semibold uppercase tracking-wide text-[#665F58] mb-2">Years of storage</div>
           <div className="flex gap-2">
             {YEARS.map((y) => (
               <Pill key={y} active={years === y} onClick={() => setYears(y)}>{y}</Pill>
@@ -146,7 +146,7 @@ export function AllInCostEstimator() {
           </div>
         </div>
         <div>
-          <div className="text-xs font-semibold uppercase tracking-wide text-[#5C6478] mb-2">Ship eggs home</div>
+          <div className="text-xs font-semibold uppercase tracking-wide text-[#665F58] mb-2">Ship eggs home</div>
           <Pill active={shipBack} onClick={() => setShipBack((s) => !s)}>
             {shipBack ? 'Included' : 'Not included'}
           </Pill>
@@ -159,7 +159,7 @@ export function AllInCostEstimator() {
       </div>
 
       {gapHigh > 0 && (
-        <p className="text-sm text-[#2F3440]">
+        <p className="text-sm text-[#2F2C2A]">
           <span className="font-semibold">The gap:</span> for {cycles} cycle{cycles > 1 ? 's' : ''} and{' '}
           {years} years of storage, the UK works out roughly{' '}
           <span className="font-semibold">
@@ -170,7 +170,7 @@ export function AllInCostEstimator() {
       )}
 
       <div>
-        <div className="text-xs font-semibold uppercase tracking-wide text-[#5C6478] mb-2">
+        <div className="text-xs font-semibold uppercase tracking-wide text-[#665F58] mb-2">
           Real published Europe prices behind these ranges
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
@@ -180,22 +180,22 @@ export function AllInCostEstimator() {
               href={c.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="grain flex items-center justify-between gap-3 bg-white/70 hover:bg-white rounded-xl px-4 py-3 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#5B6AA5]"
+              className="grain flex items-center justify-between gap-3 bg-white/70 hover:bg-white rounded-xl px-4 py-3 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C2542E]"
             >
               <span className="min-w-0">
-                <span className="block font-semibold text-[#2F3440] truncate">{c.clinic}</span>
-                <span className="block text-xs text-[#5C6478] truncate">{c.place} · {c.note}</span>
+                <span className="block font-semibold text-[#2F2C2A] truncate">{c.clinic}</span>
+                <span className="block text-xs text-[#665F58] truncate">{c.place} · {c.note}</span>
               </span>
-              <span className="font-bold text-[#5B6AA5] whitespace-nowrap">{c.price}</span>
+              <span className="font-bold text-[#C2542E] whitespace-nowrap">{c.price}</span>
             </a>
           ))}
         </div>
       </div>
 
-      <div className="flex gap-3 rounded-xl bg-[#F8AD7C]/10 p-4">
-        <Info className="w-5 h-5 text-[#B4762F] shrink-0 mt-0.5" />
-        <p className="text-xs text-[#5C6478] leading-relaxed">
-          <span className="font-semibold text-[#2F3440]">Indicative estimates, not quotes.</span>{' '}
+      <div className="flex gap-3 rounded-xl bg-[#F4A28C]/10 p-4">
+        <Info className="w-5 h-5 text-[#B4552B] shrink-0 mt-0.5" />
+        <p className="text-xs text-[#665F58] leading-relaxed">
+          <span className="font-semibold text-[#2F2C2A]">Indicative estimates, not quotes.</span>{' '}
           UK ranges come from the real clinic prices sourced in this tool; Europe ranges are built
           from the published clinic prices shown above (Spain / Greece / Czechia), converted at
           roughly €1 = £0.86. Medication depends on your AMH and protocol; success rates vary sharply

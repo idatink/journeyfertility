@@ -75,9 +75,9 @@ const FOUNDERS: {
 
 /** Distinct brand gradients so the three placeholder avatars read as a set, not a repeat. */
 const AVATAR_GRADIENTS = [
-  'from-[#DEE8FF] via-[#E7E2F0] to-[#F8AD7C]',
-  'from-[#F8AD7C] via-[#EFD6D0] to-[#DEE8FF]',
-  'from-[#DEE8FF] via-[#D9E4F5] to-[#B7C7EE]',
+  'from-[#DCE6F0] via-[#EFE7E2] to-[#F4A28C]',
+  'from-[#F4A28C] via-[#F6DED6] to-[#DCE6F0]',
+  'from-[#DCE6F0] via-[#DCE6F0] to-[#C3D3E2]',
 ];
 
 /** Initials from a name, e.g. "Nadia Rahman" → "NR". */
@@ -100,13 +100,13 @@ export function About({ onBack, onExplore, onResources }: AboutProps) {
 
       {/* Intro */}
       <div className="max-w-3xl mb-16 md:mb-24">
-        <div className="text-xs font-semibold uppercase tracking-[0.14em] text-[#5B6AA5] mb-4">
+        <div className="text-xs font-semibold uppercase tracking-[0.14em] text-[#C2542E] mb-4">
           About JourneyFertility
         </div>
-        <h1 className="text-4xl md:text-6xl font-bold tracking-tight text-[#2F3440] mb-6 leading-tight">
+        <h1 className="text-4xl md:text-6xl font-bold tracking-tight text-[#2F2C2A] mb-6 leading-tight">
           Fertility care is hard enough. Finding it shouldn't be.
         </h1>
-        <p className="text-lg md:text-xl text-[#5C6478] leading-relaxed">
+        <p className="text-lg md:text-xl text-[#665F58] leading-relaxed">
           People researching fertility treatment are usually doing it at a difficult moment, with
           incomplete information and prices that are almost impossible to compare. JourneyFertility
           exists to make that part simpler — so the energy goes into the decision, not the admin.
@@ -116,10 +116,10 @@ export function About({ onBack, onExplore, onResources }: AboutProps) {
       {/* Why we exist */}
       <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 mb-16 md:mb-24">
         <div>
-          <h2 className="text-2xl md:text-3xl font-semibold tracking-tight text-[#2F3440] mb-5">
+          <h2 className="text-2xl md:text-3xl font-semibold tracking-tight text-[#2F2C2A] mb-5">
             Why we built this
           </h2>
-          <div className="space-y-4 text-[#5C6478] leading-relaxed">
+          <div className="space-y-4 text-[#665F58] leading-relaxed">
             <p>
               Fertility pricing is genuinely opaque. Clinics quote different things under the same
               word, medication is billed separately, storage runs for years, and success rates are
@@ -149,8 +149,8 @@ export function About({ onBack, onExplore, onResources }: AboutProps) {
         </div>
 
         <div className="glass rounded-2xl p-8">
-          <h3 className="text-lg font-semibold text-[#2F3440] mb-5">How we make money</h3>
-          <div className="space-y-4 text-[#5C6478] leading-relaxed text-sm">
+          <h3 className="text-lg font-semibold text-[#2F2C2A] mb-5">How we make money</h3>
+          <div className="space-y-4 text-[#665F58] leading-relaxed text-sm">
             <p>
               We earn a referral fee when someone books a consultation through the platform. That
               fee is the same across every clinic we work with.
@@ -160,7 +160,7 @@ export function About({ onBack, onExplore, onResources }: AboutProps) {
               hidden. If that ever changes, it will be stated plainly on this page.
             </p>
             <p>
-              We are also building <span className="font-semibold text-[#2F3440]">Journey AI</span>,
+              We are also building <span className="font-semibold text-[#2F2C2A]">Journey AI</span>,
               a companion for the practical side of treatment. Wherever you are — freezing, IVF, or
               still working out the question — it keeps track of the things that are easy to lose
               hold of: your prescribed doses and injection timings, what happens next, and what to
@@ -168,7 +168,7 @@ export function About({ onBack, onExplore, onResources }: AboutProps) {
             </p>
             <p>
               Journey AI will be{' '}
-              <span className="font-semibold text-[#2F3440]">£3 a month</span>. Everything you see
+              <span className="font-semibold text-[#2F2C2A]">£3 a month</span>. Everything you see
               here — the search, the comparisons, the guides — stays free.
             </p>
             <p>
@@ -181,7 +181,7 @@ export function About({ onBack, onExplore, onResources }: AboutProps) {
 
       {/* Principles */}
       <div className="mb-16 md:mb-24">
-        <h2 className="text-2xl md:text-3xl font-semibold tracking-tight text-[#2F3440] mb-8">
+        <h2 className="text-2xl md:text-3xl font-semibold tracking-tight text-[#2F2C2A] mb-8">
           What we hold ourselves to
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
@@ -189,11 +189,11 @@ export function About({ onBack, onExplore, onResources }: AboutProps) {
             const Icon = p.icon;
             return (
               <div key={p.title} className="glass rounded-2xl p-6">
-                <div className="w-11 h-11 rounded-full bg-[#DEE8FF]/60 flex items-center justify-center text-[#5B6AA5] mb-5">
+                <div className="w-11 h-11 rounded-full bg-[#DCE6F0]/60 flex items-center justify-center text-[#C2542E] mb-5">
                   <Icon className="w-5 h-5" />
                 </div>
-                <h3 className="text-lg font-semibold text-[#2F3440] mb-2">{p.title}</h3>
-                <p className="text-sm text-[#5C6478] leading-relaxed">{p.body}</p>
+                <h3 className="text-lg font-semibold text-[#2F2C2A] mb-2">{p.title}</h3>
+                <p className="text-sm text-[#665F58] leading-relaxed">{p.body}</p>
               </div>
             );
           })}
@@ -202,15 +202,15 @@ export function About({ onBack, onExplore, onResources }: AboutProps) {
 
       {/* Founders */}
       <div className="mb-16 md:mb-24">
-        <h2 className="text-2xl md:text-3xl font-semibold tracking-tight text-[#2F3440] mb-4">
+        <h2 className="text-2xl md:text-3xl font-semibold tracking-tight text-[#2F2C2A] mb-4">
           Who&rsquo;s behind this
         </h2>
-        <p className="text-[#5C6478] leading-relaxed max-w-2xl mb-8">
+        <p className="text-[#665F58] leading-relaxed max-w-2xl mb-8">
           Three founders, building the service we wanted when we were doing this research ourselves.
         </p>
 
-        <div className="glass rounded-2xl p-5 mb-8 text-sm text-[#5C6478] leading-relaxed max-w-2xl">
-          <span className="font-semibold text-[#B4762F]">Placeholder team:</span> the names,
+        <div className="glass rounded-2xl p-5 mb-8 text-sm text-[#665F58] leading-relaxed max-w-2xl">
+          <span className="font-semibold text-[#B4552B]">Placeholder team:</span> the names,
           biographies and avatars below are illustrative stand-ins. Replace them with the real
           founding team and their photographs before any launch or press — an About page naming
           founders is read as fact.
@@ -237,11 +237,11 @@ export function About({ onBack, onExplore, onResources }: AboutProps) {
                   </span>
                 </div>
               )}
-              <h3 className="text-lg font-semibold text-[#2F3440]">{f.name}</h3>
-              <div className="text-xs font-semibold uppercase tracking-[0.14em] text-[#5B6AA5] mt-1 mb-3">
+              <h3 className="text-lg font-semibold text-[#2F2C2A]">{f.name}</h3>
+              <div className="text-xs font-semibold uppercase tracking-[0.14em] text-[#C2542E] mt-1 mb-3">
                 {f.role}
               </div>
-              <p className="text-sm text-[#5C6478] leading-relaxed">{f.bio}</p>
+              <p className="text-sm text-[#665F58] leading-relaxed">{f.bio}</p>
             </div>
           ))}
         </div>
@@ -249,10 +249,10 @@ export function About({ onBack, onExplore, onResources }: AboutProps) {
 
       {/* Medical position */}
       <div className="glass-tint rounded-2xl p-8 md:p-10 mb-16 md:mb-24 max-w-3xl">
-        <h2 className="text-xl md:text-2xl font-semibold tracking-tight text-[#2F3440] mb-4">
+        <h2 className="text-xl md:text-2xl font-semibold tracking-tight text-[#2F2C2A] mb-4">
           Where we stop
         </h2>
-        <div className="space-y-4 text-[#5C6478] leading-relaxed">
+        <div className="space-y-4 text-[#665F58] leading-relaxed">
           <p>
             We are not a clinic and we do not give medical advice. Everything on JourneyFertility —
             including our guides — is general information to help you ask better questions.
@@ -267,23 +267,23 @@ export function About({ onBack, onExplore, onResources }: AboutProps) {
 
       {/* CTA */}
       <div className="max-w-2xl">
-        <h2 className="text-2xl md:text-3xl font-semibold tracking-tight text-[#2F3440] mb-4">
+        <h2 className="text-2xl md:text-3xl font-semibold tracking-tight text-[#2F2C2A] mb-4">
           Start wherever you are
         </h2>
-        <p className="text-[#5C6478] leading-relaxed mb-7">
+        <p className="text-[#665F58] leading-relaxed mb-7">
           Whether you are comparing clinics seriously or just beginning to wonder about your
           options, there is no wrong entry point.
         </p>
         <div className="flex flex-col sm:flex-row gap-4">
           <Button
-            className="bg-[#F8AD7C] hover:bg-[#F2955F] text-[#2F3440] font-semibold px-8 h-12"
+            className="bg-[#F4A28C] hover:bg-[#E0714A] text-[#2F2C2A] font-semibold px-8 h-12"
             onClick={onExplore}
           >
             Compare clinics
           </Button>
           <Button
             variant="outline"
-            className="glass border-white/70 text-[#2F3440] hover:bg-white/75 h-12 px-8"
+            className="glass border-white/70 text-[#2F2C2A] hover:bg-white/75 h-12 px-8"
             onClick={onResources}
           >
             Read the guides

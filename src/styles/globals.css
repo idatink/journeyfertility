@@ -1,44 +1,61 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  /* Gradient Glass design system — graine de lin (#DEE8FF) + saumon (#F8AD7C) */
+  /* JourneyFertility design system — warm palette (Ink · Stone · Peach · Blush · Sky), Arimo type */
   --font-size: 16px;
-  --background: #f7f8fc;
-  --foreground: #2f3440;
-  --card: #ffffff;
-  --card-foreground: #2f3440;
-  --popover: #ffffff;
-  --popover-foreground: #2f3440;
-  --primary: #f8ad7c;
-  --primary-foreground: #2f3440;
-  --secondary: #dee8ff;
-  --secondary-foreground: #2f3440;
-  --muted: #eef1f9;
-  --muted-foreground: #5c6478;
-  --accent: #dee8ff;
-  --accent-foreground: #2f3440;
+
+  /* Brand palette (from the design card) */
+  --ink: #2f2c2a;          /* warm near-black — text, primary actions, active states */
+  --stone: #f7f5f2;        /* warm off-white page ground */
+  --white: #ffffff;
+  --peach: #e0714a;        /* bright terracotta — motif, warm accent fills, focus */
+  --peach-deep: #c2542e;   /* accessible peach for accent text and links */
+  --blush: #f4a28c;        /* soft warm — tints and friendly CTAs */
+  --sky: #dce6f0;          /* cool soft fill */
+  --muted-ink: #665f58;    /* warm muted text */
+
+  /* Radii (card: full · 22 · 12) */
+  --radius-sm: 0.75rem;    /* 12px — chips, inputs, small cards */
+  --radius-md: 1.375rem;   /* 22px — cards, panels */
+  --radius-full: 9999px;   /* pills, search bar, avatars */
+  --radius: var(--radius-sm);
+
+  /* Semantic tokens */
+  --background: var(--stone);
+  --foreground: var(--ink);
+  --card: var(--white);
+  --card-foreground: var(--ink);
+  --popover: var(--white);
+  --popover-foreground: var(--ink);
+  --primary: var(--ink);
+  --primary-foreground: var(--white);
+  --secondary: var(--sky);
+  --secondary-foreground: var(--ink);
+  --muted: #f1efec;
+  --muted-foreground: var(--muted-ink);
+  --accent: #fbeae4;       /* blush tint */
+  --accent-foreground: var(--ink);
   --destructive: #e5484d;
   --destructive-foreground: #ffffff;
-  --border: rgba(255, 255, 255, 0.65);
+  --border: rgba(47, 44, 42, 0.10);
   --input: transparent;
-  --input-background: rgba(255, 255, 255, 0.7);
-  --switch-background: #cbd8f5;
+  --input-background: rgba(255, 255, 255, 0.78);
+  --switch-background: #e6ddd6;
   --font-weight-medium: 500;
   --font-weight-normal: 400;
-  --ring: #f8ad7c;
+  --ring: var(--peach);
   --chart-1: oklch(0.646 0.222 41.116);
   --chart-2: oklch(0.6 0.118 184.704);
   --chart-3: oklch(0.398 0.07 227.392);
   --chart-4: oklch(0.828 0.189 84.429);
   --chart-5: oklch(0.769 0.188 70.08);
-  --radius: 0.75rem;
-  /* Glass tokens */
-  --glass-bg: rgba(255, 255, 255, 0.55);
-  --glass-bg-strong: rgba(255, 255, 255, 0.75);
-  --glass-border: rgba(255, 255, 255, 0.7);
-  --glass-shadow: 0 8px 32px rgba(120, 140, 200, 0.14);
-  --graine-de-lin: #dee8ff;
-  --saumon: #f8ad7c;
+  /* Surface / soft-shadow tokens (warm, not blue) */
+  --glass-bg: rgba(255, 255, 255, 0.6);
+  --glass-bg-strong: rgba(255, 255, 255, 0.82);
+  --glass-border: rgba(47, 44, 42, 0.08);
+  --glass-shadow: 0 8px 32px rgba(47, 44, 42, 0.10);
+  --graine-de-lin: var(--sky);
+  --saumon: var(--blush);
   --sidebar: oklch(0.985 0 0);
   --sidebar-foreground: oklch(0.145 0 0);
   --sidebar-primary: #030213;
@@ -197,43 +214,37 @@ html {
 }
 
 /*
- * Hanken Grotesk, self-hosted.
+ * Arimo, self-hosted.
  *
- * Loading this from Google's CDN sent every visitor's IP address to a third
- * party before they had agreed to anything — an avoidable transfer on a site
- * about fertility. Serving it ourselves removes that entirely.
+ * Loading a font from Google's CDN sends every visitor's IP to a third party
+ * before they have agreed to anything — an avoidable transfer on a site about
+ * fertility. We serve it ourselves instead.
  *
- * It is a variable font, so one file per subset covers every weight and the
- * browser interpolates between them. Hence the font-weight range rather than
- * four separate faces.
+ * The design system uses just two weights (400 regular, 700 bold), as set out
+ * in the design card, so there are two static faces rather than a variable one.
+ * Arimo is metric-compatible with Arial, which is a clean system fallback.
  *
- * Licence: SIL Open Font License 1.1 — see src/assets/fonts/OFL.txt
+ * Licence: Apache License 2.0 — see src/assets/fonts/ARIMO-LICENSE.txt
  */
 @font-face {
-  font-family: 'Hanken Grotesk';
+  font-family: 'Arimo';
   font-style: normal;
-  font-weight: 100 900;
+  font-weight: 400;
   font-display: swap;
-  src: url('../assets/fonts/hanken-grotesk-latin.woff2') format('woff2');
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
-    U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193,
-    U+2212, U+2215, U+FEFF, U+FFFD;
+  src: url('../assets/fonts/arimo-400.woff2') format('woff2');
 }
 
 @font-face {
-  font-family: 'Hanken Grotesk';
+  font-family: 'Arimo';
   font-style: normal;
-  font-weight: 100 900;
+  font-weight: 700;
   font-display: swap;
-  src: url('../assets/fonts/hanken-grotesk-latin-ext.woff2') format('woff2');
-  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF,
-    U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020,
-    U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+  src: url('../assets/fonts/arimo-700.woff2') format('woff2');
 }
 
 body {
-  font-family: 'Hanken Grotesk', ui-sans-serif, system-ui, -apple-system, sans-serif;
-  background-color: #f7f8fc;
+  font-family: 'Arimo', Arial, ui-sans-serif, system-ui, -apple-system, sans-serif;
+  background-color: var(--stone);
 }
 
 /*
@@ -254,17 +265,17 @@ body::after {
 
 body::before {
   background-image:
-    radial-gradient(880px 620px at 4% -10%, rgba(190, 216, 255, 0.9), transparent 55%),
-    radial-gradient(840px 560px at 100% 2%, rgba(250, 170, 112, 0.78), transparent 52%),
-    radial-gradient(760px 520px at 92% 100%, rgba(200, 222, 255, 0.85), transparent 54%);
+    radial-gradient(880px 620px at 4% -10%, rgba(220, 230, 240, 0.9), transparent 55%),
+    radial-gradient(840px 560px at 100% 2%, rgba(224, 113, 74, 0.48), transparent 52%),
+    radial-gradient(760px 520px at 92% 100%, rgba(244, 162, 140, 0.55), transparent 54%);
   animation: aurora-breathe 16s ease-in-out infinite;
 }
 
 body::after {
   background-image:
-    radial-gradient(680px 500px at 50% 46%, rgba(255, 241, 230, 0.62), transparent 60%),
-    radial-gradient(660px 460px at 0% 92%, rgba(250, 180, 132, 0.5), transparent 54%),
-    radial-gradient(600px 440px at 100% 54%, rgba(204, 224, 255, 0.7), transparent 56%);
+    radial-gradient(680px 500px at 50% 46%, rgba(251, 234, 228, 0.6), transparent 60%),
+    radial-gradient(660px 460px at 0% 92%, rgba(244, 162, 140, 0.45), transparent 54%),
+    radial-gradient(600px 440px at 100% 54%, rgba(220, 230, 240, 0.7), transparent 56%);
   animation: aurora-drift 22s ease-in-out infinite;
 }
 

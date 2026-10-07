@@ -1,61 +1,73 @@
-**Add your own guidelines here**
-<!--
+# JourneyFertility — design system
 
-System Guidelines
+A warm, calm, trustworthy system for a UK fertility comparison service. Tokens
+live in `src/styles/globals.css` (`:root`); components reference them via the
+hex values below or the CSS variables. When something isn't covered here, favour
+quiet, legible, accessible choices over decoration.
 
-Use this file to provide the AI with rules and guidelines you want it to follow.
-This template outlines a few examples of things you can add. You can add your own sections and format it to suit your needs
+## Colour
 
-TIP: More context isn't always better. It can confuse the LLM. Try and add the most important rules you need
+Six brand colours. The neutrals are warm (biased toward the peach), never a cold
+grey.
 
-# General guidelines
+| Token | Hex | Role |
+|-------|-----|------|
+| **Ink** | `#2F2C2A` | Text, primary/active surfaces (buttons, selected tabs), icons |
+| **Stone** | `#F7F5F2` | Page background |
+| **White** | `#FFFFFF` | Cards and raised surfaces |
+| **Peach** | `#E0714A` | The motif, bright warm accent fills, focus ring |
+| **Peach-deep** | `#C2542E` | Accent **text** and links (AA-legible on white/stone) |
+| **Blush** | `#F4A28C` | Soft warm tints, friendly primary CTAs (with Ink text) |
+| **Sky** | `#DCE6F0` | Cool soft fills, panels, avatars |
 
-Any general rules you want the AI to follow.
-For example:
+Supporting: **Muted ink** `#665F58` (secondary text), **Sky border** `#C3D3E2`,
+**Blush tint** `#FBEAE4`, error `#E5484D`.
 
-* Only use absolute positioning when necessary. Opt for responsive and well structured layouts that use flexbox and grid by default
-* Refactor code as you go to keep code clean
-* Keep file sizes small and put helper functions and components in their own files.
+**Rules**
+- Accent *text* and links use **Peach-deep** (`#C2542E`), never bright Peach — Peach fails contrast as small text.
+- Bright **Peach** is for the motif, focus rings, and decorative fills only.
+- Selected / active states (tabs, toggles) are **Ink** with white text.
+- Cool (Sky) and warm (Blush/Peach) tints both exist; use Sky to calm, Blush to warm. Don't mix two warm oranges in one component.
 
---------------
+## Type — Arimo
 
-# Design system guidelines
-Rules for how the AI should make generations look like your company's design system
+Self-hosted (`src/assets/fonts/arimo-{400,700}.woff2`), two weights only: **400**
+regular and **700** bold. Emphasis is bold; there is no medium weight. Arial is
+the system fallback (metric-compatible).
 
-Additionally, if you select a design system to use in the prompt box, you can reference
-your design system's components, tokens, variables and components.
-For example:
+| Role | Size / weight |
+|------|---------------|
+| Screen title | 31 / 700 |
+| Card title | 21 / 700 |
+| List title | 17.5 / 700 |
+| Body | 15.5 / 400 |
+| Label | 13.5 / 400 |
 
-* Use a base font-size of 14px
-* Date formats should always be in the format “Jun 10”
-* The bottom toolbar should only ever have a maximum of 4 items
-* Never use the floating action button with the bottom toolbar
-* Chips should always come in sets of 3 or more
-* Don't use a dropdown if there are 2 or fewer options
+Headings get `text-wrap: balance`. Keep running text near 65 characters wide.
+Uppercase labels (eyebrows) carry light letter-spacing and use Peach-deep.
 
-You can also create sub sections and add more specific details
-For example:
+## Radius
 
+Three steps, from the card: **12px** (`--radius-sm`, chips/inputs/small cards),
+**22px** (`--radius-md`, cards/panels), and **full** (`--radius-full`, pills,
+the search bar, avatars).
 
-## Button
-The Button component is a fundamental interactive element in our design system, designed to trigger actions or navigate
-users through the application. It provides visual feedback and clear affordances to enhance user experience.
+## Motif
 
-### Usage
-Buttons should be used for important actions that users need to take, such as form submissions, confirming choices,
-or initiating processes. They communicate interactivity and should have clear, action-oriented labels.
+Three overlapping circles in a Peach gradient on a Sky field — preserved
+potential, overlapping journeys. Decorative only; never behind body text.
 
-### Variants
-* Primary Button
-  * Purpose : Used for the main action in a section or page
-  * Visual Style : Bold, filled with the primary brand color
-  * Usage : One primary button per section to guide users toward the most important action
-* Secondary Button
-  * Purpose : Used for alternative or supporting actions
-  * Visual Style : Outlined with the primary color, transparent background
-  * Usage : Can appear alongside a primary button for less important actions
-* Tertiary Button
-  * Purpose : Used for the least important actions
-  * Visual Style : Text-only with no border, using primary color
-  * Usage : For actions that should be available but not emphasized
--->
+## Components
+
+- **Buttons** — *Primary*: Blush fill, Ink text, full radius. *Secondary*: white with a hairline border. *On dark*: Ink fill, white text (used for toggles/selected tabs). One primary per section.
+- **Pills / tabs** — selected = Ink + white; unselected = white/transparent + Ink. Counts sit inline (e.g. "At-home kits · 18").
+- **Chips** (biomarkers, filters) — Blush or Sky tint, small radius, in sets of three or more.
+- **Cards** — White, 22px radius, hairline border or soft warm shadow (never a blue shadow). Price in Ink bold.
+- **Search** — full-radius bar, Ink round action button.
+
+## General
+
+- Responsive flex/grid with `gap`; avoid absolute positioning and per-element margins.
+- Keep components small and in their own files; refactor as you go.
+- Respect `prefers-reduced-motion`; give every interactive element a visible focus ring (Peach).
+- Honesty first: never show an invented price or success rate for a real clinic (see the code's data doctrine).

@@ -50,7 +50,7 @@ export function TestimonialModal({ testimonial, onClose }: TestimonialModalProps
             
             {/* Verified Badge */}
             <div className="flex items-center gap-2 mb-8">
-              <CheckCircle2 className="w-6 h-6 text-[#A8BEEB]" fill="currentColor" />
+              <CheckCircle2 className="w-6 h-6 text-[#C3D3E2]" fill="currentColor" />
               <span className="text-white text-lg">Verified JourneyFertility customer</span>
             </div>
           </div>

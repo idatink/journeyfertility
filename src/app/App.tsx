@@ -169,7 +169,7 @@ function RotatingWord() {
   // motion-safe keeps the fade off under reduced-motion.
   return (
     <span
-      className={`grain inline-flex justify-center min-w-[5.5ch] bg-[#F8AD7C] text-[#2F3440] font-bold px-2 rounded-md motion-safe:transition-all motion-safe:duration-300 ${
+      className={`grain inline-flex justify-center min-w-[5.5ch] bg-[#F4A28C] text-[#2F2C2A] font-bold px-2 rounded-md motion-safe:transition-all motion-safe:duration-300 ${
         show ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-1'
       }`}
     >
@@ -238,13 +238,13 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen text-[#2F3440]">
+    <div className="min-h-screen text-[#2F2C2A]">
       {/* Header */}
-      <header className="border-b border-[#A8BEEB]/20">
+      <header className="border-b border-[#C3D3E2]/20">
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <span
-              className="text-xl font-bold tracking-tight text-[#2F3440] cursor-pointer hover:opacity-80 transition-opacity"
+              className="text-xl font-bold tracking-tight text-[#2F2C2A] cursor-pointer hover:opacity-80 transition-opacity"
               onClick={() => setViewMode('home')}
             >
               JourneyFertility
@@ -271,7 +271,7 @@ export default function App() {
             >
               Resources
             </button>
-            <button className="flex items-center gap-1 text-gray-700 hover:text-gray-900 rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#5B6AA5] focus-visible:ring-offset-2">
+            <button className="flex items-center gap-1 text-gray-700 hover:text-gray-900 rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C2542E] focus-visible:ring-offset-2">
               <User className="w-4 h-4" />
               Sign in
             </button>
@@ -279,7 +279,7 @@ export default function App() {
 
           <button
             type="button"
-            className="md:hidden rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#5B6AA5] focus-visible:ring-offset-2"
+            className="md:hidden rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C2542E] focus-visible:ring-offset-2"
             aria-label={mobileMenuOpen ? 'Close menu' : 'Open menu'}
             aria-expanded={mobileMenuOpen}
             aria-controls="mobile-menu"
@@ -291,24 +291,24 @@ export default function App() {
 
         {/* Mobile menu */}
         {mobileMenuOpen && (
-          <nav id="mobile-menu" className="md:hidden border-t border-[#A8BEEB]/20 px-6 py-4 flex flex-col gap-1">
+          <nav id="mobile-menu" className="md:hidden border-t border-[#C3D3E2]/20 px-6 py-4 flex flex-col gap-1">
             <button
               type="button"
               onClick={() => { setViewMode('about'); setMobileMenuOpen(false); window.scrollTo(0, 0); }}
-              className="text-left py-2 text-[#2F3440] hover:text-[#5B6AA5]"
+              className="text-left py-2 text-[#2F2C2A] hover:text-[#C2542E]"
             >
               About
             </button>
             <button
               type="button"
               onClick={() => { setResourcesCategory('All'); setViewMode('resources'); setMobileMenuOpen(false); window.scrollTo(0, 0); }}
-              className="text-left py-2 text-[#2F3440] hover:text-[#5B6AA5]"
+              className="text-left py-2 text-[#2F2C2A] hover:text-[#C2542E]"
             >
               Resources
             </button>
             <button
               type="button"
-              className="flex items-center gap-1.5 text-left py-2 text-[#2F3440] hover:text-[#5B6AA5]"
+              className="flex items-center gap-1.5 text-left py-2 text-[#2F2C2A] hover:text-[#C2542E]"
             >
               <User className="w-4 h-4" />
               Sign in
@@ -324,13 +324,13 @@ export default function App() {
         {/* Hero Heading */}
         <div className="mb-16 md:mb-24 grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
           <div>
-          <div className="text-xs font-semibold uppercase tracking-[0.14em] text-[#5B6AA5] mb-4">
+          <div className="text-xs font-semibold uppercase tracking-[0.14em] text-[#C2542E] mb-4">
             Fertility Clinic &amp; Cost Comparison
           </div>
-          <h1 className="text-5xl lg:text-6xl font-bold tracking-tight text-[#2F3440] mb-5">
+          <h1 className="text-5xl lg:text-6xl font-bold tracking-tight text-[#2F2C2A] mb-5">
             Your fertility options. One simple search.
           </h1>
-          <p className="text-lg md:text-2xl text-[#5C6478] max-w-2xl leading-relaxed mb-8">
+          <p className="text-lg md:text-2xl text-[#665F58] max-w-2xl leading-relaxed mb-8">
             Navigate your fertility journey without the anxiety — with{' '}
             <RotatingWord />
           </p>
@@ -344,12 +344,12 @@ export default function App() {
             ].map((step, idx) => (
               <div key={step.n} className="flex items-center gap-2">
                 <div className="flex items-center gap-2 grain glass rounded-full pl-1.5 pr-4 py-1.5">
-                  <span className="w-6 h-6 rounded-full bg-[#2F3440] text-white text-xs font-semibold flex items-center justify-center">
+                  <span className="w-6 h-6 rounded-full bg-[#2F2C2A] text-white text-xs font-semibold flex items-center justify-center">
                     {step.n}
                   </span>
-                  <span className="text-sm font-medium text-[#2F3440] whitespace-nowrap">{step.label}</span>
+                  <span className="text-sm font-medium text-[#2F2C2A] whitespace-nowrap">{step.label}</span>
                 </div>
-                {idx < 2 && <ChevronRight className="hidden sm:block w-4 h-4 text-[#A8BEEB] shrink-0" />}
+                {idx < 2 && <ChevronRight className="hidden sm:block w-4 h-4 text-[#C3D3E2] shrink-0" />}
               </div>
             ))}
           </div>
@@ -363,8 +363,8 @@ export default function App() {
               className="w-full h-[360px] md:h-[460px] lg:h-[560px] object-cover object-[50%_22%] rounded-xl"
             />
             <div className="absolute bottom-4 left-4 grain glass-strong rounded-xl px-4 py-3">
-              <div className="text-sm font-semibold text-[#2F3440] leading-tight">Real UK clinics</div>
-              <div className="text-xs text-[#5C6478]">published costs, side by side</div>
+              <div className="text-sm font-semibold text-[#2F2C2A] leading-tight">Real UK clinics</div>
+              <div className="text-xs text-[#665F58]">published costs, side by side</div>
             </div>
           </div>
         </div>
@@ -372,10 +372,10 @@ export default function App() {
         {/* Stage selector */}
         <div className="mb-16 md:mb-24">
           <div className="max-w-2xl mb-8">
-            <h2 className="text-3xl md:text-4xl font-semibold tracking-tight text-[#2F3440] mb-3">
+            <h2 className="text-3xl md:text-4xl font-semibold tracking-tight text-[#2F2C2A] mb-3">
               Where are you right now?
             </h2>
-            <p className="text-[#5C6478] text-lg leading-relaxed">
+            <p className="text-[#665F58] text-lg leading-relaxed">
               Everyone's journey looks different. Pick the line that sounds most like you and we'll tailor your search.
             </p>
           </div>
@@ -395,24 +395,24 @@ export default function App() {
                     setViewMode('costings');
                     window.scrollTo(0, 0);
                   }}
-                  className={`group text-left rounded-2xl border p-6 transition-all duration-200 motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#5B6AA5] focus-visible:ring-offset-2 ${
+                  className={`group text-left rounded-2xl border p-6 transition-all duration-200 motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C2542E] focus-visible:ring-offset-2 ${
                     active
-                      ? 'border-[#F8AD7C] bg-[#FDEEE1] ring-2 ring-[#F8AD7C]'
+                      ? 'border-[#F4A28C] bg-[#FBEAE4] ring-2 ring-[#F4A28C]'
                       : 'glass hover:-translate-y-0.5 hover:shadow-[0_12px_40px_rgba(120,140,200,0.22)]'
                   }`}
                 >
                   <div className="flex items-center justify-between mb-5">
-                    <div className="w-11 h-11 rounded-full bg-[#DEE8FF]/50 flex items-center justify-center text-[#5B6AA5]">
+                    <div className="w-11 h-11 rounded-full bg-[#DCE6F0]/50 flex items-center justify-center text-[#C2542E]">
                       <Icon className="w-5 h-5" />
                     </div>
-                    <span className="grain text-[11px] font-semibold uppercase tracking-wide text-[#5B6AA5] bg-[#DEE8FF]/60 px-3 py-1 rounded-full">
+                    <span className="grain text-[11px] font-semibold uppercase tracking-wide text-[#C2542E] bg-[#DCE6F0]/60 px-3 py-1 rounded-full">
                       Age {stage.age}
                     </span>
                   </div>
-                  <p className="text-lg text-[#2F3440] leading-snug mb-6 min-h-[3.5rem]">
+                  <p className="text-lg text-[#2F2C2A] leading-snug mb-6 min-h-[3.5rem]">
                     “{stage.statement}”
                   </p>
-                  <div className="flex items-center gap-1.5 text-sm font-semibold text-[#5B6AA5]">
+                  <div className="flex items-center gap-1.5 text-sm font-semibold text-[#C2542E]">
                     {stage.tag}
                     <ChevronRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5" />
                   </div>
@@ -425,10 +425,10 @@ export default function App() {
         {/* Search */}
         <div id="search" className="scroll-mt-6 mb-16">
           <div className="glass rounded-2xl p-6 md:p-8 shadow-[0_18px_60px_rgba(120,140,200,0.18)]">
-            <h2 className="text-2xl md:text-3xl font-semibold tracking-tight text-[#2F3440] mb-1.5">
+            <h2 className="text-2xl md:text-3xl font-semibold tracking-tight text-[#2F2C2A] mb-1.5">
               {SERVICE_META[serviceType].compareHeading}
             </h2>
-            <p className="text-[#5C6478] mb-6 max-w-xl">
+            <p className="text-[#665F58] mb-6 max-w-xl">
               {SERVICE_META[serviceType].compareSub}
             </p>
 
@@ -447,8 +447,8 @@ export default function App() {
                     role="tab"
                     aria-selected={active}
                     onClick={() => setServiceType(s.id)}
-                    className={`grain flex-1 min-w-[8rem] text-sm font-semibold px-4 py-2.5 rounded-xl transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#5B6AA5] focus-visible:ring-offset-2 ${
-                      active ? 'bg-[#2F3440] text-white shadow-sm' : 'text-[#2F3440] hover:bg-white/70'
+                    className={`grain flex-1 min-w-[8rem] text-sm font-semibold px-4 py-2.5 rounded-xl transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C2542E] focus-visible:ring-offset-2 ${
+                      active ? 'bg-[#2F2C2A] text-white shadow-sm' : 'text-[#2F2C2A] hover:bg-white/70'
                     }`}
                   >
                     {s.label}
@@ -464,11 +464,11 @@ export default function App() {
             {/* Filters */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label htmlFor="search-clinic" className="block text-xs font-semibold uppercase tracking-wide text-[#5C6478] mb-1.5">
+                <label htmlFor="search-clinic" className="block text-xs font-semibold uppercase tracking-wide text-[#665F58] mb-1.5">
                   Clinic
                 </label>
                 <div className="relative">
-                  <Building2 className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#5C6478] z-10 pointer-events-none" />
+                  <Building2 className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#665F58] z-10 pointer-events-none" />
                   <Select value={clinic} onValueChange={setClinic}>
                     <SelectTrigger id="search-clinic" className="pl-10 min-h-12 bg-white text-base">
                       <SelectValue placeholder="All clinics" />
@@ -491,11 +491,11 @@ export default function App() {
               </div>
 
               <div>
-                <label htmlFor="search-budget" className="block text-xs font-semibold uppercase tracking-wide text-[#5C6478] mb-1.5">
+                <label htmlFor="search-budget" className="block text-xs font-semibold uppercase tracking-wide text-[#665F58] mb-1.5">
                   Budget
                 </label>
                 <div className="relative">
-                  <PoundSterling className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#5C6478] z-10 pointer-events-none" />
+                  <PoundSterling className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#665F58] z-10 pointer-events-none" />
                   <Select value={budgetRange} onValueChange={setBudgetRange}>
                     <SelectTrigger id="search-budget" className="pl-10 min-h-12 bg-white text-base">
                       <SelectValue placeholder="Any budget" />
@@ -514,7 +514,7 @@ export default function App() {
             </div>
 
             <Button
-              className="w-full sm:w-auto mt-6 h-12 px-10 bg-[#F8AD7C] hover:bg-[#F2955F] text-[#2F3440] font-semibold text-base"
+              className="w-full sm:w-auto mt-6 h-12 px-10 bg-[#F4A28C] hover:bg-[#E0714A] text-[#2F2C2A] font-semibold text-base"
               onClick={handleSearch}
             >
               <Search className="w-4 h-4 mr-2" />
@@ -616,19 +616,19 @@ export default function App() {
           />
           <div className="relative md:absolute md:inset-0 bg-gradient-to-t from-white/95 via-white/70 to-white/10 flex flex-col justify-end p-8 md:p-12">
             <div className="max-w-3xl">
-              <span className="grain inline-block px-3 py-1 bg-[#F8AD7C] text-[#2F3440] text-xs font-bold uppercase tracking-wider rounded-full mb-4">
+              <span className="grain inline-block px-3 py-1 bg-[#F4A28C] text-[#2F2C2A] text-xs font-bold uppercase tracking-wider rounded-full mb-4">
                 Not sure where to start?
               </span>
-              <h2 className="text-[#2F3440] text-3xl md:text-5xl font-semibold tracking-tight mb-4 leading-tight">
+              <h2 className="text-[#2F2C2A] text-3xl md:text-5xl font-semibold tracking-tight mb-4 leading-tight">
                 A few questions to help you work out what to look into first.
               </h2>
-              <p className="text-[#5C6478] text-sm md:text-base mb-6 max-w-xl leading-relaxed">
+              <p className="text-[#665F58] text-sm md:text-base mb-6 max-w-xl leading-relaxed">
                 A short, private self-assessment. Your answers stay in your browser — nothing is
                 saved or sent. It just points you to the parts of the comparison and the guides that
                 are most relevant to where you are.
               </p>
               <div className="flex flex-col sm:flex-row gap-4">
-                <Button className="bg-[#F8AD7C] hover:bg-[#F2955F] text-[#2F3440] font-semibold px-8 h-12" onClick={() => setShowQuiz(true)}>
+                <Button className="bg-[#F4A28C] hover:bg-[#E0714A] text-[#2F2C2A] font-semibold px-8 h-12" onClick={() => setShowQuiz(true)}>
                   Take the self-assessment
                 </Button>
               </div>
@@ -640,10 +640,10 @@ export default function App() {
         <div className="mb-16">
           <div className="flex flex-col md:flex-row md:items-center justify-between mb-6 gap-4">
             <div>
-              <h2 className="text-2xl md:text-4xl font-semibold tracking-tight text-[#2F3440] mb-2">
+              <h2 className="text-2xl md:text-4xl font-semibold tracking-tight text-[#2F2C2A] mb-2">
                 Read up before you decide
               </h2>
-              <p className="text-[#5C6478] text-sm md:text-base">
+              <p className="text-[#665F58] text-sm md:text-base">
                 Plain-language guides to each option, what the numbers mean, and what it actually
                 costs — so you can ask better questions.
               </p>
@@ -699,7 +699,7 @@ export default function App() {
                 key={idx}
                 onClick={() => setTopicIndex(idx)}
                 className={`w-2 h-2 rounded-full transition-colors ${
-                  topicIndex === idx ? 'bg-[#2F3440]' : 'bg-[#DADADA]'
+                  topicIndex === idx ? 'bg-[#2F2C2A]' : 'bg-[#DADADA]'
                 }`}
               />
             ))}
@@ -708,7 +708,7 @@ export default function App() {
 
         {/* FAQ Section */}
         <div className="mb-12">
-          <h2 className="text-3xl font-semibold tracking-tight text-[#2F3440] mb-8">Finding fertility treatment with JourneyFertility</h2>
+          <h2 className="text-3xl font-semibold tracking-tight text-[#2F2C2A] mb-8">Finding fertility treatment with JourneyFertility</h2>
           
           <div className="grid md:grid-cols-2 gap-8">
             <div>
@@ -732,7 +732,7 @@ export default function App() {
                     onClick={() => toggleFAQ(index)}
                     aria-expanded={!!showFAQ[index]}
                     aria-controls={`faq-panel-${index}`}
-                    className="w-full flex items-center justify-between text-left rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#5B6AA5] focus-visible:ring-offset-2"
+                    className="w-full flex items-center justify-between text-left rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C2542E] focus-visible:ring-offset-2"
                   >
                     <span>{faq.question}</span>
                     <ChevronDown className={`w-5 h-5 shrink-0 transition-transform motion-reduce:transition-none ${showFAQ[index] ? 'rotate-180' : ''}`} />
@@ -769,7 +769,7 @@ export default function App() {
                     onClick={() => toggleFAQ(index + 3)}
                     aria-expanded={!!showFAQ[index + 3]}
                     aria-controls={`faq-panel-${index + 3}`}
-                    className="w-full flex items-center justify-between text-left rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#5B6AA5] focus-visible:ring-offset-2"
+                    className="w-full flex items-center justify-between text-left rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C2542E] focus-visible:ring-offset-2"
                   >
                     <span>{faq.question}</span>
                     <ChevronDown className={`w-5 h-5 shrink-0 transition-transform motion-reduce:transition-none ${showFAQ[index + 3] ? 'rotate-180' : ''}`} />
@@ -811,7 +811,7 @@ export default function App() {
       {/* Testimonial Modal */}
 
       {/* Footer */}
-      <footer className="bg-[#2F3440] text-[#F7F8FC] mt-20">
+      <footer className="bg-[#2F2C2A] text-[#F7F5F2] mt-20">
         <div className="max-w-7xl mx-auto px-6 py-12">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-8">
             <div>

@@ -28,11 +28,11 @@ export function HowTrackingWorks() {
       <div className="max-w-2xl">
         <h2
           id="how-tracking-heading"
-          className="text-3xl font-semibold tracking-tight text-[#2F3440] mb-3"
+          className="text-3xl font-semibold tracking-tight text-[#2F2C2A] mb-3"
         >
           How fertility tracking works — without overspending
         </h2>
-        <p className="text-[#5C6478] leading-relaxed">
+        <p className="text-[#665F58] leading-relaxed">
           Two very different things get sold as though you need both every month.
           You usually don't. Get your baseline once, then track your cycle for
           pennies.
@@ -43,33 +43,33 @@ export function HowTrackingWorks() {
         {/* One-off baseline */}
         <div className="glass rounded-2xl p-6 flex flex-col">
           <div className="flex items-center gap-3 mb-3">
-            <span className="grain flex items-center justify-center w-10 h-10 rounded-full bg-[#DEE8FF]/70 text-[#5B6AA5]">
+            <span className="grain flex items-center justify-center w-10 h-10 rounded-full bg-[#DCE6F0]/70 text-[#C2542E]">
               <FlaskConical className="w-5 h-5" />
             </span>
             <div>
-              <h3 className="text-lg font-semibold text-[#2F3440]">
+              <h3 className="text-lg font-semibold text-[#2F2C2A]">
                 A baseline hormone check
               </h3>
-              <p className="text-xs font-medium uppercase tracking-wide text-[#5B6AA5]">
+              <p className="text-xs font-medium uppercase tracking-wide text-[#C2542E]">
                 Do it once
               </p>
             </div>
           </div>
-          <p className="text-sm text-[#5C6478] leading-relaxed mb-4">
+          <p className="text-sm text-[#665F58] leading-relaxed mb-4">
             An AMH test reads your ovarian reserve — roughly, how many eggs you
             have left. It changes slowly, over years, so a single test gives you
             a picture that holds. There is no reason to re-order it every month.
           </p>
-          <div className="mt-auto text-sm text-[#2F3440]">
+          <div className="mt-auto text-sm text-[#2F2C2A]">
             {baseline !== null ? (
               <>
                 From{' '}
                 <span className="font-bold">£{baseline.toLocaleString()}</span>{' '}
-                <span className="text-[#5C6478]">one-off</span> — compare the
+                <span className="text-[#665F58]">one-off</span> — compare the
                 tests below.
               </>
             ) : (
-              <span className="text-[#5C6478]">Compare the tests below.</span>
+              <span className="text-[#665F58]">Compare the tests below.</span>
             )}
           </div>
         </div>
@@ -77,34 +77,34 @@ export function HowTrackingWorks() {
         {/* Ongoing tracking */}
         <div className="glass rounded-2xl p-6 flex flex-col">
           <div className="flex items-center gap-3 mb-3">
-            <span className="grain flex items-center justify-center w-10 h-10 rounded-full bg-[#FCE4D2] text-[#B4762F]">
+            <span className="grain flex items-center justify-center w-10 h-10 rounded-full bg-[#FBE3DA] text-[#B4552B]">
               <Repeat className="w-5 h-5" />
             </span>
             <div>
-              <h3 className="text-lg font-semibold text-[#2F3440]">
+              <h3 className="text-lg font-semibold text-[#2F2C2A]">
                 Tracking your cycle
               </h3>
-              <p className="text-xs font-medium uppercase tracking-wide text-[#B4762F]">
+              <p className="text-xs font-medium uppercase tracking-wide text-[#B4552B]">
                 Ongoing, but cheap
               </p>
             </div>
           </div>
-          <p className="text-sm text-[#5C6478] leading-relaxed mb-4">
+          <p className="text-sm text-[#665F58] leading-relaxed mb-4">
             To know <em>when</em> you ovulate each month you don't need a lab
             panel — you need the signs your body already gives you:
           </p>
-          <ul className="space-y-2 text-sm text-[#2F3440]">
+          <ul className="space-y-2 text-sm text-[#2F2C2A]">
             <li className="flex justify-between gap-3">
               <span>LH ovulation strips</span>
-              <span className="text-[#5C6478] shrink-0">~£8–15 / month</span>
+              <span className="text-[#665F58] shrink-0">~£8–15 / month</span>
             </li>
             <li className="flex justify-between gap-3">
               <span>A free cycle-tracking app</span>
-              <span className="text-[#5C6478] shrink-0">£0</span>
+              <span className="text-[#665F58] shrink-0">£0</span>
             </li>
             <li className="flex justify-between gap-3">
               <span>Cervical mucus &amp; basal body temperature</span>
-              <span className="text-[#5C6478] shrink-0">£0</span>
+              <span className="text-[#665F58] shrink-0">£0</span>
             </li>
           </ul>
         </div>
@@ -113,9 +113,9 @@ export function HowTrackingWorks() {
       {/* The trap + the NHS route */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="glass rounded-2xl p-5 flex gap-3">
-          <PiggyBank className="w-5 h-5 text-[#B4762F] shrink-0 mt-0.5" />
-          <p className="text-sm text-[#5C6478] leading-relaxed">
-            <span className="font-semibold text-[#2F3440]">
+          <PiggyBank className="w-5 h-5 text-[#B4552B] shrink-0 mt-0.5" />
+          <p className="text-sm text-[#665F58] leading-relaxed">
+            <span className="font-semibold text-[#2F2C2A]">
               Skip the monthly panel.
             </span>{' '}
             A repeat hormone subscription is rarely worth it — your reserve
@@ -124,9 +124,9 @@ export function HowTrackingWorks() {
           </p>
         </div>
         <div className="glass rounded-2xl p-5 flex gap-3">
-          <HeartPulse className="w-5 h-5 text-[#5B6AA5] shrink-0 mt-0.5" />
-          <p className="text-sm text-[#5C6478] leading-relaxed">
-            <span className="font-semibold text-[#2F3440]">Ask the NHS first.</span>{' '}
+          <HeartPulse className="w-5 h-5 text-[#C2542E] shrink-0 mt-0.5" />
+          <p className="text-sm text-[#665F58] leading-relaxed">
+            <span className="font-semibold text-[#2F2C2A]">Ask the NHS first.</span>{' '}
             Your GP can run some hormone bloods and refer you. AMH isn't routine
             on the NHS unless you're referred for treatment — but it's worth
             asking before you pay privately.

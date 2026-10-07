@@ -20,38 +20,38 @@ export function PrivacyNotice({ onBack }: PrivacyNoticeProps) {
         Back to Home
       </Button>
 
-      <div className="text-xs font-semibold uppercase tracking-[0.14em] text-[#5B6AA5] mb-4">
+      <div className="text-xs font-semibold uppercase tracking-[0.14em] text-[#C2542E] mb-4">
         Privacy
       </div>
-      <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-[#2F3440] mb-5">
+      <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-[#2F2C2A] mb-5">
         How we handle your information
       </h1>
-      <p className="text-lg text-[#5C6478] leading-relaxed mb-4">
+      <p className="text-lg text-[#665F58] leading-relaxed mb-4">
         Fertility is private. This page explains exactly what we collect, why, who sees it and how
         to get rid of it — in plain terms, without the usual padding.
       </p>
-      <p className="text-sm text-[#5C6478] mb-12">Last updated 20 July 2026</p>
+      <p className="text-sm text-[#665F58] mb-12">Last updated 20 July 2026</p>
 
-      <div className="glass rounded-2xl p-5 mb-12 text-sm text-[#5C6478] leading-relaxed">
-        <span className="font-semibold text-[#B4762F]">Before publishing:</span> the operator must
+      <div className="glass rounded-2xl p-5 mb-12 text-sm text-[#665F58] leading-relaxed">
+        <span className="font-semibold text-[#B4552B]">Before publishing:</span> the operator must
         complete the entries marked <span className="font-semibold">[to confirm]</span> — registered
         company details, ICO registration and the contact address for privacy requests.
       </div>
 
-      <div className="space-y-10 text-[#5C6478] leading-relaxed">
+      <div className="space-y-10 text-[#665F58] leading-relaxed">
         <section>
-          <h2 className="text-2xl font-semibold tracking-tight text-[#2F3440] mb-3">Who we are</h2>
+          <h2 className="text-2xl font-semibold tracking-tight text-[#2F2C2A] mb-3">Who we are</h2>
           <p>
             JourneyFertility is a comparison service. We are not a clinic and we do not provide
             medical care. The data controller is{' '}
-            <span className="font-semibold text-[#2F3440]">[to confirm: registered company name and number]</span>,
+            <span className="font-semibold text-[#2F2C2A]">[to confirm: registered company name and number]</span>,
             registered with the Information Commissioner&rsquo;s Office under{' '}
-            <span className="font-semibold text-[#2F3440]">[to confirm]</span>.
+            <span className="font-semibold text-[#2F2C2A]">[to confirm]</span>.
           </p>
         </section>
 
         <section>
-          <h2 className="text-2xl font-semibold tracking-tight text-[#2F3440] mb-3">
+          <h2 className="text-2xl font-semibold tracking-tight text-[#2F2C2A] mb-3">
             Browsing without enquiring
           </h2>
           <p className="mb-3">
@@ -71,7 +71,7 @@ export function PrivacyNotice({ onBack }: PrivacyNoticeProps) {
         </section>
 
         <section>
-          <h2 className="text-2xl font-semibold tracking-tight text-[#2F3440] mb-3">
+          <h2 className="text-2xl font-semibold tracking-tight text-[#2F2C2A] mb-3">
             When you send an enquiry
           </h2>
           <p className="mb-4">
@@ -79,7 +79,7 @@ export function PrivacyNotice({ onBack }: PrivacyNoticeProps) {
             health. The law treats that as sensitive, and so do we.
           </p>
 
-          <h3 className="text-base font-semibold text-[#2F3440] mb-2">What we collect</h3>
+          <h3 className="text-base font-semibold text-[#2F2C2A] mb-2">What we collect</h3>
           <ul className="list-disc pl-5 space-y-1 mb-5">
             <li>Your name and email address, and your phone number if you give one</li>
             <li>How you would like to be contacted</li>
@@ -89,7 +89,7 @@ export function PrivacyNotice({ onBack }: PrivacyNoticeProps) {
             <li>A record of the consents you gave, and the time you gave them</li>
           </ul>
 
-          <h3 className="text-base font-semibold text-[#2F3440] mb-2">
+          <h3 className="text-base font-semibold text-[#2F2C2A] mb-2">
             What we deliberately do not collect
           </h3>
           <p>
@@ -100,7 +100,7 @@ export function PrivacyNotice({ onBack }: PrivacyNoticeProps) {
         </section>
 
         <section>
-          <h2 className="text-2xl font-semibold tracking-tight text-[#2F3440] mb-3">
+          <h2 className="text-2xl font-semibold tracking-tight text-[#2F2C2A] mb-3">
             Why we are allowed to use it
           </h2>
           <p className="mb-3">
@@ -115,22 +115,22 @@ export function PrivacyNotice({ onBack }: PrivacyNoticeProps) {
         </section>
 
         <section>
-          <h2 className="text-2xl font-semibold tracking-tight text-[#2F3440] mb-3">Who sees it</h2>
+          <h2 className="text-2xl font-semibold tracking-tight text-[#2F2C2A] mb-3">Who sees it</h2>
           <ul className="list-disc pl-5 space-y-2">
             <li>
-              <span className="font-semibold text-[#2F3440]">The clinic you chose</span> — named on
+              <span className="font-semibold text-[#2F2C2A]">The clinic you chose</span> — named on
               the consent screen before you send anything. We do not pass your enquiry to any other
               clinic, and we never sell your details.
             </li>
             <li>
-              <span className="font-semibold text-[#2F3440]">Our hosting provider</span>, which
+              <span className="font-semibold text-[#2F2C2A]">Our hosting provider</span>, which
               stores the data on our behalf under a contract and cannot use it for anything else.
             </li>
           </ul>
         </section>
 
         <section>
-          <h2 className="text-2xl font-semibold tracking-tight text-[#2F3440] mb-3">
+          <h2 className="text-2xl font-semibold tracking-tight text-[#2F2C2A] mb-3">
             How long we keep it
           </h2>
           <p className="mb-3">
@@ -145,7 +145,7 @@ export function PrivacyNotice({ onBack }: PrivacyNoticeProps) {
         </section>
 
         <section>
-          <h2 className="text-2xl font-semibold tracking-tight text-[#2F3440] mb-3">Your rights</h2>
+          <h2 className="text-2xl font-semibold tracking-tight text-[#2F2C2A] mb-3">Your rights</h2>
           <p className="mb-3">You can ask us to:</p>
           <ul className="list-disc pl-5 space-y-1 mb-4">
             <li>Give you a copy of what we hold about you</li>
@@ -155,7 +155,7 @@ export function PrivacyNotice({ onBack }: PrivacyNoticeProps) {
             <li>Stop using it, or restrict how we use it</li>
           </ul>
           <p className="mb-3">
-            Email <span className="font-semibold text-[#2F3440]">[to confirm: privacy@ address]</span>{' '}
+            Email <span className="font-semibold text-[#2F2C2A]">[to confirm: privacy@ address]</span>{' '}
             with your enquiry reference. We reply within one month. There is no charge.
           </p>
           <p>
@@ -166,19 +166,19 @@ export function PrivacyNotice({ onBack }: PrivacyNoticeProps) {
         </section>
 
         <section>
-          <h2 className="text-2xl font-semibold tracking-tight text-[#2F3440] mb-3">
+          <h2 className="text-2xl font-semibold tracking-tight text-[#2F2C2A] mb-3">
             Where your data is held
           </h2>
           <p>
             We list UK clinics and store data{' '}
-            <span className="font-semibold text-[#2F3440]">[to confirm: hosting region]</span>. If we
+            <span className="font-semibold text-[#2F2C2A]">[to confirm: hosting region]</span>. If we
             ever need to send your information outside the UK, we will tell you and put the required
             safeguards in place first.
           </p>
         </section>
 
         <section>
-          <h2 className="text-2xl font-semibold tracking-tight text-[#2F3440] mb-3">Complaints</h2>
+          <h2 className="text-2xl font-semibold tracking-tight text-[#2F2C2A] mb-3">Complaints</h2>
           <p>
             Tell us first and we will try to put it right. You also have the right to complain to the
             Information Commissioner&rsquo;s Office at{' '}
@@ -186,7 +186,7 @@ export function PrivacyNotice({ onBack }: PrivacyNoticeProps) {
               href="https://ico.org.uk/make-a-complaint/"
               target="_blank"
               rel="noopener noreferrer"
-              className="font-semibold text-[#5B6AA5] hover:underline"
+              className="font-semibold text-[#C2542E] hover:underline"
             >
               ico.org.uk
             </a>
@@ -195,7 +195,7 @@ export function PrivacyNotice({ onBack }: PrivacyNoticeProps) {
         </section>
 
         <section>
-          <h2 className="text-2xl font-semibold tracking-tight text-[#2F3440] mb-3">Changes</h2>
+          <h2 className="text-2xl font-semibold tracking-tight text-[#2F2C2A] mb-3">Changes</h2>
           <p>
             If we change how we handle your information we will update this page and the date at the
             top. Where the change is significant and we rely on your consent, we will ask again
