@@ -6,6 +6,7 @@ import { ImageWithFallback } from './components/figma/ImageWithFallback';
 import { ClinicCostings } from './components/ClinicCostings';
 import { ServiceExplainer } from './components/ServiceExplainer';
 import { OptionsComparison } from './components/OptionsComparison';
+import { TrustStrip } from './components/TrustStrip';
 import { SelfAssessmentQuiz } from './components/SelfAssessmentQuiz';
 import { Resources } from './components/Resources';
 import { BUDGET_BRACKETS } from './lib/budget';
@@ -400,10 +401,18 @@ export default function App() {
           </div>
         </div>
 
+        {/* Trust, up front — not buried on About */}
+        <div className="mb-12">
+          <TrustStrip />
+        </div>
+
         {/* Stage selector */}
         <div className="mb-16 md:mb-24">
           <div className="flex items-end justify-between gap-6 mb-6">
             <div className="max-w-2xl">
+              <div className="text-xs font-semibold uppercase tracking-[0.14em] text-[#C2542E] mb-3">
+                Start here
+              </div>
               <h2 className="text-3xl md:text-4xl font-semibold tracking-tight text-[#2F2C2A] mb-3">
                 Where are you right now?
               </h2>
@@ -484,6 +493,9 @@ export default function App() {
         {/* Search */}
         <div id="search" className="scroll-mt-6 mb-16">
           <div className="glass rounded-2xl p-6 md:p-8 shadow-[0_18px_60px_rgba(120,140,200,0.18)]">
+            <div className="text-xs font-semibold uppercase tracking-[0.14em] text-[#C2542E] mb-3">
+              If you already know what you want
+            </div>
             <h2 className="text-2xl md:text-3xl font-semibold tracking-tight text-[#2F2C2A] mb-1.5">
               {SERVICE_META[serviceType].compareHeading}
             </h2>
@@ -763,6 +775,34 @@ export default function App() {
                 }`}
               />
             ))}
+          </div>
+        </div>
+
+        {/* Why we built this — trust/mission on the home page, not just About */}
+        <div className="mb-16">
+          <div className="glass rounded-2xl p-8 md:p-10 max-w-3xl">
+            <div className="text-xs font-semibold uppercase tracking-[0.14em] text-[#C2542E] mb-3">
+              Why we built this
+            </div>
+            <h2 className="text-2xl md:text-3xl font-semibold tracking-tight text-[#2F2C2A] mb-3 text-balance">
+              Fertility care is hard enough. Finding it shouldn&rsquo;t be.
+            </h2>
+            <p className="text-[#665F58] leading-relaxed mb-5">
+              People research fertility treatment at a difficult moment, with incomplete information
+              and prices that are almost impossible to compare. JourneyFertility is an independent UK
+              comparison service — not a clinic — built to make that part simpler, with real published
+              prices, HFEA-sourced success data, and honesty about what we don&rsquo;t yet know.
+            </p>
+            <button
+              onClick={() => {
+                setViewMode('about');
+                window.scrollTo(0, 0);
+              }}
+              className="inline-flex items-center gap-1.5 text-sm font-semibold text-[#C2542E] hover:gap-2.5 transition-all rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C2542E] focus-visible:ring-offset-2"
+            >
+              Read our story, principles, and who&rsquo;s behind it
+              <ChevronRight className="w-4 h-4" />
+            </button>
           </div>
         </div>
 

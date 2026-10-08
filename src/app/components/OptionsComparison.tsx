@@ -13,6 +13,7 @@ const OPTIONS: {
   tagline: string;
   bestIf: string;
   how: string;
+  cta: string;
 }[] = [
   {
     service: 'fertility',
@@ -20,6 +21,7 @@ const OPTIONS: {
     tagline: 'Understand where you stand',
     bestIf: "You're not sure yet, or want a baseline before deciding anything.",
     how: 'A simple blood test — AMH, egg reserve, key hormones — at home or at a clinic. The usual first step.',
+    cta: 'Compare fertility tests',
   },
   {
     service: 'egg-freezing',
@@ -27,6 +29,7 @@ const OPTIONS: {
     tagline: 'Preserve eggs for later',
     bestIf: "You're not ready for a baby now but want to keep your options open — best under about 35.",
     how: 'An IVF-style cycle, but your unfertilised eggs are frozen. No sperm needed now — you choose later.',
+    cta: 'Compare egg freezing',
   },
   {
     service: 'ivf',
@@ -34,6 +37,7 @@ const OPTIONS: {
     tagline: 'Try for a baby now',
     bestIf: "You've been trying without success, or you're ready to start now.",
     how: 'Eggs are collected and fertilised with sperm in the lab; an embryo is transferred. The most established treatment.',
+    cta: 'Compare IVF clinics',
   },
   {
     service: 'embryo',
@@ -41,6 +45,7 @@ const OPTIONS: {
     tagline: 'Preserve embryos for the future',
     bestIf: 'You have a partner or donor sperm now and want to preserve together.',
     how: 'Like IVF, but the embryos are frozen instead of transferred now. Embryos survive freezing well.',
+    cta: 'Compare embryo freezing',
   },
 ];
 
@@ -76,7 +81,7 @@ export function OptionsComparison({ onPick }: { onPick: (service: ServiceId) => 
               onClick={() => onPick(o.service)}
               className="mt-auto inline-flex items-center gap-1.5 text-sm font-semibold text-[#C2542E] hover:gap-2.5 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C2542E] focus-visible:ring-offset-2 rounded-md"
             >
-              Compare {o.title.toLowerCase()}
+              {o.cta}
               <ArrowRight className="w-4 h-4" />
             </button>
           </div>
