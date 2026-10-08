@@ -19,7 +19,20 @@ const ANCHORS = [
   { label: 'Age 43–44', pct: 5 },
 ];
 
-export function SuccessByAge() {
+// Speak to the age the user told us (via their persona), or stay general.
+function ageMessage(age?: number | null): string {
+  if (age == null)
+    return 'The steepest drop is through your late thirties — so if you’re near or past 35, deciding sooner rather than later makes a real difference to your chances.';
+  if (age < 35)
+    return `At ${age}, you’re in the strongest window — but it narrows every year, so there’s real value in deciding while the odds are at their best.`;
+  if (age <= 37)
+    return `At ${age}, you’re right where the decline starts to accelerate — sooner is meaningfully better than later.`;
+  if (age <= 39)
+    return `At ${age}, the fall is steeper from here, so timing matters a lot — it’s worth moving sooner rather than later.`;
+  return `At ${age}, success rates drop sharply, so speed matters most — a clinic can give you a realistic, personal picture quickly.`;
+}
+
+export function SuccessByAge({ userAge }: { userAge?: number | null }) {
   return (
     <section
       className="rounded-2xl bg-[#F4A28C]/10 border border-[#C3D3E2]/25 p-5 md:p-6"
@@ -56,8 +69,7 @@ export function SuccessByAge() {
       </div>
 
       <p className="text-sm text-[#2F2C2A] leading-relaxed mb-4 max-w-2xl font-medium">
-        The steepest drop is through your late thirties — so if you&rsquo;re near or past 35,
-        deciding sooner rather than later makes a real difference to your chances.
+        {ageMessage(userAge)}
       </p>
 
       <a

@@ -31,6 +31,8 @@ interface ClinicCostingsProps {
   onServiceChange?: (service: 'egg-freezing' | 'embryo' | 'ivf' | 'fertility') => void;
   /** open the "which option is right for you?" comparison */
   onCompareOptions?: () => void;
+  /** rough age from the persona the user picked, for a personalised age nudge */
+  userAge?: number | null;
 }
 
 type ServiceType = ClinicCostingsProps['serviceType'];
@@ -648,6 +650,7 @@ export function ClinicCostings({
   onShowPrivacy = () => {},
   onServiceChange,
   onCompareOptions,
+  userAge,
 }: ClinicCostingsProps) {
   const [funding, setFunding] = useState<'all' | 'nhs' | 'private'>('all');
   const [publishedOnly, setPublishedOnly] = useState(false);
@@ -836,7 +839,7 @@ export function ClinicCostings({
       {serviceType !== 'fertility' && (
         <div className="space-y-4 pb-2 border-b border-[#2F2C2A]/10">
           <ServiceExplainer serviceType={serviceType} />
-          <SuccessByAge />
+          <SuccessByAge userAge={userAge} />
         </div>
       )}
 

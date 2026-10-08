@@ -202,6 +202,10 @@ export default function App() {
   const [showOptions, setShowOptions] = useState(false);
   const [topicIndex, setTopicIndex] = useState(0);
   const [selectedStage, setSelectedStage] = useState<string | null>(null);
+  // Rough age from the persona the user picked, threaded into the results so the
+  // age-and-success nudge can speak to them rather than everyone. Null when they
+  // arrived another way.
+  const [userAge, setUserAge] = useState<number | null>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const reduceMotion = usePrefersReducedMotion();
 
@@ -456,6 +460,7 @@ export default function App() {
                     // and read as "nothing happened".
                     setServiceType(stage.service);
                     setSelectedStage(stage.id);
+                    setUserAge(parseInt(stage.age, 10));
                     setViewMode('costings');
                     window.scrollTo(0, 0);
                   }}
@@ -621,6 +626,7 @@ export default function App() {
                 window.scrollTo(0, 0);
               }}
               onCompareOptions={() => setShowOptions(true)}
+              userAge={userAge}
             />
           </div>
         )}
