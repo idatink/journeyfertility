@@ -7,6 +7,7 @@ import { ClinicCostings } from './components/ClinicCostings';
 import { ServiceExplainer } from './components/ServiceExplainer';
 import { OptionsComparison } from './components/OptionsComparison';
 import { TrustStrip } from './components/TrustStrip';
+import { CommunityInsights } from './components/CommunityInsights';
 import { SelfAssessmentQuiz } from './components/SelfAssessmentQuiz';
 import { Resources } from './components/Resources';
 import { BUDGET_BRACKETS } from './lib/budget';
@@ -776,6 +777,11 @@ export default function App() {
               />
             ))}
           </div>
+        </div>
+
+        {/* Community insights — honest research signal, the missing trust lever */}
+        <div className="mb-16">
+          <CommunityInsights />
         </div>
 
         {/* Why we built this — trust/mission on the home page, not just About */}
