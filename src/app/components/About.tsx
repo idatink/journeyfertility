@@ -1,4 +1,4 @@
-import { ArrowLeft, Search, Scale, ShieldCheck, HeartHandshake } from 'lucide-react';
+import { ArrowLeft, Search, Scale, ShieldCheck, HeartHandshake, Megaphone, PenTool, Code2 } from 'lucide-react';
 import { Button } from './ui/button';
 
 interface AboutProps {
@@ -31,64 +31,43 @@ const PRINCIPLES = [
 ];
 
 /**
- * Placeholder identities — imaginary, deliberately.
+ * The founding team, described by discipline rather than by name.
  *
- * The names below are invented stand-ins so the section reads as populated
- * during development. They are NOT the real team, which is why the notice in
- * the UI stays until real people replace them: an About page naming founders
- * is read as fact by users, press and investors.
- *
- * `photo: null` renders a brand-styled initials avatar rather than a portrait.
- * Real photographs of real founders go here — never a stock photo of an
- * unrelated real person under an invented name (that misrepresents them, the
- * same reason the testimonials carry no faces; see ATTRIBUTIONS.md).
- *
- * Each `bio` describes the role rather than the person, so it stays true
- * whoever fills it. Anything personal — including how a founder describes her
- * own identity — belongs to her to write, not to us to assign.
+ * We deliberately put no invented names and no faces here. An About page that
+ * names founders is read as fact by users, press and investors, and attaching a
+ * stock face to an invented person misrepresents them (the same reason the
+ * testimonials carry no faces; see ATTRIBUTIONS.md). Each entry describes the
+ * role, so it stays true whoever fills it — the real team will introduce
+ * themselves, by name, when they are ready.
  */
-const FOUNDERS: {
-  name: string;
+const TEAM: {
   role: string;
+  icon: typeof Megaphone;
   bio: string;
-  photo: string | null;
 }[] = [
   {
-    name: 'Nadia Rahman',
     role: 'Marketing',
+    icon: Megaphone,
     bio: 'Leads how JourneyFertility talks about fertility — plainly, without the urgency and overclaiming the category is known for. Owns the promise that nothing here is written to rush a decision.',
-    photo: null,
   },
   {
-    name: 'Maya Lindqvist',
     role: 'Design',
+    icon: PenTool,
     bio: 'Responsible for how the comparison feels to use at a difficult moment: legible pricing, honest empty states, and an interface that never pressures. Owns the design system and the accessibility standard.',
-    photo: null,
   },
   {
-    name: 'Priya Menon',
     role: 'Engineering',
+    icon: Code2,
     bio: 'Builds the search, the cost model and the enquiry pipeline — including the data protection that health data demands. Owns the rule that we never show a price we cannot source.',
-    photo: null,
   },
 ];
 
-/** Distinct brand gradients so the three placeholder avatars read as a set, not a repeat. */
+/** Distinct brand gradients so the three discipline avatars read as a set, not a repeat. */
 const AVATAR_GRADIENTS = [
   'from-[#DCE6F0] via-[#EFE7E2] to-[#F4A28C]',
   'from-[#F4A28C] via-[#F6DED6] to-[#DCE6F0]',
   'from-[#DCE6F0] via-[#DCE6F0] to-[#C3D3E2]',
 ];
-
-/** Initials from a name, e.g. "Nadia Rahman" → "NR". */
-function initialsOf(name: string): string {
-  return name
-    .split(/\s+/)
-    .map((w) => w[0])
-    .join('')
-    .slice(0, 2)
-    .toUpperCase();
-}
 
 export function About({ onBack, onExplore, onResources }: AboutProps) {
   return (
@@ -209,41 +188,23 @@ export function About({ onBack, onExplore, onResources }: AboutProps) {
           Three founders, building the service we wanted when we were doing this research ourselves.
         </p>
 
-        <div className="glass rounded-2xl p-5 mb-8 text-sm text-[#665F58] leading-relaxed max-w-2xl">
-          <span className="font-semibold text-[#B4552B]">Placeholder team:</span> the names,
-          biographies and avatars below are illustrative stand-ins. Replace them with the real
-          founding team and their photographs before any launch or press — an About page naming
-          founders is read as fact.
-        </div>
-
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-          {FOUNDERS.map((f, i) => (
-            <div key={f.role} className="glass rounded-2xl p-6">
-              {f.photo ? (
-                <img
-                  src={f.photo}
-                  alt={`${f.name}, ${f.role}`}
-                  className="w-20 h-20 rounded-full object-cover mb-5"
-                  loading="lazy"
-                />
-              ) : (
-                /* Initials on a brand gradient — a styled placeholder, never a stock face. */
+          {TEAM.map((t, i) => {
+            const Icon = t.icon;
+            return (
+              <div key={t.role} className="glass rounded-2xl p-6">
+                {/* Discipline icon on a brand gradient — no invented name, never a stock face. */}
                 <div
                   className={`grain relative w-20 h-20 rounded-full overflow-hidden mb-5 flex items-center justify-center bg-gradient-to-br ${AVATAR_GRADIENTS[i % AVATAR_GRADIENTS.length]}`}
                   aria-hidden="true"
                 >
-                  <span className="text-xl font-semibold text-white/95 tracking-wide">
-                    {initialsOf(f.name)}
-                  </span>
+                  <Icon className="w-8 h-8 text-white/95" strokeWidth={1.75} />
                 </div>
-              )}
-              <h3 className="text-lg font-semibold text-[#2F2C2A]">{f.name}</h3>
-              <div className="text-xs font-semibold uppercase tracking-[0.14em] text-[#C2542E] mt-1 mb-3">
-                {f.role}
+                <h3 className="text-lg font-semibold text-[#2F2C2A]">{t.role}</h3>
+                <p className="text-sm text-[#665F58] leading-relaxed mt-3">{t.bio}</p>
               </div>
-              <p className="text-sm text-[#665F58] leading-relaxed">{f.bio}</p>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
 
