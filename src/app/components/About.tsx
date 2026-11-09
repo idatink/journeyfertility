@@ -185,7 +185,9 @@ export function About({ onBack, onExplore, onResources }: AboutProps) {
           Who&rsquo;s behind this
         </h2>
         <p className="text-[#665F58] leading-relaxed max-w-2xl mb-8">
-          Three founders, building the service we wanted when we were doing this research ourselves.
+          A small founding team, building the service we wanted when we were doing this research
+          ourselves. We describe ourselves by what we do here — the names will follow when we&rsquo;re
+          ready to put them to it.
         </p>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
