@@ -491,11 +491,6 @@ export default function App() {
           </div>
         </div>
 
-        {/* Choose between the options (not just switch) */}
-        <div className="mb-16">
-          <OptionsComparison onPick={pickService} />
-        </div>
-
         {/* Search */}
         <div id="search" className="scroll-mt-6 mb-16">
           <div className="glass rounded-2xl p-6 md:p-8 shadow-[0_18px_60px_rgba(120,140,200,0.18)]">
@@ -893,6 +888,11 @@ export default function App() {
               ))}
             </div>
           </div>
+        </div>
+
+        {/* Choose between the options (not just switch), last on the page */}
+        <div className="mt-16">
+          <OptionsComparison onPick={pickService} />
         </div>
 
           </>
