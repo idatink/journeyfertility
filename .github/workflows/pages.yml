@@ -24,9 +24,9 @@ jobs:
           node-version: 20
           cache: npm
       - run: npm ci
-      # Relative base so the build works both at the custom domain root and at
-      # idatink.github.io/journeyfertility/ before DNS is moved.
-      - run: npx vite build --base=./
+      - run: npm run build
+      # GitHub Pages has no rewrite rules: serve the app for unknown paths so routes like /about load.
+      - run: cp dist/index.html dist/404.html
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist

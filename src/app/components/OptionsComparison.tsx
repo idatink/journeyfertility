@@ -7,7 +7,7 @@ type ServiceId = 'fertility' | 'egg-freezing' | 'ivf' | 'embryo';
  * the options, not just switch between them. It answers "egg freezing or IVF?"
  * directly, and always offers testing as the low-commitment first step.
  */
-const OPTIONS: {
+export const OPTIONS: {
   service: ServiceId;
   title: string;
   tagline: string;
@@ -21,7 +21,7 @@ const OPTIONS: {
     tagline: 'Understand where you stand',
     bestIf: "You're not sure yet, or want a baseline before deciding anything.",
     how: 'A simple blood test — AMH, egg reserve, key hormones — at home or at a clinic. The usual first step.',
-    cta: 'Compare fertility tests',
+    cta: 'Compare fertility testing',
   },
   {
     service: 'egg-freezing',
@@ -37,7 +37,7 @@ const OPTIONS: {
     tagline: 'Try for a baby now',
     bestIf: "You've been trying without success, or you're ready to start now.",
     how: 'Eggs are collected and fertilised with sperm in the lab; an embryo is transferred. The most established treatment.',
-    cta: 'Compare IVF clinics',
+    cta: 'Compare IVF',
   },
   {
     service: 'embryo',
@@ -53,11 +53,11 @@ export function OptionsComparison({ onPick }: { onPick: (service: ServiceId) => 
   return (
     <div className="space-y-6">
       <div className="max-w-2xl">
-        <h2 className="text-2xl md:text-3xl font-semibold tracking-tight text-[#2F2C2A] mb-2">
+        <h2 className="text-2xl md:text-3xl font-semibold tracking-tight text-ink mb-2">
           Not sure which path is right for you?
         </h2>
-        <p className="text-[#665F58] leading-relaxed">
-          The quick version: <span className="text-[#2F2C2A] font-semibold">freezing preserves for later; IVF is treatment to conceive now.</span>{' '}
+        <p className="text-muted-ink leading-relaxed">
+          The quick version: <span className="text-ink font-semibold">freezing preserves for later; IVF is treatment to conceive now.</span>{' '}
           If you&rsquo;re weighing it all up, a fertility test is the low-cost first step.
         </p>
       </div>
@@ -65,21 +65,21 @@ export function OptionsComparison({ onPick }: { onPick: (service: ServiceId) => 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {OPTIONS.map((o) => (
           <div key={o.service} className="glass rounded-2xl p-5 flex flex-col">
-            <h3 className="text-lg font-semibold text-[#2F2C2A] leading-tight">{o.title}</h3>
-            <p className="text-sm font-semibold text-[#C2542E] mb-3">{o.tagline}</p>
+            <h3 className="text-lg font-semibold text-ink leading-tight">{o.title}</h3>
+            <p className="text-sm font-semibold text-peach-deep mb-3">{o.tagline}</p>
 
             <div className="mb-3">
-              <div className="text-[11px] font-semibold uppercase tracking-wide text-[#665F58] mb-1">Best if</div>
-              <p className="text-sm text-[#2F2C2A] leading-snug">{o.bestIf}</p>
+              <div className="text-xs font-semibold uppercase tracking-wide text-muted-ink mb-1">Best if</div>
+              <p className="text-sm text-ink leading-snug">{o.bestIf}</p>
             </div>
             <div className="mb-4">
-              <div className="text-[11px] font-semibold uppercase tracking-wide text-[#665F58] mb-1">How it works</div>
-              <p className="text-sm text-[#665F58] leading-snug">{o.how}</p>
+              <div className="text-xs font-semibold uppercase tracking-wide text-muted-ink mb-1">How it works</div>
+              <p className="text-sm text-muted-ink leading-snug">{o.how}</p>
             </div>
 
             <button
               onClick={() => onPick(o.service)}
-              className="mt-auto inline-flex items-center gap-1.5 text-sm font-semibold text-[#C2542E] hover:gap-2.5 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C2542E] focus-visible:ring-offset-2 rounded-md"
+              className="mt-auto inline-flex items-center gap-1.5 text-sm font-semibold text-peach-deep hover:gap-2.5 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-peach-deep focus-visible:ring-offset-2 rounded-md"
             >
               {o.cta}
               <ArrowRight className="w-4 h-4" />

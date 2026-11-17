@@ -1,11 +1,14 @@
-import { ArrowLeft, Search, Scale, ShieldCheck, HeartHandshake, Megaphone, PenTool, Code2 } from 'lucide-react';
-import { Button } from './ui/button';
+import { useEffect } from 'react';
+import { Link } from 'react-router';
+import { Search, Scale, ShieldCheck, HeartHandshake, Megaphone, PenTool, Code2, UserRound } from 'lucide-react';
+import { Eyebrow } from './SiteChrome';
+import { SITE, isPlaceholder } from '../lib/site';
 
-interface AboutProps {
-  onBack: () => void;
-  onExplore: () => void;
-  onResources: () => void;
-}
+/**
+ * Journey AI is described as a planned paid product. Hidden until Ida confirms it exists;
+ * flip this to show the two paragraphs again.
+ */
+const SHOW_JOURNEY_AI = false;
 
 const PRINCIPLES = [
   {
@@ -26,7 +29,7 @@ const PRINCIPLES = [
   {
     icon: HeartHandshake,
     title: 'No pressure, ever',
-    body: 'We are a comparison service, not a clinic. We do not sell treatment, and nothing here is designed to rush a decision that deserves time.',
+    body: 'We are a non-profit comparison service, not a clinic. We do not sell treatment, and nothing here is designed to rush a decision that deserves time.',
   },
 ];
 
@@ -64,41 +67,39 @@ const TEAM: {
 
 /** Distinct brand gradients so the three discipline avatars read as a set, not a repeat. */
 const AVATAR_GRADIENTS = [
-  'from-[#DCE6F0] via-[#EFE7E2] to-[#F4A28C]',
-  'from-[#F4A28C] via-[#F6DED6] to-[#DCE6F0]',
-  'from-[#DCE6F0] via-[#DCE6F0] to-[#C3D3E2]',
+  'from-sky via-accent to-blush',
+  'from-blush via-accent to-sky',
+  'from-sky via-accent to-sky',
 ];
 
-export function About({ onBack, onExplore, onResources }: AboutProps) {
+export function About() {
+  useEffect(() => {
+    document.title = 'About | JourneyFertility, a non-profit fertility guide';
+  }, []);
+  const linkedInIsReal = !isPlaceholder(SITE.founderLinkedIn);
+
   return (
     <div>
-      <Button variant="ghost" className="mb-8 -ml-3" onClick={onBack}>
-        <ArrowLeft className="w-4 h-4 mr-2" />
-        Back to Home
-      </Button>
-
       {/* Intro */}
       <div className="max-w-3xl mb-16 md:mb-24">
-        <div className="text-xs font-semibold uppercase tracking-[0.14em] text-[#C2542E] mb-4">
-          About JourneyFertility
-        </div>
-        <h1 className="text-4xl md:text-6xl font-bold tracking-tight text-[#2F2C2A] mb-6 leading-tight">
+        <Eyebrow>About JourneyFertility</Eyebrow>
+        <h1 className="text-4xl md:text-6xl font-bold tracking-tight text-ink mb-6 leading-tight">
           Fertility care is hard enough. Finding it shouldn't be.
         </h1>
-        <p className="text-lg md:text-xl text-[#665F58] leading-relaxed">
+        <p className="text-lg md:text-xl text-muted-ink leading-relaxed">
           People researching fertility treatment are usually doing it at a difficult moment, with
           incomplete information and prices that are almost impossible to compare. JourneyFertility
-          exists to make that part simpler — so the energy goes into the decision, not the admin.
+          is a non-profit that exists to make that part simpler — so the energy goes into the decision, not the admin.
         </p>
       </div>
 
       {/* Why we exist */}
       <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 mb-16 md:mb-24">
         <div>
-          <h2 className="text-2xl md:text-3xl font-semibold tracking-tight text-[#2F2C2A] mb-5">
+          <h2 className="text-2xl md:text-3xl font-semibold tracking-tight text-ink mb-5">
             Why we built this
           </h2>
-          <div className="space-y-4 text-[#665F58] leading-relaxed">
+          <div className="space-y-4 text-muted-ink leading-relaxed">
             <p>
               Fertility pricing is genuinely opaque. Clinics quote different things under the same
               word, medication is billed separately, storage runs for years, and success rates are
@@ -128,8 +129,8 @@ export function About({ onBack, onExplore, onResources }: AboutProps) {
         </div>
 
         <div className="glass rounded-2xl p-8">
-          <h3 className="text-lg font-semibold text-[#2F2C2A] mb-5">How we make money</h3>
-          <div className="space-y-4 text-[#665F58] leading-relaxed text-sm">
+          <h3 className="text-lg font-semibold text-ink mb-5">How we make money</h3>
+          <div className="space-y-4 text-muted-ink leading-relaxed text-sm">
             <p>
               We earn a referral fee when someone books a consultation through the platform. That
               fee is the same across every clinic we work with.
@@ -138,8 +139,10 @@ export function About({ onBack, onExplore, onResources }: AboutProps) {
               Clinics cannot pay for a higher position, a better rating, or to have a competitor
               hidden. If that ever changes, it will be stated plainly on this page.
             </p>
+            {SHOW_JOURNEY_AI && (
+            <>
             <p>
-              We are also building <span className="font-semibold text-[#2F2C2A]">Journey AI</span>,
+              We are also building <span className="font-semibold text-ink">Journey AI</span>,
               a companion for the practical side of treatment. Wherever you are — freezing, IVF, or
               still working out the question — it keeps track of the things that are easy to lose
               hold of: your prescribed doses and injection timings, what happens next, and what to
@@ -147,9 +150,11 @@ export function About({ onBack, onExplore, onResources }: AboutProps) {
             </p>
             <p>
               Journey AI will be{' '}
-              <span className="font-semibold text-[#2F2C2A]">£3 a month</span>. Everything you see
+              <span className="font-semibold text-ink">£3 a month</span>. Everything you see
               here — the search, the comparisons, the guides — stays free.
             </p>
+            </>
+            )}
             <p>
               We say this openly because a comparison site that will not explain its incentives is
               not much of a comparison site.
@@ -158,9 +163,20 @@ export function About({ onBack, onExplore, onResources }: AboutProps) {
         </div>
       </div>
 
+      {/* Non-profit */}
+      <section className="glass rounded-2xl p-8 md:p-10 mb-16 md:mb-24 max-w-3xl" aria-labelledby="nonprofit-heading">
+        <Eyebrow>Non-profit</Eyebrow>
+        <h2 id="nonprofit-heading" className="text-2xl md:text-3xl font-semibold tracking-tight text-ink mb-4">
+          A non-profit, not a business selling treatment
+        </h2>
+        <p className="text-muted-ink leading-relaxed">
+          {SITE.nonprofitForm}. We take no fees from clinics for placement.
+        </p>
+      </section>
+
       {/* Principles */}
       <div className="mb-16 md:mb-24">
-        <h2 className="text-2xl md:text-3xl font-semibold tracking-tight text-[#2F2C2A] mb-8">
+        <h2 className="text-2xl md:text-3xl font-semibold tracking-tight text-ink mb-8">
           What we hold ourselves to
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
@@ -168,26 +184,56 @@ export function About({ onBack, onExplore, onResources }: AboutProps) {
             const Icon = p.icon;
             return (
               <div key={p.title} className="glass rounded-2xl p-6">
-                <div className="w-11 h-11 rounded-full bg-[#DCE6F0]/60 flex items-center justify-center text-[#C2542E] mb-5">
+                <div className="w-11 h-11 rounded-full bg-sky/60 flex items-center justify-center text-peach-deep mb-5">
                   <Icon className="w-5 h-5" />
                 </div>
-                <h3 className="text-lg font-semibold text-[#2F2C2A] mb-2">{p.title}</h3>
-                <p className="text-sm text-[#665F58] leading-relaxed">{p.body}</p>
+                <h3 className="text-lg font-semibold text-ink mb-2">{p.title}</h3>
+                <p className="text-sm text-muted-ink leading-relaxed">{p.body}</p>
               </div>
             );
           })}
         </div>
       </div>
 
-      {/* Founders */}
-      <div className="mb-16 md:mb-24">
-        <h2 className="text-2xl md:text-3xl font-semibold tracking-tight text-[#2F2C2A] mb-4">
+      {/* Founder and team */}
+      <section className="mb-16 md:mb-24" aria-labelledby="team-heading">
+        <h2 id="team-heading" className="text-2xl md:text-3xl font-semibold tracking-tight text-ink mb-8">
           Who&rsquo;s behind this
         </h2>
-        <p className="text-[#665F58] leading-relaxed max-w-2xl mb-8">
+
+        <div className="glass rounded-2xl p-6 md:p-8 flex flex-col sm:flex-row gap-6 mb-10 max-w-3xl">
+          {/* Photo placeholder until Ida supplies a photograph. */}
+          <div
+            className="shrink-0 w-28 h-28 rounded-full bg-sky flex items-center justify-center text-muted-ink"
+            role="img"
+            aria-label={`Photo of ${SITE.founder} to come`}
+          >
+            <UserRound className="w-10 h-10" aria-hidden="true" />
+          </div>
+          <div>
+            <h3 className="text-xl font-semibold text-ink">{SITE.founder}</h3>
+            <p className="text-sm font-semibold text-peach-deep mb-3">Founder</p>
+            <p className="text-muted-ink leading-relaxed mb-3">{SITE.founderBio}</p>
+            {linkedInIsReal ? (
+              <a
+                href={SITE.founderLinkedIn}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center min-h-11 text-sm font-semibold text-peach-deep underline underline-offset-2"
+              >
+                {SITE.founder} on LinkedIn
+              </a>
+            ) : (
+              <p className="text-sm text-muted-ink">LinkedIn: {SITE.founderLinkedIn}</p>
+            )}
+          </div>
+        </div>
+
+        <h3 className="text-lg font-semibold text-ink mb-2">The founding team</h3>
+        <p className="text-muted-ink leading-relaxed max-w-2xl mb-8">
           A small founding team, building the service we wanted when we were doing this research
-          ourselves. We describe ourselves by what we do here — the names will follow when we&rsquo;re
-          ready to put them to it.
+          ourselves. The rest of the team describe themselves by what they do here; their names will
+          follow when they&rsquo;re ready to put them to it.
         </p>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
@@ -202,20 +248,35 @@ export function About({ onBack, onExplore, onResources }: AboutProps) {
                 >
                   <Icon className="w-8 h-8 text-white/95" strokeWidth={1.75} />
                 </div>
-                <h3 className="text-lg font-semibold text-[#2F2C2A]">{t.role}</h3>
-                <p className="text-sm text-[#665F58] leading-relaxed mt-3">{t.bio}</p>
+                <h4 className="text-lg font-semibold text-ink">{t.role}</h4>
+                <p className="text-sm text-muted-ink leading-relaxed mt-3">{t.bio}</p>
               </div>
             );
           })}
         </div>
-      </div>
+      </section>
+
+      {/* Our research */}
+      <section className="mb-16 md:mb-24 max-w-3xl" aria-labelledby="research-about-heading">
+        <Eyebrow>Our research</Eyebrow>
+        <h2 id="research-about-heading" className="text-2xl md:text-3xl font-semibold tracking-tight text-ink mb-4">
+          What shaped this site
+        </h2>
+        <div className="space-y-4 text-muted-ink leading-relaxed">
+          <p>How we did it: {SITE.researchMethod}.</p>
+          <p>
+            Thank you to every woman who took part and shared what fertility decisions are really like. This site is
+            built around what you told us.
+          </p>
+        </div>
+      </section>
 
       {/* Medical position */}
       <div className="glass-tint rounded-2xl p-8 md:p-10 mb-16 md:mb-24 max-w-3xl">
-        <h2 className="text-xl md:text-2xl font-semibold tracking-tight text-[#2F2C2A] mb-4">
+        <h2 className="text-xl md:text-2xl font-semibold tracking-tight text-ink mb-4">
           Where we stop
         </h2>
-        <div className="space-y-4 text-[#665F58] leading-relaxed">
+        <div className="space-y-4 text-muted-ink leading-relaxed">
           <p>
             We are not a clinic and we do not give medical advice. Everything on JourneyFertility —
             including our guides — is general information to help you ask better questions.
@@ -230,27 +291,26 @@ export function About({ onBack, onExplore, onResources }: AboutProps) {
 
       {/* CTA */}
       <div className="max-w-2xl">
-        <h2 className="text-2xl md:text-3xl font-semibold tracking-tight text-[#2F2C2A] mb-4">
+        <h2 className="text-2xl md:text-3xl font-semibold tracking-tight text-ink mb-4">
           Start wherever you are
         </h2>
-        <p className="text-[#665F58] leading-relaxed mb-7">
+        <p className="text-muted-ink leading-relaxed mb-7">
           Whether you are comparing clinics seriously or just beginning to wonder about your
           options, there is no wrong entry point.
         </p>
         <div className="flex flex-col sm:flex-row gap-4">
-          <Button
-            className="bg-[#F4A28C] hover:bg-[#E0714A] text-[#2F2C2A] font-semibold px-8 h-12"
-            onClick={onExplore}
+          <Link
+            to="/search?service=egg_freezing"
+            className="inline-flex items-center justify-center rounded-md bg-blush hover:bg-peach text-ink font-semibold px-8 h-12"
           >
             Compare clinics
-          </Button>
-          <Button
-            variant="outline"
-            className="glass border-white/70 text-[#2F2C2A] hover:bg-white/75 h-12 px-8"
-            onClick={onResources}
+          </Link>
+          <Link
+            to="/resources"
+            className="inline-flex items-center justify-center rounded-md glass border border-white/70 text-ink hover:bg-white/75 h-12 px-8 font-medium"
           >
             Read the guides
-          </Button>
+          </Link>
         </div>
       </div>
     </div>

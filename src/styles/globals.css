@@ -9,7 +9,7 @@
   --stone: #f7f5f2;        /* warm off-white page ground */
   --white: #ffffff;
   --peach: #e0714a;        /* bright terracotta — motif, warm accent fills, focus */
-  --peach-deep: #c2542e;   /* accessible peach for accent text and links */
+  --peach-deep: #a33f1c;   /* accessible peach for accent text and links: 5.9:1 on stone, 4.6:1 on the warmest wash */
   --blush: #f4a28c;        /* soft warm — tints and friendly CTAs */
   --sky: #dce6f0;          /* cool soft fill */
   --muted-ink: #665f58;    /* warm muted text */
@@ -35,7 +35,7 @@
   --muted-foreground: var(--muted-ink);
   --accent: #fbeae4;       /* blush tint */
   --accent-foreground: var(--ink);
-  --destructive: #e5484d;
+  --destructive: #b42318;   /* 6.6:1 on white, for error text and fills */
   --destructive-foreground: #ffffff;
   --border: rgba(47, 44, 42, 0.10);
   --input: transparent;
@@ -104,6 +104,14 @@
 }
 
 @theme inline {
+  /* Brand palette as Tailwind colours, so components use tokens instead of hex values. */
+  --color-ink: var(--ink);
+  --color-stone: var(--stone);
+  --color-peach: var(--peach);
+  --color-peach-deep: var(--peach-deep);
+  --color-blush: var(--blush);
+  --color-sky: var(--sky);
+  --color-muted-ink: var(--muted-ink);
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -388,5 +396,47 @@ body::after {
   /* The signature gradient from the palette */
   .gradient-brand {
     background: linear-gradient(145deg, #dee8ff 0%, #fdf1e8 48%, #f8ad7c 100%);
+  }
+}
+
+/*
+ * Focus: every focusable element gets a visible ring, including plain links and buttons that
+ * do not set their own focus-visible styles.
+ */
+:focus-visible {
+  outline: 2px solid var(--peach-deep);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+@layer utilities {
+  /*
+   * Grows the tappable area of a small control to at least 44x44px without changing how it
+   * looks. The ::before sits centred on the element and catches the tap.
+   */
+  .hit-area {
+    position: relative;
+  }
+  .hit-area::before {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: max(100%, 44px);
+    height: max(100%, 44px);
+    transform: translate(-50%, -50%);
+  }
+
+  /* Visually hidden but read by screen readers. */
+  .visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+    border: 0;
   }
 }

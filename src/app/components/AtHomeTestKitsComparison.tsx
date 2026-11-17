@@ -89,10 +89,10 @@ export function AtHomeTestKitsComparison() {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-3xl font-semibold tracking-tight text-[#2F2C2A] mb-2">
+        <h2 className="text-3xl font-semibold tracking-tight text-ink mb-2">
           Compare fertility tests
         </h2>
-        <p className="text-[#665F58]">
+        <p className="text-muted-ink">
           {sorted.length} of {FERTILITY_TESTS.length} providers
         </p>
       </div>
@@ -102,9 +102,9 @@ export function AtHomeTestKitsComparison() {
           confirmed and are left blank rather than guessed. */}
       {progress.sourced < progress.total && (
         <div className="glass rounded-2xl p-5 flex gap-3">
-          <AlertCircle className="w-5 h-5 text-[#B4552B] shrink-0 mt-0.5" />
-          <div className="text-sm text-[#665F58] leading-relaxed">
-            <span className="font-semibold text-[#2F2C2A]">
+          <AlertCircle className="w-5 h-5 text-peach-deep shrink-0 mt-0.5" />
+          <div className="text-sm text-muted-ink leading-relaxed">
+            <span className="font-semibold text-ink">
               Prices and panels are read from each provider's own product page
               (checked Jul 2026).
             </span>{' '}
@@ -118,7 +118,7 @@ export function AtHomeTestKitsComparison() {
       <div className="glass rounded-2xl p-5 space-y-5">
         <div className="flex flex-wrap gap-6">
           <div>
-            <div className="text-xs font-semibold uppercase tracking-wide text-[#665F58] mb-2">
+            <div className="text-xs font-semibold uppercase tracking-wide text-muted-ink mb-2">
               Provider
             </div>
             <div className="flex flex-wrap gap-2">
@@ -126,10 +126,10 @@ export function AtHomeTestKitsComparison() {
                 <button
                   key={p}
                   onClick={() => setFilters((f) => ({ ...f, provider: p }))}
-                  className={`grain text-sm font-medium px-3.5 py-1.5 rounded-full transition-all ${
+                  className={`grain text-sm font-medium px-3.5 py-1.5 max-sm:min-h-11 inline-flex items-center rounded-full transition-all ${
                     filters.provider === p
-                      ? 'bg-[#2F2C2A] text-white'
-                      : 'bg-white/60 text-[#2F2C2A] hover:bg-white/80'
+                      ? 'bg-ink text-white'
+                      : 'bg-white/60 text-ink hover:bg-white/80'
                   }`}
                 >
                   {p === 'all' ? 'All' : p}
@@ -139,7 +139,7 @@ export function AtHomeTestKitsComparison() {
           </div>
 
           <div>
-            <div className="text-xs font-semibold uppercase tracking-wide text-[#665F58] mb-2">
+            <div className="text-xs font-semibold uppercase tracking-wide text-muted-ink mb-2">
               Sample
             </div>
             <div className="flex flex-wrap gap-2">
@@ -147,10 +147,10 @@ export function AtHomeTestKitsComparison() {
                 <button
                   key={String(c.id)}
                   onClick={() => setFilters((f) => ({ ...f, collection: c.id }))}
-                  className={`grain text-sm font-medium px-3.5 py-1.5 rounded-full transition-all ${
+                  className={`grain text-sm font-medium px-3.5 py-1.5 max-sm:min-h-11 inline-flex items-center rounded-full transition-all ${
                     filters.collection === c.id
-                      ? 'bg-[#2F2C2A] text-white'
-                      : 'bg-white/60 text-[#2F2C2A] hover:bg-white/80'
+                      ? 'bg-ink text-white'
+                      : 'bg-white/60 text-ink hover:bg-white/80'
                   }`}
                 >
                   {c.label}
@@ -160,7 +160,7 @@ export function AtHomeTestKitsComparison() {
           </div>
 
           <div>
-            <div className="text-xs font-semibold uppercase tracking-wide text-[#665F58] mb-2">
+            <div className="text-xs font-semibold uppercase tracking-wide text-muted-ink mb-2">
               Results back
             </div>
             <div className="flex flex-wrap gap-2">
@@ -168,10 +168,10 @@ export function AtHomeTestKitsComparison() {
                 <button
                   key={String(t.id)}
                   onClick={() => setFilters((f) => ({ ...f, maxTurnaroundDays: t.id }))}
-                  className={`grain text-sm font-medium px-3.5 py-1.5 rounded-full transition-all ${
+                  className={`grain text-sm font-medium px-3.5 py-1.5 max-sm:min-h-11 inline-flex items-center rounded-full transition-all ${
                     filters.maxTurnaroundDays === t.id
-                      ? 'bg-[#2F2C2A] text-white'
-                      : 'bg-white/60 text-[#2F2C2A] hover:bg-white/80'
+                      ? 'bg-ink text-white'
+                      : 'bg-white/60 text-ink hover:bg-white/80'
                   }`}
                 >
                   {t.label}
@@ -182,7 +182,7 @@ export function AtHomeTestKitsComparison() {
         </div>
 
         <div>
-          <div className="text-xs font-semibold uppercase tracking-wide text-[#665F58] mb-2">
+          <div className="text-xs font-semibold uppercase tracking-wide text-muted-ink mb-2">
             Must test for
           </div>
           <div className="flex flex-wrap gap-2">
@@ -190,10 +190,10 @@ export function AtHomeTestKitsComparison() {
               <button
                 key={b}
                 onClick={() => toggleBiomarker(b)}
-                className={`grain text-xs font-medium px-3 py-1.5 rounded-full transition-all ${
+                className={`grain text-xs font-medium px-3 py-1.5 max-sm:min-h-11 inline-flex items-center rounded-full transition-all ${
                   filters.biomarkers.includes(b)
-                    ? 'bg-[#F4A28C] text-[#2F2C2A]'
-                    : 'bg-white/60 text-[#665F58] hover:bg-white/80'
+                    ? 'bg-blush text-ink'
+                    : 'bg-white/60 text-muted-ink hover:bg-white/80'
                 }`}
               >
                 {b}
@@ -203,32 +203,32 @@ export function AtHomeTestKitsComparison() {
         </div>
 
         <div className="flex items-center justify-between flex-wrap gap-3 pt-1">
-          <label className="flex items-center gap-2 text-sm text-[#2F2C2A] cursor-pointer">
+          <label className="flex items-center gap-2 min-h-11 text-sm text-ink cursor-pointer">
             <input
               type="checkbox"
               checked={filters.clinicianReviewOnly}
               onChange={(e) =>
                 setFilters((f) => ({ ...f, clinicianReviewOnly: e.target.checked }))
               }
-              className="accent-[#F4A28C] w-4 h-4"
+              className="accent-blush w-4 h-4"
             />
             Clinician reviews my results
           </label>
 
           <div className="flex items-center gap-2">
-            <span className="text-xs text-[#665F58]">Sort by</span>
+            <span className="text-xs text-muted-ink">Sort by</span>
             <button
               onClick={() => setSort('price')}
-              className={`grain text-sm font-medium px-3.5 py-1.5 rounded-full ${
-                sort === 'price' ? 'bg-[#2F2C2A] text-white' : 'bg-white/60 text-[#2F2C2A]'
+              className={`grain text-sm font-medium px-3.5 py-1.5 max-sm:min-h-11 inline-flex items-center rounded-full ${
+                sort === 'price' ? 'bg-ink text-white' : 'bg-white/60 text-ink'
               }`}
             >
               Price
             </button>
             <button
               onClick={() => setSort('panel')}
-              className={`grain text-sm font-medium px-3.5 py-1.5 rounded-full ${
-                sort === 'panel' ? 'bg-[#2F2C2A] text-white' : 'bg-white/60 text-[#2F2C2A]'
+              className={`grain text-sm font-medium px-3.5 py-1.5 max-sm:min-h-11 inline-flex items-center rounded-full ${
+                sort === 'panel' ? 'bg-ink text-white' : 'bg-white/60 text-ink'
               }`}
             >
               Panel size
@@ -240,8 +240,8 @@ export function AtHomeTestKitsComparison() {
       {/* Results */}
       {sorted.length === 0 ? (
         <div className="glass rounded-2xl p-10 text-center">
-          <h3 className="text-lg font-semibold text-[#2F2C2A] mb-2">No tests match these filters</h3>
-          <p className="text-[#665F58] max-w-md mx-auto">
+          <h3 className="text-lg font-semibold text-ink mb-2">No tests match these filters</h3>
+          <p className="text-muted-ink max-w-md mx-auto">
             Try removing a biomarker requirement or widening the turnaround time.
           </p>
         </div>
@@ -254,8 +254,8 @@ export function AtHomeTestKitsComparison() {
               <div key={test.id} className="glass rounded-2xl p-6 flex flex-col">
                 <div className="flex items-start justify-between gap-4 mb-4">
                   <div>
-                    <h3 className="text-lg font-semibold text-[#2F2C2A]">{test.provider}</h3>
-                    <p className="text-sm text-[#665F58]">
+                    <h3 className="text-lg font-semibold text-ink">{test.provider}</h3>
+                    <p className="text-sm text-muted-ink">
                       {test.productName ?? (
                         <span className="italic">Product name not yet sourced</span>
                       )}
@@ -263,9 +263,9 @@ export function AtHomeTestKitsComparison() {
                   </div>
                   <div className="text-right shrink-0">
                     {price ? (
-                      <div className="text-2xl font-bold text-[#2F2C2A]">{price}</div>
+                      <div className="text-2xl font-bold text-ink">{price}</div>
                     ) : (
-                      <div className="text-sm text-[#B4552B] font-medium">Price not sourced</div>
+                      <div className="text-sm text-peach-deep font-medium">Price not sourced</div>
                     )}
                   </div>
                 </div>
@@ -278,7 +278,7 @@ export function AtHomeTestKitsComparison() {
                     {test.biomarkers.map((b) => (
                       <span
                         key={b}
-                        className="grain text-[11px] font-semibold text-[#C2542E] bg-[#DCE6F0]/70 px-2.5 py-1 rounded-full"
+                        className="grain text-xs font-semibold text-peach-deep bg-sky/70 px-2.5 py-1 rounded-full"
                       >
                         {b}
                       </span>
@@ -286,7 +286,7 @@ export function AtHomeTestKitsComparison() {
                   </div>
                 )}
 
-                <div className="flex flex-wrap gap-4 text-xs text-[#665F58] mb-5">
+                <div className="flex flex-wrap gap-4 text-xs text-muted-ink mb-5">
                   {test.turnaroundDays !== null && (
                     <span className="flex items-center gap-1.5">
                       <Clock className="w-3.5 h-3.5" />
@@ -317,11 +317,11 @@ export function AtHomeTestKitsComparison() {
                       type="button"
                       onClick={() => toggleShortlist(test.id)}
                       aria-pressed={shortlist.includes(test.id)}
-                      className="inline-flex items-center gap-1 text-sm font-medium text-[#C2542E] rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C2542E]"
+                      className="inline-flex items-center gap-1 max-sm:min-h-11 text-sm font-medium text-peach-deep rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-peach-deep"
                     >
                       {shortlist.includes(test.id) ? (
                         <>
-                          <BookmarkCheck className="w-4 h-4 fill-[#DCE6F0]" />
+                          <BookmarkCheck className="w-4 h-4 fill-sky" />
                           Saved
                         </>
                       ) : (
@@ -335,14 +335,14 @@ export function AtHomeTestKitsComparison() {
                       href={test.providerUrl}
                       target="_blank"
                       rel="noopener noreferrer nofollow"
-                      className="text-sm font-semibold text-[#C2542E] flex items-center gap-1.5 hover:underline"
+                      className="min-h-11 text-sm font-semibold text-peach-deep flex items-center gap-1.5 hover:underline"
                     >
                       {price ? 'Visit provider' : 'Source details'}
                       <ExternalLink className="w-3.5 h-3.5" />
                     </a>
                   </div>
                   {test.lastSourced && (
-                    <span className="text-[11px] text-[#665F58]">
+                    <span className="text-xs text-muted-ink">
                       Checked {new Date(test.lastSourced).toLocaleDateString('en-GB', {
                         month: 'short',
                         year: 'numeric',
@@ -356,7 +356,7 @@ export function AtHomeTestKitsComparison() {
         </div>
       )}
 
-      <p className="text-xs text-[#665F58] leading-relaxed max-w-3xl">
+      <p className="text-xs text-muted-ink leading-relaxed max-w-3xl">
         Prices and panel contents are published by each provider and change without notice. Always
         confirm on the provider's own site before buying. A test result is not a diagnosis — discuss
         anything unexpected with a qualified clinician.
@@ -365,13 +365,13 @@ export function AtHomeTestKitsComparison() {
       {/* Sticky compare bar */}
       {shortlist.length > 0 && !comparing && (
         <div className="fixed inset-x-0 bottom-0 z-40 flex justify-center px-4 pb-4 pointer-events-none">
-          <div className="pointer-events-auto glass rounded-full shadow-[0_12px_40px_rgba(120,140,200,0.3)] border border-[#C3D3E2]/40 px-5 py-3 flex items-center gap-4">
-            <span className="text-sm font-medium text-[#2F2C2A] whitespace-nowrap">
+          <div className="pointer-events-auto glass rounded-full shadow-[0_12px_40px_rgba(120,140,200,0.3)] border border-sky/40 px-5 py-3 flex items-center gap-4">
+            <span className="text-sm font-medium text-ink whitespace-nowrap">
               {shortlist.length} saved{shortlist.length < 2 ? ' · save one more' : ''}
             </span>
             <Button
               size="sm"
-              className="bg-[#2F2C2A] hover:bg-[#46423F] text-white font-semibold"
+              className="bg-ink hover:bg-ink/90 text-white font-semibold"
               onClick={() => setComparing(true)}
               disabled={shortlist.length < 2}
             >
@@ -379,7 +379,7 @@ export function AtHomeTestKitsComparison() {
             </Button>
             <button
               onClick={() => setShortlist([])}
-              className="text-sm text-[#665F58] hover:text-[#2F2C2A] rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C2542E]"
+              className="max-sm:min-h-11 text-sm text-muted-ink hover:text-ink rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-peach-deep"
             >
               Clear
             </button>
@@ -404,13 +404,13 @@ export function AtHomeTestKitsComparison() {
               onClick={(e) => e.stopPropagation()}
             >
               <div className="flex items-center justify-between px-6 py-4 border-b">
-                <h3 className="text-lg font-semibold text-[#2F2C2A]">
+                <h3 className="text-lg font-semibold text-ink">
                   Comparing {shortlisted.length} tests
                 </h3>
                 <button
                   onClick={() => setComparing(false)}
                   aria-label="Close compare"
-                  className="text-[#665F58] hover:text-[#2F2C2A] rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C2542E]"
+                  className="hit-area text-muted-ink hover:text-ink rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-peach-deep"
                 >
                   <X className="w-5 h-5" />
                 </button>
@@ -423,10 +423,10 @@ export function AtHomeTestKitsComparison() {
                       <th className="sticky left-0 bg-white z-10 p-3 text-left align-bottom w-40" />
                       {shortlisted.map((t) => (
                         <th key={t.id} className="p-3 text-left align-bottom min-w-[9rem] border-l">
-                          <div className="font-semibold text-[#2F2C2A] leading-snug">{t.provider}</div>
+                          <div className="font-semibold text-ink leading-snug">{t.provider}</div>
                           <button
                             onClick={() => toggleShortlist(t.id)}
-                            className="mt-1 inline-flex items-center gap-1 text-xs text-[#665F58] hover:text-[#2F2C2A]"
+                            className="mt-1 inline-flex items-center gap-1 max-sm:min-h-11 text-xs text-muted-ink hover:text-ink"
                           >
                             <X className="w-3 h-3" /> Remove
                           </button>
@@ -435,42 +435,42 @@ export function AtHomeTestKitsComparison() {
                     </tr>
                   </thead>
                   <tbody>
-                    <tr className="border-t bg-[#DCE6F0]/30">
-                      <td className="sticky left-0 bg-[#F7F5F2] z-10 p-3 font-semibold text-[#2F2C2A]">Price</td>
+                    <tr className="border-t bg-sky/30">
+                      <td className="sticky left-0 bg-stone z-10 p-3 font-semibold text-ink">Price</td>
                       {shortlisted.map((t) => (
-                        <td key={t.id} className="p-3 border-l font-semibold text-[#2F2C2A] whitespace-nowrap">
+                        <td key={t.id} className="p-3 border-l font-semibold text-ink whitespace-nowrap">
                           {formatPrice(t) ?? <span className="text-gray-400">—</span>}
                         </td>
                       ))}
                     </tr>
                     <tr className="border-t">
-                      <td className="sticky left-0 bg-white z-10 p-3 text-[#665F58] font-medium">Sample</td>
+                      <td className="sticky left-0 bg-white z-10 p-3 text-muted-ink font-medium">Sample</td>
                       {shortlisted.map((t) => (
-                        <td key={t.id} className="p-3 border-l text-[#2F2C2A]">
+                        <td key={t.id} className="p-3 border-l text-ink">
                           {t.sampleType ? SAMPLE_LABEL[t.sampleType] : <span className="text-gray-400">—</span>}
                         </td>
                       ))}
                     </tr>
                     <tr className="border-t">
-                      <td className="sticky left-0 bg-white z-10 p-3 text-[#665F58] font-medium">Collection</td>
+                      <td className="sticky left-0 bg-white z-10 p-3 text-muted-ink font-medium">Collection</td>
                       {shortlisted.map((t) => (
-                        <td key={t.id} className="p-3 border-l text-[#2F2C2A]">
+                        <td key={t.id} className="p-3 border-l text-ink">
                           {t.collection ? COLLECTION_LABELS[t.collection] : <span className="text-gray-400">—</span>}
                         </td>
                       ))}
                     </tr>
                     <tr className="border-t">
-                      <td className="sticky left-0 bg-white z-10 p-3 text-[#665F58] font-medium">Clinician review</td>
+                      <td className="sticky left-0 bg-white z-10 p-3 text-muted-ink font-medium">Clinician review</td>
                       {shortlisted.map((t) => (
-                        <td key={t.id} className="p-3 border-l text-[#2F2C2A]">
+                        <td key={t.id} className="p-3 border-l text-ink">
                           {t.clinicianReview === null ? <span className="text-gray-400">—</span> : t.clinicianReview ? 'Yes' : 'No'}
                         </td>
                       ))}
                     </tr>
                     <tr className="border-t">
-                      <td className="sticky left-0 bg-white z-10 p-3 text-[#665F58] font-medium">Results back</td>
+                      <td className="sticky left-0 bg-white z-10 p-3 text-muted-ink font-medium">Results back</td>
                       {shortlisted.map((t) => (
-                        <td key={t.id} className="p-3 border-l text-[#2F2C2A]">
+                        <td key={t.id} className="p-3 border-l text-ink">
                           {t.turnaroundDays !== null ? `${t.turnaroundDays} days` : <span className="text-gray-400">—</span>}
                         </td>
                       ))}
@@ -479,18 +479,18 @@ export function AtHomeTestKitsComparison() {
                     <tr className="border-t">
                       <td
                         colSpan={shortlisted.length + 1}
-                        className="p-3 pt-4 text-xs font-semibold uppercase tracking-wide text-[#C2542E]"
+                        className="p-3 pt-4 text-xs font-semibold uppercase tracking-wide text-peach-deep"
                       >
                         Measures
                       </td>
                     </tr>
                     {markerRows.map((b) => (
                       <tr key={b} className="border-t">
-                        <td className="sticky left-0 bg-white z-10 p-3 text-[#665F58] font-medium">{b}</td>
+                        <td className="sticky left-0 bg-white z-10 p-3 text-muted-ink font-medium">{b}</td>
                         {shortlisted.map((t) => (
                           <td key={t.id} className="p-3 border-l">
                             {t.biomarkers.includes(b) ? (
-                              <Check className="w-4 h-4 text-[#C2542E]" aria-label="included" />
+                              <Check className="w-4 h-4 text-peach-deep" aria-label="included" />
                             ) : (
                               <span className="text-gray-300" aria-label="not included">—</span>
                             )}
@@ -507,7 +507,7 @@ export function AtHomeTestKitsComparison() {
                             href={t.providerUrl}
                             target="_blank"
                             rel="noopener noreferrer nofollow"
-                            className="inline-flex items-center gap-1 text-sm font-semibold text-[#C2542E] hover:underline"
+                            className="inline-flex items-center gap-1 text-sm font-semibold text-peach-deep hover:underline"
                           >
                             Visit <ExternalLink className="w-3 h-3" />
                           </a>

@@ -17,6 +17,7 @@ import { SuccessByAge } from './SuccessByAge';
 import { FERTILITY_TESTS } from '../lib/tests';
 import { getBudgetBounds } from '../lib/budget';
 import { EnquiryFlow } from './EnquiryFlow';
+import { REAL_CLINICS, type Clinic } from '../data/clinics';
 
 interface ClinicCostingsProps {
   serviceType: 'egg-freezing' | 'embryo' | 'ivf' | 'fertility';
@@ -43,450 +44,6 @@ const RESULTS_SERVICE_TABS: { id: ServiceType; label: string }[] = [
   { id: 'egg-freezing', label: 'Egg Freezing' },
   { id: 'ivf', label: 'IVF Treatment' },
   { id: 'embryo', label: 'Embryo Freezing' },
-];
-
-/**
- * Real, HFEA-licensed UK clinics.
- *
- * Prices are how clinics actually publish them: a single bundled "from" cycle
- * price, with medications quoted separately, and storage where relevant. We do
- * not invent an itemised breakdown a clinic has not published, and we do not
- * invent a price at all — a clinic that does not publish one shows "Request a
- * quote", never a made-up number.
- *
- * Where a figure is shown it comes from the clinic's own published price list
- * on the date noted (`priceCheckedLabel`). Success rates are not republished
- * here: each clinic links to its verified results on the HFEA register, which
- * is the authoritative source.
- */
-interface Clinic {
-  id: number;
-  slug: string;
-  clinicName: string;
-  city: string;
-  /** the clinic's verified results on the HFEA register */
-  hfeaUrl: string;
-  fundingRoutes: ('nhs' | 'private')[];
-  /** bundled "from" prices per service, in GBP; null = clinic does not publish */
-  ivfCycle: number | null;
-  eggFreezingCycle: number | null;
-  embryoCycle: number | null;
-  testingFee: number | null;
-  consultation: number | null;
-  storagePerYear: number | null;
-  /** almost always false — cycle prices exclude drugs */
-  medsIncluded: boolean;
-  /** where a published price came from, shown against the total */
-  priceSourceUrl?: string;
-  priceCheckedLabel?: string;
-}
-
-// The HFEA "Choose a Fertility Clinic" tool, where each clinic's regulated
-// success rates can be checked at source.
-const HFEA = 'https://www.hfea.gov.uk/choose-a-clinic/clinic-search/';
-
-const REAL_CLINICS: Clinic[] = [
-  {
-    id: 1,
-    slug: 'crgh',
-    clinicName: 'CRGH — Centre for Reproductive & Genetic Health',
-    city: 'London',
-    hfeaUrl: HFEA,
-    fundingRoutes: ['private'],
-    ivfCycle: 5790,
-    eggFreezingCycle: 3350,
-    embryoCycle: null,
-    testingFee: 250,
-    consultation: 250,
-    storagePerYear: 425,
-    medsIncluded: false,
-    priceSourceUrl: 'https://crgh.co.uk/pricelist/',
-    priceCheckedLabel: 'Jul 2026',
-  },
-  {
-    id: 2,
-    slug: 'create-fertility',
-    clinicName: 'CREATE Fertility',
-    city: 'London & nationwide',
-    hfeaUrl: HFEA,
-    fundingRoutes: ['private'],
-    ivfCycle: 3795,
-    eggFreezingCycle: 3195,
-    embryoCycle: null,
-    testingFee: 175,
-    consultation: 175,
-    storagePerYear: null,
-    medsIncluded: false,
-    priceSourceUrl: 'https://www.createfertility.co.uk/costs',
-    priceCheckedLabel: 'Jul 2026',
-  },
-  {
-    id: 3,
-    slug: 'manchester-fertility',
-    clinicName: 'Manchester Fertility',
-    city: 'Manchester',
-    hfeaUrl: HFEA,
-    fundingRoutes: ['private'],
-    // All from Manchester Fertility's own patient price list PDF. Its egg
-    // freezing figure (£4,200) is lower than the £4,995 we had from a later web
-    // read, i.e. prices have since risen — so the whole entry is dated to the
-    // PDF rather than mixing vintages under a single "checked" label.
-    ivfCycle: 4150,
-    eggFreezingCycle: 4200,
-    // "Elective Embryo Freezing" — includes freezing + first year storage and a
-    // first frozen transfer; medications (£985–£2,600) quoted separately.
-    embryoCycle: 4675,
-    testingFee: null,
-    consultation: null,
-    storagePerYear: 365,
-    medsIncluded: false,
-    priceSourceUrl:
-      'https://www.manchesterfertility.com/media/filer_public/d3/fb/d3fbf6e4-da3f-48e9-a224-42cf886d0e0b/manchester_fertility_price_list_jan_2024.pdf',
-    priceCheckedLabel: 'Jan 2024 list',
-  },
-  {
-    id: 4,
-    slug: 'care-fertility',
-    clinicName: 'Care Fertility',
-    city: 'Nottingham & nationwide',
-    hfeaUrl: HFEA,
-    fundingRoutes: ['nhs', 'private'],
-    ivfCycle: null,
-    eggFreezingCycle: null,
-    embryoCycle: null,
-    testingFee: null,
-    consultation: null,
-    storagePerYear: null,
-    medsIncluded: false,
-  },
-  {
-    id: 5,
-    slug: 'lister-fertility',
-    clinicName: 'The Lister Fertility Clinic',
-    city: 'London',
-    hfeaUrl: HFEA,
-    fundingRoutes: ['private'],
-    ivfCycle: null,
-    eggFreezingCycle: null,
-    embryoCycle: null,
-    testingFee: null,
-    consultation: null,
-    storagePerYear: null,
-    medsIncluded: false,
-  },
-  {
-    id: 6,
-    slug: 'argc',
-    clinicName: 'ARGC — Assisted Reproduction & Gynaecology Centre',
-    city: 'London',
-    hfeaUrl: HFEA,
-    fundingRoutes: ['private'],
-    ivfCycle: null,
-    eggFreezingCycle: null,
-    embryoCycle: null,
-    testingFee: null,
-    consultation: null,
-    storagePerYear: null,
-    medsIncluded: false,
-  },
-  {
-    id: 7,
-    slug: 'bourn-hall',
-    clinicName: 'Bourn Hall Clinic',
-    city: 'Cambridge',
-    hfeaUrl: HFEA,
-    fundingRoutes: ['nhs', 'private'],
-    // Bourn Hall does not sell a standalone "elective embryo freezing" product.
-    // The cost to create and freeze embryos is the IVF package (£4,495), which
-    // includes the freeze fee, first year of storage and a transfer; medication
-    // is separate, and storage after year one is £420/yr. From their patient
-    // price list.
-    ivfCycle: 4495,
-    eggFreezingCycle: null,
-    embryoCycle: 4495,
-    testingFee: null,
-    consultation: 275,
-    storagePerYear: 420,
-    medsIncluded: false,
-    priceSourceUrl: 'https://www.bournhall.co.uk/fees-funding/our-prices/',
-    priceCheckedLabel: '2024 list',
-  },
-  {
-    id: 8,
-    slug: 'tfp-oxford',
-    clinicName: 'TFP Oxford Fertility',
-    city: 'Oxford',
-    hfeaUrl: HFEA,
-    fundingRoutes: ['private'],
-    ivfCycle: null,
-    eggFreezingCycle: null,
-    embryoCycle: null,
-    testingFee: null,
-    consultation: null,
-    storagePerYear: null,
-    medsIncluded: false,
-  },
-  {
-    id: 9,
-    slug: 'guys-st-thomas',
-    clinicName: "Guy's & St Thomas' Assisted Conception Unit",
-    city: 'London',
-    hfeaUrl: HFEA,
-    fundingRoutes: ['nhs', 'private'],
-    ivfCycle: null,
-    eggFreezingCycle: null,
-    embryoCycle: null,
-    testingFee: null,
-    consultation: null,
-    storagePerYear: null,
-    medsIncluded: false,
-  },
-  {
-    id: 10,
-    slug: 'newlife-fertility',
-    clinicName: 'NewLife Fertility',
-    city: 'Kent',
-    hfeaUrl: HFEA,
-    fundingRoutes: ['private'],
-    ivfCycle: null,
-    eggFreezingCycle: null,
-    embryoCycle: null,
-    testingFee: null,
-    consultation: null,
-    storagePerYear: null,
-    medsIncluded: false,
-  },
-  {
-    id: 11,
-    slug: 'the-evewell',
-    clinicName: "The Evewell",
-    city: 'London',
-    hfeaUrl: HFEA,
-    fundingRoutes: ['private'],
-    ivfCycle: 4095,
-    eggFreezingCycle: 4050,
-    embryoCycle: null,
-    testingFee: 250,
-    consultation: 250,
-    storagePerYear: 380,
-    medsIncluded: false,
-    priceSourceUrl: 'https://www.evewell.com/pricing/',
-    priceCheckedLabel: 'Jul 2026',
-  },
-  {
-    id: 12,
-    slug: 'london-womens-clinic',
-    clinicName: "London Women's Clinic",
-    city: 'London & nationwide',
-    hfeaUrl: HFEA,
-    fundingRoutes: ['private'],
-    ivfCycle: null,
-    eggFreezingCycle: 6100,
-    // Published embryo-freezing cycle "from" price (first cycle; £3,650 second,
-    // £3,450 third). Medications separate, as with every cycle price here.
-    embryoCycle: 3950,
-    testingFee: null,
-    consultation: null,
-    storagePerYear: null,
-    medsIncluded: false,
-    priceSourceUrl: 'https://www.londonwomensclinic.com/about/prices/',
-    priceCheckedLabel: 'Jul 2026',
-  },
-  {
-    id: 13,
-    slug: 'herts-essex-fertility',
-    clinicName: "Herts & Essex Fertility Centre",
-    city: 'Cheshunt',
-    hfeaUrl: HFEA,
-    fundingRoutes: ['private'],
-    ivfCycle: null,
-    eggFreezingCycle: null,
-    embryoCycle: null,
-    testingFee: null,
-    consultation: null,
-    storagePerYear: null,
-    medsIncluded: false,
-  },
-  {
-    id: 14,
-    slug: 'gcrm-glasgow',
-    clinicName: "Glasgow Centre for Reproductive Medicine (GCRM)",
-    city: 'Glasgow',
-    hfeaUrl: HFEA,
-    fundingRoutes: ['private'],
-    ivfCycle: null,
-    eggFreezingCycle: null,
-    embryoCycle: null,
-    testingFee: null,
-    consultation: null,
-    storagePerYear: null,
-    medsIncluded: false,
-  },
-  {
-    id: 15,
-    slug: 'nurture-fertility',
-    clinicName: "Nurture Fertility (TFP)",
-    city: 'Nottingham',
-    hfeaUrl: HFEA,
-    fundingRoutes: ['private'],
-    ivfCycle: null,
-    eggFreezingCycle: null,
-    embryoCycle: null,
-    testingFee: null,
-    consultation: null,
-    storagePerYear: null,
-    medsIncluded: false,
-  },
-  {
-    id: 16,
-    slug: 'thames-valley-fertility',
-    clinicName: "Thames Valley Fertility (TFP)",
-    city: 'Maidenhead',
-    hfeaUrl: HFEA,
-    fundingRoutes: ['private'],
-    ivfCycle: null,
-    eggFreezingCycle: null,
-    embryoCycle: null,
-    testingFee: null,
-    consultation: null,
-    storagePerYear: null,
-    medsIncluded: false,
-  },
-  {
-    id: 17,
-    slug: 'hewitt-fertility',
-    clinicName: "Hewitt Fertility Centre",
-    city: 'Liverpool',
-    hfeaUrl: HFEA,
-    fundingRoutes: ['nhs', 'private'],
-    ivfCycle: null,
-    eggFreezingCycle: null,
-    embryoCycle: null,
-    testingFee: null,
-    consultation: null,
-    storagePerYear: null,
-    medsIncluded: false,
-  },
-  {
-    id: 18,
-    slug: 'leeds-fertility',
-    clinicName: "Leeds Fertility",
-    city: 'Leeds',
-    hfeaUrl: HFEA,
-    fundingRoutes: ['nhs', 'private'],
-    ivfCycle: null,
-    eggFreezingCycle: null,
-    embryoCycle: null,
-    testingFee: null,
-    consultation: null,
-    storagePerYear: null,
-    medsIncluded: false,
-  },
-  {
-    id: 19,
-    slug: 'newcastle-fertility',
-    clinicName: "Newcastle Fertility Centre",
-    city: 'Newcastle',
-    hfeaUrl: HFEA,
-    fundingRoutes: ['nhs', 'private'],
-    ivfCycle: null,
-    eggFreezingCycle: null,
-    embryoCycle: null,
-    testingFee: null,
-    consultation: null,
-    storagePerYear: null,
-    medsIncluded: false,
-  },
-  {
-    id: 20,
-    slug: 'wales-fertility-institute',
-    clinicName: "Wales Fertility Institute",
-    city: 'Cardiff',
-    hfeaUrl: HFEA,
-    fundingRoutes: ['nhs', 'private'],
-    ivfCycle: null,
-    eggFreezingCycle: null,
-    embryoCycle: null,
-    testingFee: null,
-    consultation: null,
-    storagePerYear: null,
-    medsIncluded: false,
-  },
-  {
-    id: 21,
-    slug: 'wessex-fertility',
-    clinicName: "Wessex Fertility",
-    city: 'Southampton',
-    hfeaUrl: HFEA,
-    fundingRoutes: ['private'],
-    ivfCycle: null,
-    eggFreezingCycle: null,
-    embryoCycle: null,
-    testingFee: null,
-    consultation: null,
-    storagePerYear: null,
-    medsIncluded: false,
-  },
-  {
-    id: 22,
-    slug: 'complete-fertility',
-    clinicName: "Complete Fertility Centre",
-    city: 'Southampton',
-    hfeaUrl: HFEA,
-    fundingRoutes: ['nhs', 'private'],
-    ivfCycle: null,
-    eggFreezingCycle: null,
-    embryoCycle: null,
-    testingFee: null,
-    consultation: null,
-    storagePerYear: null,
-    medsIncluded: false,
-  },
-  {
-    id: 23,
-    slug: 'kings-fertility',
-    clinicName: "Kings Fertility",
-    city: 'London',
-    hfeaUrl: HFEA,
-    fundingRoutes: ['nhs', 'private'],
-    ivfCycle: null,
-    eggFreezingCycle: null,
-    embryoCycle: null,
-    testingFee: null,
-    consultation: null,
-    storagePerYear: null,
-    medsIncluded: false,
-  },
-  {
-    id: 24,
-    slug: 'agora-clinic',
-    clinicName: "The Agora Clinic",
-    city: 'Brighton',
-    hfeaUrl: HFEA,
-    fundingRoutes: ['private'],
-    ivfCycle: null,
-    eggFreezingCycle: null,
-    embryoCycle: null,
-    testingFee: null,
-    consultation: null,
-    storagePerYear: null,
-    medsIncluded: false,
-  },
-  {
-    id: 25,
-    slug: 'cambridge-ivf',
-    clinicName: "Cambridge IVF (Addenbrooke’s)",
-    city: 'Cambridge',
-    hfeaUrl: HFEA,
-    fundingRoutes: ['nhs', 'private'],
-    ivfCycle: null,
-    eggFreezingCycle: null,
-    embryoCycle: null,
-    testingFee: null,
-    consultation: null,
-    storagePerYear: null,
-    medsIncluded: false,
-  },
 ];
 
 const COMPONENT_LABELS: Record<string, string> = {
@@ -575,11 +132,11 @@ function ClinicDetail({
   return (
     <div className="space-y-4">
       <div>
-        <h4 className="mb-3 text-sm font-semibold text-[#2F2C2A]">
+        <h4 className="mb-3 text-sm font-semibold text-ink">
           {clinic.priceOnRequest ? 'Pricing' : 'What makes up this total'}
         </h4>
         {clinic.priceOnRequest ? (
-          <p className="text-sm text-[#665F58] leading-relaxed">
+          <p className="text-sm text-muted-ink leading-relaxed">
             {clinic.clinicName.split(' — ')[0]} does not publish a price for this service.
             Send an enquiry and they will quote you directly.
           </p>
@@ -587,32 +144,32 @@ function ClinicDetail({
           <div className="space-y-2 text-sm">
             {clinic.components.map((c) => (
               <div key={c.key} className="flex justify-between">
-                <span className="text-[#665F58]">{c.label}</span>
-                <span className="text-[#2F2C2A]">
+                <span className="text-muted-ink">{c.label}</span>
+                <span className="text-ink">
                   {c.amount !== null ? `£${c.amount.toLocaleString()}` : 'Not published'}
                 </span>
               </div>
             ))}
             <div className="flex justify-between">
-              <span className="text-[#665F58]">Medications</span>
-              <span className="text-[#2F2C2A]">
+              <span className="text-muted-ink">Medications</span>
+              <span className="text-ink">
                 {clinic.medsIncluded ? 'Included' : 'Quoted separately'}
               </span>
             </div>
             <div className="flex justify-between border-t pt-2 font-semibold">
-              <span className="text-[#2F2C2A]">Total</span>
-              <span className="text-[#2F2C2A]">{priceLabel(clinic)}</span>
+              <span className="text-ink">Total</span>
+              <span className="text-ink">{priceLabel(clinic)}</span>
             </div>
           </div>
         )}
         {clinic.priceSourceUrl && (
-          <p className="text-[11px] text-[#665F58] mt-3 leading-relaxed">
+          <p className="text-xs text-muted-ink mt-3 leading-relaxed">
             Published price ·{' '}
             <a
               href={clinic.priceSourceUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-[#C2542E] hover:underline"
+              className="text-peach-deep hover:underline"
             >
               clinic price list
             </a>{' '}
@@ -626,14 +183,14 @@ function ClinicDetail({
           href={clinic.hfeaUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center gap-1.5 text-sm font-medium text-[#C2542E] hover:underline self-center"
+          className="inline-flex items-center gap-1.5 text-sm font-medium text-peach-deep hover:underline self-center"
         >
           View HFEA results
           <ExternalLink className="w-3.5 h-3.5" />
         </a>
         <Button
           size="sm"
-          className="bg-[#F4A28C] hover:bg-[#E0714A] text-[#2F2C2A] font-semibold"
+          className="bg-blush hover:bg-peach text-ink font-semibold"
           onClick={onEnquire}
         >
           Request consultation
@@ -696,8 +253,8 @@ export function ClinicCostings({
             role="tab"
             aria-selected={active}
             onClick={() => onServiceChange(s.id)}
-            className={`grain flex-1 min-w-[8rem] text-sm font-semibold px-4 py-2.5 rounded-xl transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C2542E] focus-visible:ring-offset-2 ${
-              active ? 'bg-[#2F2C2A] text-white shadow-sm' : 'text-[#2F2C2A] hover:bg-white/70'
+            className={`grain flex-1 min-w-[8rem] text-sm font-semibold px-4 py-2.5 rounded-xl transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-peach-deep focus-visible:ring-offset-2 ${
+              active ? 'bg-ink text-white shadow-sm' : 'text-ink hover:bg-white/70'
             }`}
           >
             {s.label}
@@ -709,7 +266,7 @@ export function ClinicCostings({
         <button
           type="button"
           onClick={onCompareOptions}
-          className="text-sm font-semibold text-[#C2542E] hover:underline rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C2542E] focus-visible:ring-offset-2"
+          className="text-sm font-semibold text-peach-deep hover:underline rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-peach-deep focus-visible:ring-offset-2"
         >
           Not sure which is right for you? Compare the options
         </button>
@@ -724,7 +281,7 @@ export function ClinicCostings({
   const fertilityTopMatter =
     serviceType === 'fertility' ? (
       <div className="space-y-6">
-        <div className="pb-6 border-b border-[#2F2C2A]/10">
+        <div className="pb-6 border-b border-ink/10">
           <HowTrackingWorks />
         </div>
         <div
@@ -742,10 +299,10 @@ export function ClinicCostings({
               role="tab"
               aria-selected={fertilityView === id}
               onClick={() => setFertilityView(id)}
-              className={`grain text-sm font-semibold px-4 py-2 rounded-full transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C2542E] focus-visible:ring-offset-2 ${
+              className={`grain text-sm font-semibold px-4 py-2 rounded-full transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-peach-deep focus-visible:ring-offset-2 ${
                 fertilityView === id
-                  ? 'bg-[#2F2C2A] text-white'
-                  : 'text-[#2F2C2A] hover:bg-white/80'
+                  ? 'bg-ink text-white'
+                  : 'text-ink hover:bg-white/80'
               }`}
             >
               {label}
@@ -837,7 +394,7 @@ export function ClinicCostings({
           works before the price table. Fertility leads with HowTrackingWorks
           via fertilityTopMatter instead. */}
       {serviceType !== 'fertility' && (
-        <div className="space-y-4 pb-2 border-b border-[#2F2C2A]/10">
+        <div className="space-y-4 pb-2 border-b border-ink/10">
           <ServiceExplainer serviceType={serviceType} />
           <SuccessByAge userAge={userAge} />
         </div>
@@ -848,15 +405,15 @@ export function ClinicCostings({
         <h2 className="text-3xl mb-2">
           {serviceType === 'fertility' ? 'Fertility testing at a clinic' : 'Clinic Cost Comparison'}
         </h2>
-        <p className="text-[#665F58]">
+        <p className="text-muted-ink">
           {sortedData.length} of {allClinics.length} UK clinics
           {activeFilterCount > 0 && (
             <> · {activeFilterCount} filter{activeFilterCount > 1 ? 's' : ''} applied</>
           )}
         </p>
         {budgetIncludesQuoteOnly && (
-          <p className="text-sm text-[#665F58] mt-2 max-w-2xl leading-relaxed">
-            <span className="font-medium text-[#2F2C2A]">Clinics that quote on enquiry are shown too.</span>{' '}
+          <p className="text-sm text-muted-ink mt-2 max-w-2xl leading-relaxed">
+            <span className="font-medium text-ink">Clinics that quote on enquiry are shown too.</span>{' '}
             They don&rsquo;t publish a price, so we can&rsquo;t confirm they fit your budget until you
             ask — send an enquiry to find out. Tick <em>&ldquo;only clinics that publish a price&rdquo;</em>{' '}
             to hide them.
@@ -866,22 +423,22 @@ export function ClinicCostings({
 
       {/* Summary Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="bg-[#DCE6F0]/50 p-4 rounded-lg border-l-4 border border-[#C3D3E2]/60 border-l-[#C2542E]">
-          <div className="text-sm text-[#C2542E] mb-1">Lowest published price</div>
+        <div className="bg-sky/50 p-4 rounded-lg border-l-4 border border-sky/60 border-l-peach-deep">
+          <div className="text-sm text-peach-deep mb-1">Lowest published price</div>
           <div className="text-2xl">{cheapest ? `from £${cheapest.fromTotal!.toLocaleString()}` : '—'}</div>
           <div className="text-sm text-gray-500 mt-1">
             {cheapest ? cheapest.clinicName.split(' — ')[0] : 'No published prices'}
           </div>
         </div>
         <div className="glass p-4 rounded-xl">
-          <div className="text-sm text-[#C2542E] mb-1">Average published price</div>
+          <div className="text-sm text-peach-deep mb-1">Average published price</div>
           <div className="text-2xl">{averageTotal !== null ? `£${averageTotal.toLocaleString()}` : '—'}</div>
           <div className="text-sm text-gray-500 mt-1">
             {averageTotal !== null ? `Across ${publishingCount} clinics` : 'No published prices'}
           </div>
         </div>
         <div className="glass p-4 rounded-xl">
-          <div className="text-sm text-[#C2542E] mb-1">Publishing a price</div>
+          <div className="text-sm text-peach-deep mb-1">Publishing a price</div>
           <div className="text-2xl">
             {publishingCount} of {sortedData.length}
           </div>
@@ -890,8 +447,8 @@ export function ClinicCostings({
       </div>
 
       {/* Real-clinic notice */}
-      <div className="glass rounded-2xl p-4 text-xs text-[#665F58] leading-relaxed">
-        <span className="font-semibold text-[#2F2C2A]">Real UK clinics, in GBP.</span> Prices come
+      <div className="glass rounded-2xl p-4 text-xs text-muted-ink leading-relaxed">
+        <span className="font-semibold text-ink">Real UK clinics, in GBP.</span> Prices come
         from each clinic&rsquo;s own published price list on the date shown; where a clinic does not
         publish a price, the total reads <span className="font-semibold">&ldquo;Request a quote&rdquo;</span>{' '}
         rather than a made-up figure. <span className="font-semibold">Medications are quoted
@@ -902,7 +459,7 @@ export function ClinicCostings({
       {/* Refine */}
       <div className="glass rounded-2xl p-5 flex flex-wrap items-end gap-x-8 gap-y-4">
         <div>
-          <div className="text-xs font-semibold uppercase tracking-wide text-[#665F58] mb-2">
+          <div className="text-xs font-semibold uppercase tracking-wide text-muted-ink mb-2">
             Funding route
           </div>
           <div className="flex flex-wrap gap-2">
@@ -910,8 +467,8 @@ export function ClinicCostings({
               <button
                 key={id}
                 onClick={() => setFunding(id)}
-                className={`grain text-sm font-medium px-3.5 py-1.5 rounded-full transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C2542E] focus-visible:ring-offset-2 ${
-                  funding === id ? 'bg-[#2F2C2A] text-white' : 'bg-white/60 text-[#2F2C2A] hover:bg-white/80'
+                className={`grain text-sm font-medium px-3.5 py-1.5 rounded-full transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-peach-deep focus-visible:ring-offset-2 ${
+                  funding === id ? 'bg-ink text-white' : 'bg-white/60 text-ink hover:bg-white/80'
                 }`}
               >
                 {label}
@@ -920,12 +477,12 @@ export function ClinicCostings({
           </div>
         </div>
 
-        <label className="flex items-center gap-2 text-sm text-[#2F2C2A] cursor-pointer pb-1.5">
+        <label className="flex items-center gap-2 text-sm text-ink cursor-pointer pb-1.5">
           <input
             type="checkbox"
             checked={publishedOnly}
             onChange={(e) => setPublishedOnly(e.target.checked)}
-            className="accent-[#F4A28C] w-4 h-4"
+            className="accent-blush w-4 h-4"
           />
           Only clinics that publish a price
         </label>
@@ -934,8 +491,8 @@ export function ClinicCostings({
       {/* No results */}
       {sortedData.length === 0 && (
         <div className="glass rounded-2xl p-10 text-center">
-          <h3 className="text-lg font-semibold text-[#2F2C2A] mb-2">No clinics match these filters</h3>
-          <p className="text-[#665F58] max-w-md mx-auto">
+          <h3 className="text-lg font-semibold text-ink mb-2">No clinics match these filters</h3>
+          <p className="text-muted-ink max-w-md mx-auto">
             Try clearing the budget or funding filter, or turning off &ldquo;only clinics that publish
             a price&rdquo; — many clinics quote on enquiry rather than publishing a figure.
           </p>
@@ -956,7 +513,7 @@ export function ClinicCostings({
                 <TableHead>
                   <button
                     onClick={() => toggleSort('clinicName')}
-                    className="flex items-center gap-1 hover:text-[#C2542E]"
+                    className="flex items-center gap-1 hover:text-peach-deep"
                   >
                     Clinic
                     <ArrowUpDown className="w-3 h-3" />
@@ -969,7 +526,7 @@ export function ClinicCostings({
                 <TableHead>
                   <button
                     onClick={() => toggleSort('price')}
-                    className="flex items-center gap-1 hover:text-[#C2542E]"
+                    className="flex items-center gap-1 hover:text-peach-deep"
                   >
                     Total
                     <ArrowUpDown className="w-3 h-3" />
@@ -981,9 +538,9 @@ export function ClinicCostings({
             <TableBody>
               {sortedData.map((clinic) => (
                 <Fragment key={clinic.id}>
-                  <TableRow className={lowestTotal !== null && clinic.fromTotal === lowestTotal ? 'bg-[#DCE6F0]/40' : ''}>
+                  <TableRow className={lowestTotal !== null && clinic.fromTotal === lowestTotal ? 'bg-sky/40' : ''}>
                     <TableCell>
-                      <button onClick={() => toggleRowExpansion(clinic.id)} className="hover:text-[#C2542E]">
+                      <button onClick={() => toggleRowExpansion(clinic.id)} className="hover:text-peach-deep">
                         {expandedRows.includes(clinic.id) ? (
                           <ChevronUp className="w-4 h-4" />
                         ) : (
@@ -996,13 +553,13 @@ export function ClinicCostings({
                         <div className="flex items-center gap-2 flex-wrap">
                           <span className="font-medium">{clinic.clinicName}</span>
                           {clinic.priceOnRequest ? (
-                            <span className="grain text-[10px] font-semibold uppercase tracking-wide text-[#B4552B] bg-[#F4A28C]/20 px-2 py-0.5 rounded-full whitespace-nowrap">
+                            <span className="grain text-xs font-semibold uppercase tracking-wide text-peach-deep bg-blush/20 px-2 py-0.5 rounded-full whitespace-nowrap">
                               Price on request
                             </span>
                           ) : (
                             lowestTotal !== null &&
                             clinic.fromTotal === lowestTotal && (
-                              <span className="grain text-[10px] font-semibold uppercase tracking-wide text-[#C2542E] bg-[#DCE6F0]/70 px-2 py-0.5 rounded-full whitespace-nowrap">
+                              <span className="grain text-xs font-semibold uppercase tracking-wide text-peach-deep bg-sky/70 px-2 py-0.5 rounded-full whitespace-nowrap">
                                 Lowest published
                               </span>
                             )
@@ -1023,22 +580,22 @@ export function ClinicCostings({
                         href={clinic.hfeaUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center gap-1 text-sm text-[#C2542E] hover:underline"
+                        className="inline-flex items-center gap-1 text-sm text-peach-deep hover:underline"
                       >
                         HFEA results
                         <ExternalLink className="w-3.5 h-3.5" />
                       </a>
                     </TableCell>
-                    <TableCell className="text-[#C2542E]">
+                    <TableCell className="text-peach-deep">
                       {clinic.fromTotal !== null ? (
                         <>
                           <div className="whitespace-nowrap">{priceLabel(clinic)}</div>
                           {!clinic.medsIncluded && (
-                            <div className="text-[11px] text-[#665F58]">+ medications</div>
+                            <div className="text-xs text-muted-ink">+ medications</div>
                           )}
                         </>
                       ) : (
-                        <span className="text-[#665F58] text-sm">Request a quote</span>
+                        <span className="text-muted-ink text-sm">Request a quote</span>
                       )}
                     </TableCell>
                     <TableCell className="text-right">
@@ -1052,10 +609,10 @@ export function ClinicCostings({
                               ? `Remove ${clinic.clinicName} from compare`
                               : `Save ${clinic.clinicName} to compare`
                           }
-                          className="text-[#C2542E] hover:text-[#2F2C2A] rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C2542E]"
+                          className="text-peach-deep hover:text-ink rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-peach-deep"
                         >
                           {shortlist.includes(clinic.id) ? (
-                            <BookmarkCheck className="w-4 h-4 fill-[#DCE6F0]" />
+                            <BookmarkCheck className="w-4 h-4 fill-sky" />
                           ) : (
                             <Bookmark className="w-4 h-4" />
                           )}
@@ -1063,7 +620,7 @@ export function ClinicCostings({
                         <Button
                           size="sm"
                           variant="outline"
-                          className="border-[#F4A28C] text-[#2F2C2A] hover:bg-[#F4A28C]/15 font-semibold whitespace-nowrap"
+                          className="border-blush text-ink hover:bg-blush/15 font-semibold whitespace-nowrap"
                           onClick={() => setEnquiring([{ slug: clinic.slug, name: clinic.clinicName }])}
                         >
                           Enquire
@@ -1097,15 +654,15 @@ export function ClinicCostings({
       {sortedData.length > 0 && (
         <div className="md:hidden space-y-3">
           <div className="flex items-center gap-2 text-sm">
-            <span className="text-[#665F58]">Sort</span>
+            <span className="text-muted-ink">Sort</span>
             {([['price', 'Price'], ['clinicName', 'Name']] as const).map(([field, label]) => (
               <button
                 key={field}
                 onClick={() => toggleSort(field)}
-                className={`grain font-medium px-3 py-1 rounded-full transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C2542E] ${
+                className={`grain font-medium px-3 py-1 rounded-full transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-peach-deep ${
                   sortField === field
-                    ? 'bg-[#2F2C2A] text-white'
-                    : 'bg-white/60 text-[#2F2C2A]'
+                    ? 'bg-ink text-white'
+                    : 'bg-white/60 text-ink'
                 }`}
               >
                 {label}
@@ -1121,12 +678,12 @@ export function ClinicCostings({
               <div
                 key={clinic.id}
                 className={`glass rounded-2xl p-4 ${
-                  isLowest ? 'ring-1 ring-[#C2542E]/40 bg-[#DCE6F0]/30' : ''
+                  isLowest ? 'ring-1 ring-peach-deep/40 bg-sky/30' : ''
                 }`}
               >
                 <div className="flex items-start justify-between gap-3">
                   <div>
-                    <div className="font-medium text-[#2F2C2A] leading-snug">
+                    <div className="font-medium text-ink leading-snug">
                       {clinic.clinicName}
                     </div>
                     <div className="text-xs text-gray-500 mt-0.5">
@@ -1137,15 +694,15 @@ export function ClinicCostings({
                   <div className="text-right shrink-0">
                     {clinic.fromTotal !== null ? (
                       <>
-                        <div className="text-[#C2542E] font-semibold whitespace-nowrap">
+                        <div className="text-peach-deep font-semibold whitespace-nowrap">
                           {priceLabel(clinic)}
                         </div>
                         {!clinic.medsIncluded && (
-                          <div className="text-[11px] text-[#665F58]">+ medications</div>
+                          <div className="text-xs text-muted-ink">+ medications</div>
                         )}
                       </>
                     ) : (
-                      <span className="text-[#665F58] text-sm">Request a quote</span>
+                      <span className="text-muted-ink text-sm">Request a quote</span>
                     )}
                   </div>
                 </div>
@@ -1153,11 +710,11 @@ export function ClinicCostings({
                 {(clinic.priceOnRequest || isLowest) && (
                   <div className="mt-2">
                     {clinic.priceOnRequest ? (
-                      <span className="grain text-[10px] font-semibold uppercase tracking-wide text-[#B4552B] bg-[#F4A28C]/20 px-2 py-0.5 rounded-full">
+                      <span className="grain text-xs font-semibold uppercase tracking-wide text-peach-deep bg-blush/20 px-2 py-0.5 rounded-full">
                         Price on request
                       </span>
                     ) : (
-                      <span className="grain text-[10px] font-semibold uppercase tracking-wide text-[#C2542E] bg-[#DCE6F0]/70 px-2 py-0.5 rounded-full">
+                      <span className="grain text-xs font-semibold uppercase tracking-wide text-peach-deep bg-sky/70 px-2 py-0.5 rounded-full">
                         Lowest published
                       </span>
                     )}
@@ -1167,7 +724,7 @@ export function ClinicCostings({
                 <div className="mt-3 flex items-center gap-3">
                   <Button
                     size="sm"
-                    className="bg-[#F4A28C] hover:bg-[#E0714A] text-[#2F2C2A] font-semibold"
+                    className="bg-blush hover:bg-peach text-ink font-semibold"
                     onClick={() => setEnquiring([{ slug: clinic.slug, name: clinic.clinicName }])}
                   >
                     Enquire
@@ -1176,11 +733,11 @@ export function ClinicCostings({
                     type="button"
                     onClick={() => toggleShortlist(clinic.id)}
                     aria-pressed={shortlist.includes(clinic.id)}
-                    className="inline-flex items-center gap-1 text-sm font-medium text-[#C2542E] rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C2542E]"
+                    className="inline-flex items-center gap-1 text-sm font-medium text-peach-deep rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-peach-deep"
                   >
                     {shortlist.includes(clinic.id) ? (
                       <>
-                        <BookmarkCheck className="w-4 h-4 fill-[#DCE6F0]" />
+                        <BookmarkCheck className="w-4 h-4 fill-sky" />
                         Saved
                       </>
                     ) : (
@@ -1194,7 +751,7 @@ export function ClinicCostings({
                     href={clinic.hfeaUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="ml-auto inline-flex items-center gap-1 text-sm text-[#C2542E] hover:underline"
+                    className="ml-auto inline-flex items-center gap-1 text-sm text-peach-deep hover:underline"
                   >
                     HFEA results
                     <ExternalLink className="w-3.5 h-3.5" />
@@ -1202,7 +759,7 @@ export function ClinicCostings({
                   <button
                     onClick={() => toggleRowExpansion(clinic.id)}
                     aria-expanded={expanded}
-                    className="ml-auto inline-flex items-center gap-1 text-sm font-medium text-[#C2542E]"
+                    className="ml-auto inline-flex items-center gap-1 text-sm font-medium text-peach-deep"
                   >
                     {expanded ? 'Hide details' : 'View details'}
                     {expanded ? (
@@ -1214,7 +771,7 @@ export function ClinicCostings({
                 </div>
 
                 {expanded && (
-                  <div className="mt-4 pt-4 border-t border-[#2F2C2A]/10">
+                  <div className="mt-4 pt-4 border-t border-ink/10">
                     <ClinicDetail
                       clinic={clinic}
                       onEnquire={() =>
@@ -1229,13 +786,13 @@ export function ClinicCostings({
         </div>
       )}
 
-      <p className="text-xs text-[#665F58]">
+      <p className="text-xs text-muted-ink">
         Success rates are shown on the{' '}
-        <a href={HFEA} target="_blank" rel="noopener noreferrer" className="text-[#C2542E] hover:underline">
+        <a href={HFEA} target="_blank" rel="noopener noreferrer" className="text-peach-deep hover:underline">
           HFEA &ldquo;Choose a Fertility Clinic&rdquo; register
         </a>
         , the UK regulator&rsquo;s own verified figures.{' '}
-        <button onClick={onShowPrivacy} className="text-[#C2542E] hover:underline">
+        <button onClick={onShowPrivacy} className="text-peach-deep hover:underline">
           How we handle your information
         </button>
         .
@@ -1248,14 +805,14 @@ export function ClinicCostings({
       {/* Sticky compare bar — appears once anything is saved */}
       {shortlist.length > 0 && !comparing && (
         <div className="fixed inset-x-0 bottom-0 z-40 flex justify-center px-4 pb-4 pointer-events-none">
-          <div className="pointer-events-auto glass rounded-full shadow-[0_12px_40px_rgba(120,140,200,0.3)] border border-[#C3D3E2]/40 px-5 py-3 flex items-center gap-4">
-            <span className="text-sm font-medium text-[#2F2C2A] whitespace-nowrap">
+          <div className="pointer-events-auto glass rounded-full shadow-[0_12px_40px_rgba(120,140,200,0.3)] border border-sky/40 px-5 py-3 flex items-center gap-4">
+            <span className="text-sm font-medium text-ink whitespace-nowrap">
               {shortlist.length} saved
             </span>
             <Button
               size="sm"
               variant="outline"
-              className="border-[#2F2C2A]/20 text-[#2F2C2A] font-semibold"
+              className="border-ink/20 text-ink font-semibold"
               onClick={() => setComparing(true)}
               disabled={shortlist.length < 2}
             >
@@ -1263,7 +820,7 @@ export function ClinicCostings({
             </Button>
             <Button
               size="sm"
-              className="bg-[#F4A28C] hover:bg-[#E0714A] text-[#2F2C2A] font-semibold whitespace-nowrap"
+              className="bg-blush hover:bg-peach text-ink font-semibold whitespace-nowrap"
               onClick={() =>
                 setEnquiring(
                   allClinics
@@ -1276,7 +833,7 @@ export function ClinicCostings({
             </Button>
             <button
               onClick={() => setShortlist([])}
-              className="text-sm text-[#665F58] hover:text-[#2F2C2A] rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C2542E]"
+              className="text-sm text-muted-ink hover:text-ink rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-peach-deep"
             >
               Clear
             </button>
@@ -1301,13 +858,13 @@ export function ClinicCostings({
               onClick={(e) => e.stopPropagation()}
             >
               <div className="flex items-center justify-between px-6 py-4 border-b">
-                <h3 className="text-lg font-semibold text-[#2F2C2A]">
+                <h3 className="text-lg font-semibold text-ink">
                   Comparing {shortlisted.length} clinics
                 </h3>
                 <button
                   onClick={() => setComparing(false)}
                   aria-label="Close compare"
-                  className="text-[#665F58] hover:text-[#2F2C2A] rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C2542E]"
+                  className="text-muted-ink hover:text-ink rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-peach-deep"
                 >
                   <X className="w-5 h-5" />
                 </button>
@@ -1320,12 +877,12 @@ export function ClinicCostings({
                       <th className="sticky left-0 bg-white z-10 p-3 text-left align-bottom w-40" />
                       {shortlisted.map((c) => (
                         <th key={c.id} className="p-3 text-left align-bottom min-w-[10rem] border-l">
-                          <div className="font-semibold text-[#2F2C2A] leading-snug">
+                          <div className="font-semibold text-ink leading-snug">
                             {c.clinicName.split(' — ')[0]}
                           </div>
                           <button
                             onClick={() => toggleShortlist(c.id)}
-                            className="mt-1 inline-flex items-center gap-1 text-xs text-[#665F58] hover:text-[#2F2C2A]"
+                            className="mt-1 inline-flex items-center gap-1 text-xs text-muted-ink hover:text-ink"
                           >
                             <X className="w-3 h-3" /> Remove
                           </button>
@@ -1335,24 +892,24 @@ export function ClinicCostings({
                   </thead>
                   <tbody>
                     <tr className="border-t">
-                      <td className="sticky left-0 bg-white z-10 p-3 text-[#665F58] font-medium">Location</td>
+                      <td className="sticky left-0 bg-white z-10 p-3 text-muted-ink font-medium">Location</td>
                       {shortlisted.map((c) => (
-                        <td key={c.id} className="p-3 border-l text-[#2F2C2A]">{c.city}</td>
+                        <td key={c.id} className="p-3 border-l text-ink">{c.city}</td>
                       ))}
                     </tr>
                     <tr className="border-t">
-                      <td className="sticky left-0 bg-white z-10 p-3 text-[#665F58] font-medium">Funding</td>
+                      <td className="sticky left-0 bg-white z-10 p-3 text-muted-ink font-medium">Funding</td>
                       {shortlisted.map((c) => (
-                        <td key={c.id} className="p-3 border-l text-[#2F2C2A]">
+                        <td key={c.id} className="p-3 border-l text-ink">
                           {c.fundingRoutes.map((f) => FUNDING_LABEL[f]).join(' / ')}
                         </td>
                       ))}
                     </tr>
                     {componentLabels.map((label, i) => (
                       <tr key={label} className="border-t">
-                        <td className="sticky left-0 bg-white z-10 p-3 text-[#665F58] font-medium">{label}</td>
+                        <td className="sticky left-0 bg-white z-10 p-3 text-muted-ink font-medium">{label}</td>
                         {shortlisted.map((c) => (
-                          <td key={c.id} className="p-3 border-l text-[#2F2C2A]">
+                          <td key={c.id} className="p-3 border-l text-ink">
                             {c.components[i]?.amount != null
                               ? `£${c.components[i]!.amount!.toLocaleString()}`
                               : <span className="text-gray-400">—</span>}
@@ -1361,30 +918,30 @@ export function ClinicCostings({
                       </tr>
                     ))}
                     <tr className="border-t">
-                      <td className="sticky left-0 bg-white z-10 p-3 text-[#665F58] font-medium">Medications</td>
+                      <td className="sticky left-0 bg-white z-10 p-3 text-muted-ink font-medium">Medications</td>
                       {shortlisted.map((c) => (
-                        <td key={c.id} className="p-3 border-l text-[#2F2C2A]">
+                        <td key={c.id} className="p-3 border-l text-ink">
                           {c.medsIncluded ? 'Included' : 'Quoted separately'}
                         </td>
                       ))}
                     </tr>
-                    <tr className="border-t bg-[#DCE6F0]/30">
-                      <td className="sticky left-0 bg-[#F7F5F2] z-10 p-3 font-semibold text-[#2F2C2A]">Total</td>
+                    <tr className="border-t bg-sky/30">
+                      <td className="sticky left-0 bg-stone z-10 p-3 font-semibold text-ink">Total</td>
                       {shortlisted.map((c) => (
-                        <td key={c.id} className="p-3 border-l font-semibold text-[#C2542E] whitespace-nowrap">
+                        <td key={c.id} className="p-3 border-l font-semibold text-peach-deep whitespace-nowrap">
                           {priceLabel(c)}
                         </td>
                       ))}
                     </tr>
                     <tr className="border-t">
-                      <td className="sticky left-0 bg-white z-10 p-3 text-[#665F58] font-medium">Results</td>
+                      <td className="sticky left-0 bg-white z-10 p-3 text-muted-ink font-medium">Results</td>
                       {shortlisted.map((c) => (
                         <td key={c.id} className="p-3 border-l">
                           <a
                             href={c.hfeaUrl}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="inline-flex items-center gap-1 text-[#C2542E] hover:underline"
+                            className="inline-flex items-center gap-1 text-peach-deep hover:underline"
                           >
                             HFEA <ExternalLink className="w-3 h-3" />
                           </a>
@@ -1397,7 +954,7 @@ export function ClinicCostings({
                         <td key={c.id} className="p-3 border-l">
                           <Button
                             size="sm"
-                            className="bg-[#F4A28C] hover:bg-[#E0714A] text-[#2F2C2A] font-semibold"
+                            className="bg-blush hover:bg-peach text-ink font-semibold"
                             onClick={() => {
                               setComparing(false);
                               setEnquiring([{ slug: c.slug, name: c.clinicName }]);
@@ -1413,11 +970,11 @@ export function ClinicCostings({
               </div>
 
               <div className="border-t px-6 py-4 flex items-center justify-end gap-3">
-                <span className="text-sm text-[#665F58] mr-auto">
+                <span className="text-sm text-muted-ink mr-auto">
                   Send one enquiry to all {shortlisted.length} and compare their quotes.
                 </span>
                 <Button
-                  className="bg-[#F4A28C] hover:bg-[#E0714A] text-[#2F2C2A] font-semibold"
+                  className="bg-blush hover:bg-peach text-ink font-semibold"
                   onClick={() => {
                     setComparing(false);
                     setEnquiring(shortlisted.map((c) => ({ slug: c.slug, name: c.clinicName })));

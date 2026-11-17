@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useEffect } from 'react';
+import { Link, Navigate, useParams } from 'react-router';
 import { ArrowLeft, Clock, ChevronRight } from 'lucide-react';
-import { Button } from './ui/button';
+import { Eyebrow, GuidelinesNote } from './SiteChrome';
 import eggFreezingCover from '../../assets/photos/resource-egg-freezing.jpg';
 import embryoFreezingCover from '../../assets/photos/resource-embryo-freezing.jpg';
 import ivfCover from '../../assets/photos/resource-ivf.jpg';
@@ -20,11 +21,6 @@ const CATEGORY_COVERS: Record<string, string> = {
   'Fertility Testing': fertilityTestingCover,
   'Costs & Planning': costsPlanningCover,
 };
-
-interface ResourcesProps {
-  onBack: () => void;
-  initialCategory?: string;
-}
 
 export interface Article {
   id: string;
@@ -641,133 +637,137 @@ export const ARTICLES: Article[] = [
   },
 ];
 
-const CATEGORIES = [
-  'All',
-  'Egg Freezing',
-  'Embryo Freezing',
-  'IVF',
-  'Fertility Testing',
-  'Costs & Planning',
-] as const;
+type Category = Article['category'];
 
-export function Resources({ onBack, initialCategory = 'All' }: ResourcesProps) {
-  const [category, setCategory] = useState<string>(initialCategory);
-  const [openArticle, setOpenArticle] = useState<Article | null>(null);
+/** URL slug for each guide category: /guides/<slug> and /guides/<slug>/<article id>. */
+export const CATEGORY_SLUGS: Record<Category, string> = {
+  'Egg Freezing': 'egg-freezing',
+  'Embryo Freezing': 'embryo-freezing',
+  IVF: 'ivf',
+  'Fertility Testing': 'fertility-testing',
+  'Costs & Planning': 'costs-and-planning',
+};
 
-  const filtered =
-    category === 'All' ? ARTICLES : ARTICLES.filter((a) => a.category === category);
+const CATEGORIES = Object.keys(CATEGORY_SLUGS) as Category[];
+const categoryFromSlug = (slug?: string) => CATEGORIES.find((c) => CATEGORY_SLUGS[c] === slug);
+export const guidePath = (a: Article) => `/guides/${CATEGORY_SLUGS[a.category]}/${a.id}`;
 
-  // ------------------------------------------------------------- Article reader
-  if (openArticle) {
-    return (
-      <div className="max-w-3xl mx-auto">
-        <Button variant="ghost" className="mb-8 -ml-3" onClick={() => setOpenArticle(null)}>
-          <ArrowLeft className="w-4 h-4 mr-2" />
-          All resources
-        </Button>
+const backLink = 'inline-flex items-center gap-2 min-h-11 mb-6 text-sm font-semibold text-muted-ink hover:text-ink rounded-md';
+const tagClass = 'grain text-xs font-semibold uppercase tracking-wide text-peach-deep bg-sky/70 px-3 py-1 rounded-full';
 
-        <div className="relative rounded-2xl overflow-hidden mb-8 h-40 md:h-52">
-          <img
-            src={CATEGORY_COVERS[openArticle.category]}
-            alt=""
-            aria-hidden="true"
-            className="w-full h-full object-cover"
-          />
-        </div>
+/** /guides/:category/:articleId */
+export function GuideArticle() {
+  const { category, articleId } = useParams();
+  const article = ARTICLES.find((a) => a.id === articleId && CATEGORY_SLUGS[a.category] === category);
+  useEffect(() => {
+    if (article) document.title = `${article.title} | JourneyFertility`;
+  }, [article]);
+  if (!article) return <Navigate to="/resources" replace />;
 
-        <div className="flex items-center gap-3 mb-5">
-          <span className="grain text-[11px] font-semibold uppercase tracking-wide text-[#C2542E] bg-[#DCE6F0]/70 px-3 py-1 rounded-full">
-            {openArticle.category}
-          </span>
-          <span className="flex items-center gap-1.5 text-sm text-[#665F58]">
-            <Clock className="w-3.5 h-3.5" />
-            {openArticle.readTime} read
-          </span>
-        </div>
+  return (
+    <div className="max-w-3xl mx-auto">
+      <Link to={`/guides/${CATEGORY_SLUGS[article.category]}`} className={backLink}>
+        <ArrowLeft className="w-4 h-4" />
+        All {article.category.toLowerCase()} guides
+      </Link>
 
-        <h1 className="text-3xl md:text-5xl font-bold tracking-tight text-[#2F2C2A] mb-6 leading-tight">
-          {openArticle.title}
-        </h1>
-        <p className="text-lg md:text-xl text-[#665F58] leading-relaxed mb-10">
-          {openArticle.excerpt}
-        </p>
-
-        <article className="space-y-10">
-          {openArticle.sections.map((section, i) => (
-            <section key={i}>
-              <h2 className="text-xl md:text-2xl font-semibold tracking-tight text-[#2F2C2A] mb-4">
-                {section.heading}
-              </h2>
-              <div className="space-y-4">
-                {section.body.map((p, j) => (
-                  <p key={j} className="text-[#665F58] leading-relaxed">
-                    {p}
-                  </p>
-                ))}
-              </div>
-            </section>
-          ))}
-        </article>
-
-        <div className="glass rounded-2xl p-6 mt-12">
-          <p className="text-sm text-[#665F58] leading-relaxed">
-            This article is general educational information, not medical advice. Fertility care is
-            highly individual — always discuss your own situation with a qualified clinician before
-            making decisions about treatment.
-          </p>
-        </div>
+      <div className="relative rounded-2xl overflow-hidden mb-8 h-40 md:h-52">
+        <img
+          src={CATEGORY_COVERS[article.category]}
+          alt=""
+          aria-hidden="true"
+          {...{ fetchpriority: "high" }}
+          className="w-full h-full object-cover"
+        />
       </div>
-    );
-  }
 
-  // --------------------------------------------------------------- Index listing
+      <div className="flex items-center gap-3 mb-5">
+        <span className={tagClass}>{article.category}</span>
+        <span className="flex items-center gap-1.5 text-sm text-muted-ink">
+          <Clock className="w-3.5 h-3.5" />
+          {article.readTime} read
+        </span>
+      </div>
+
+      <h1 className="text-3xl md:text-5xl font-bold tracking-tight text-ink mb-6 leading-tight">{article.title}</h1>
+      <p className="text-lg md:text-xl text-muted-ink leading-relaxed mb-10">{article.excerpt}</p>
+
+      <article className="space-y-10">
+        {article.sections.map((section, i) => (
+          <section key={i}>
+            <h2 className="text-xl md:text-2xl font-semibold tracking-tight text-ink mb-4">{section.heading}</h2>
+            <div className="space-y-4">
+              {section.body.map((p, j) => (
+                <p key={j} className="text-muted-ink leading-relaxed">
+                  {p}
+                </p>
+              ))}
+            </div>
+          </section>
+        ))}
+      </article>
+
+      <div className="glass rounded-2xl p-6 mt-12 space-y-3 text-sm text-muted-ink leading-relaxed">
+        <p>
+          This article is general educational information, not medical advice. Fertility care is highly individual —
+          always discuss your own situation with a qualified clinician before making decisions about treatment.
+        </p>
+        <GuidelinesNote />
+      </div>
+    </div>
+  );
+}
+
+/** /resources (all guides) and /guides/:category */
+export function Resources() {
+  const { category: slug } = useParams();
+  const category = categoryFromSlug(slug);
+  useEffect(() => {
+    document.title = `${category ? `${category} guides` : 'Resources'} | JourneyFertility`;
+  }, [category]);
+  if (slug && !category) return <Navigate to="/resources" replace />;
+
+  const filtered = category ? ARTICLES.filter((a) => a.category === category) : ARTICLES;
+  const chip = (active: boolean) =>
+    `grain inline-flex items-center min-h-11 text-sm font-medium px-4 rounded-full transition-colors ${
+      active ? 'bg-ink text-white' : 'glass text-ink hover:bg-white/70'
+    }`;
+
   return (
     <div>
-      <Button variant="ghost" className="mb-8 -ml-3" onClick={onBack}>
-        <ArrowLeft className="w-4 h-4 mr-2" />
-        Back to Home
-      </Button>
-
       <div className="max-w-2xl mb-10">
-        <div className="text-xs font-semibold uppercase tracking-[0.14em] text-[#C2542E] mb-4">
-          Resources
-        </div>
-        <h1 className="text-4xl md:text-6xl font-bold tracking-tight text-[#2F2C2A] mb-5">
-          Understand your options
+        <Eyebrow>Resources</Eyebrow>
+        <h1 className="text-4xl md:text-6xl font-bold tracking-tight text-ink mb-5">
+          {category ? `${category} guides` : 'Understand your options'}
         </h1>
-        <p className="text-lg text-[#665F58] leading-relaxed">
-          Plain-language guides to treatments, tests and what they really cost — written to help you
-          ask better questions and compare clinics properly.
+        <p className="text-lg text-muted-ink leading-relaxed">
+          Plain-language guides to treatments, tests and what they really cost — written to help you ask better
+          questions and compare clinics properly.
         </p>
       </div>
 
-      {/* Category filter */}
-      <div className="flex flex-wrap gap-2 mb-10">
+      <nav aria-label="Guide categories" className="flex flex-wrap gap-2 mb-10">
+        <Link to="/resources" className={chip(!category)} aria-current={!category ? 'page' : undefined}>
+          All
+        </Link>
         {CATEGORIES.map((c) => (
-          <button
+          <Link
             key={c}
-            onClick={() => setCategory(c)}
-            className={`grain text-sm font-medium px-4 py-2 rounded-full transition-all ${
-              category === c
-                ? 'bg-[#2F2C2A] text-white'
-                : 'glass text-[#2F2C2A] hover:bg-white/70'
-            }`}
+            to={`/guides/${CATEGORY_SLUGS[c]}`}
+            className={chip(category === c)}
+            aria-current={category === c ? 'page' : undefined}
           >
             {c}
-          </button>
+          </Link>
         ))}
-      </div>
+      </nav>
 
-      {/* Article grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
         {filtered.map((article) => (
-          <button
+          <Link
             key={article.id}
-            onClick={() => {
-              setOpenArticle(article);
-              window.scrollTo({ top: 0 });
-            }}
-            className="group glass rounded-2xl overflow-hidden text-left flex flex-col transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_12px_40px_rgba(120,140,200,0.22)]"
+            to={guidePath(article)}
+            className="group glass rounded-2xl overflow-hidden text-left flex flex-col transition-all duration-200 motion-reduce:transition-none hover:-translate-y-0.5"
           >
             <div className="relative h-28 overflow-hidden">
               <img
@@ -775,6 +775,7 @@ export function Resources({ onBack, initialCategory = 'All' }: ResourcesProps) {
                 alt=""
                 aria-hidden="true"
                 loading="lazy"
+                decoding="async"
                 className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-[1.04]"
               />
               {/* Keeps the title legible on the lightest gradients where the card body meets the image. */}
@@ -783,33 +784,32 @@ export function Resources({ onBack, initialCategory = 'All' }: ResourcesProps) {
 
             <div className="p-6 flex flex-col flex-1">
               <div className="flex items-center justify-between mb-5">
-                <span className="grain text-[11px] font-semibold uppercase tracking-wide text-[#C2542E] bg-[#DCE6F0]/70 px-3 py-1 rounded-full">
-                  {article.category}
-                </span>
-                <span className="flex items-center gap-1.5 text-xs text-[#665F58]">
+                <span className={tagClass}>{article.category}</span>
+                <span className="flex items-center gap-1.5 text-xs text-muted-ink">
                   <Clock className="w-3 h-3" />
                   {article.readTime}
                 </span>
               </div>
 
-              <h3 className="text-lg font-semibold text-[#2F2C2A] leading-snug mb-3">
-                {article.title}
-              </h3>
-              <p className="text-sm text-[#665F58] leading-relaxed mb-5 flex-1">{article.excerpt}</p>
+              <h2 className="text-lg font-semibold text-ink leading-snug mb-3">{article.title}</h2>
+              <p className="text-sm text-muted-ink leading-relaxed mb-5 flex-1">{article.excerpt}</p>
 
-              <span className="flex items-center gap-1.5 text-sm font-semibold text-[#C2542E]">
-                Read guide
+              <span className="flex items-center gap-1.5 text-sm font-semibold text-peach-deep">
+                Read the guide
                 <ChevronRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5" />
               </span>
             </div>
-          </button>
+          </Link>
         ))}
       </div>
 
-      <p className="text-sm text-[#665F58] mt-12 max-w-2xl leading-relaxed">
-        These guides are general educational information, not medical advice. Always discuss your own
-        circumstances with a qualified clinician.
-      </p>
+      <div className="text-sm text-muted-ink mt-12 max-w-2xl leading-relaxed space-y-2">
+        <p>
+          These guides are general educational information, not medical advice. Always discuss your own circumstances
+          with a qualified clinician.
+        </p>
+        <GuidelinesNote />
+      </div>
     </div>
   );
 }
