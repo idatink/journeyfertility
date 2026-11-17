@@ -7,8 +7,6 @@ export const SITE = {
   url: 'https://journeyfertility.com',
   founder: 'Ida Tinker',
   descriptor: 'non-profit fertility guide and clinic comparison',
-  researchCount: '{{number}}',
-  researchWhen: '{{, conducted in month year}}',
   founderReason: '{{one-line reason}}',
   founderBio: '{{bio}}',
   founderLinkedIn: '{{LinkedIn}}',
@@ -18,8 +16,8 @@ export const SITE = {
   companyForm: '{{CIC / charity / other, with number}}',
   registeredAddress: '{{address}}',
   contactEmail: '{{email}}',
-  researchMethod: '{{number of participants, method, dates}}',
-  researchFindings: ['{{finding 1}}', '{{finding 2}}', '{{finding 3}}', '{{finding 4}}'],
+  /** Link to the donation page (for example Buy Me a Coffee or Ko-fi) once Ida has set one up. */
+  donationUrl: '{{donation link}}',
 } as const;
 
 /** True for a value that is still a {{placeholder}}. */
@@ -44,7 +42,7 @@ export const FAQS: Faq[] = [
   {
     question: 'Do I book my treatment directly with JourneyFertility?',
     answer:
-      'No — we are a non-profit comparison service, not a clinic. When you are ready, you send an enquiry through us and the clinic you chose gets in touch to arrange a consultation. The treatment itself is always booked and provided by the clinic.',
+      "No. We are a non-profit comparison service, not a clinic. When you're ready, you contact the clinic you've chosen directly to arrange a consultation. The treatment itself is always booked and provided by the clinic.",
   },
   {
     question: 'Can I use NHS funding for fertility treatment?',
@@ -107,6 +105,8 @@ export const FOOTER_NAV: { heading: string; links: NavLink[] }[] = [
     heading: 'Explore',
     links: [
       { label: 'Resources', to: '/resources', live: true },
+      { label: 'Using the NHS', to: '/nhs', live: true },
+      { label: 'Donate', to: '/donate', live: true },
       { label: 'Partnerships', to: '/partnerships', live: false },
     ],
   },
@@ -115,5 +115,7 @@ export const FOOTER_NAV: { heading: string; links: NavLink[] }[] = [
 export const HEADER_NAV: NavLink[] = [
   { label: 'About', to: '/about', live: true },
   { label: 'Resources', to: '/resources', live: true },
+  { label: 'Using the NHS', to: '/nhs', live: true },
+  { label: 'Donate', to: '/donate', live: true },
   { label: 'Sign in', to: '/sign-in', live: false },
 ];

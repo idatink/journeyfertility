@@ -8,7 +8,9 @@ import { PrivacyNotice } from './components/PrivacyNotice';
 import {
   CompanyPage,
   ContactPage,
+  DonatePage,
   FaqsPage,
+  NhsPage,
   NotFoundPage,
   SelfAssessmentPage,
   TermsPage,
@@ -40,6 +42,8 @@ export default function App() {
           <Route path="/company" element={<CompanyPage />} />
           <Route path="/contact" element={<ContactPage />} />
           <Route path="/faqs" element={<FaqsPage />} />
+          <Route path="/nhs" element={<NhsPage />} />
+          <Route path="/donate" element={<DonatePage />} />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </main>

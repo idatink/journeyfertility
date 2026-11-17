@@ -171,4 +171,6 @@ export default async (req: Request): Promise<Response> => {
 
 export const config: Config = {
   path: '/api/search',
+  // UK hosting. Choosing a functions region needs a Netlify Pro plan.
+  region: 'lhr',
 };

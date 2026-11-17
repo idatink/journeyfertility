@@ -8,7 +8,7 @@ import { Skeleton } from '../components/ui/skeleton';
 import { Eyebrow } from '../components/SiteChrome';
 import { ServiceExplainer } from '../components/ServiceExplainer';
 import { SuccessByAge } from '../components/SuccessByAge';
-import { AllInCostEstimator } from '../components/AllInCostEstimator';
+import { NhsGuideForService } from '../components/NhsGuide';
 import { HowTrackingWorks } from '../components/HowTrackingWorks';
 import { AtHomeTestKitsComparison } from '../components/AtHomeTestKitsComparison';
 import { OptionsComparison } from '../components/OptionsComparison';
@@ -245,6 +245,7 @@ export function SearchPage() {
 
       {/* How it works and supporting tools for this service */}
       <div className="space-y-8 pt-4 border-t border-ink/10">
+        <NhsGuideForService service={service} />
         {service === 'fertility_testing' ? (
           <>
             <HowTrackingWorks />
@@ -254,7 +255,6 @@ export function SearchPage() {
           <>
             <ServiceExplainer serviceType={legacy} />
             <SuccessByAge userAge={userAge} />
-            {service === 'egg_freezing' && <AllInCostEstimator />}
           </>
         )}
       </div>

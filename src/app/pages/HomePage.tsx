@@ -17,7 +17,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 import { ImageWithFallback } from '../components/figma/ImageWithFallback';
 import { ServiceExplainer } from '../components/ServiceExplainer';
 import { TrustStrip } from '../components/TrustStrip';
-import { ResearchFindings } from '../components/ResearchFindings';
 import { OPTIONS } from '../components/OptionsComparison';
 import { Eyebrow } from '../components/SiteChrome';
 import { CATEGORY_SLUGS } from '../components/Resources';
@@ -67,27 +66,28 @@ const optionFor = (s: LegacyService) => OPTIONS.find((o) => o.service === s)!;
 const STAGES: {
   id: string;
   service: LegacyService | null;
-  age: string | null;
+  /** Shown as "From age 18" on the service cards: these routes are open to adults of any age. */
+  fromAge: number | null;
   icon: typeof Activity;
   statement: string;
 }[] = [
   {
     id: 'testing',
     service: 'fertility',
-    age: '30',
+    fromAge: 18,
     icon: Activity,
     statement: "I'm not sure about kids yet — but I want to check where I stand.",
   },
-  { id: 'eggs', service: 'egg-freezing', age: '30', icon: Snowflake, statement: 'I want kids — just not right now.' },
+  { id: 'eggs', service: 'egg-freezing', fromAge: 18, icon: Snowflake, statement: 'I want kids — just not right now.' },
   {
     id: 'embryo',
     service: 'embryo',
-    age: '40',
+    fromAge: 18,
     icon: HeartPulse,
     statement: 'I want more kids and to freeze embryos — and keep an eye on my hormones.',
   },
-  { id: 'ivf', service: 'ivf', age: '34', icon: Users, statement: "We've been trying for a baby without success." },
-  { id: 'unsure', service: null, age: null, icon: Sparkles, statement: "I'm not sure which option is right for me yet." },
+  { id: 'ivf', service: 'ivf', fromAge: 18, icon: Users, statement: "We've been trying for a baby without success." },
+  { id: 'unsure', service: null, fromAge: null, icon: Sparkles, statement: "I'm not sure which option is right for me yet." },
 ];
 
 /** Guide entry points. The images are illustrative and make no claim about the people in them. */
@@ -226,8 +226,10 @@ export function HomePage() {
             </span>
           </p>
           <p className="text-sm md:text-base text-muted-ink max-w-xl leading-relaxed mb-5">
-            A non-profit built by {SITE.founder}. Guidance based on your country&rsquo;s official healthcare guidelines
-            and research with {SITE.researchCount} women.
+            A non-profit built by {SITE.founder}. Guidance based on the UK&rsquo;s official healthcare guidelines.{' '}
+            <Link to="/nhs" className="hit-area font-semibold text-peach-deep underline underline-offset-2">
+              See what you can get on the NHS
+            </Link>
           </p>
 
           <form
@@ -330,16 +332,15 @@ export function HomePage() {
                 <li key={stage.id} className="snap-start shrink-0 w-[82vw] max-w-[300px] sm:w-[300px]">
                   <Link
                     to={to}
-                    state={stage.age ? { age: Number(stage.age) } : undefined}
                     className="group h-full flex flex-col text-left rounded-2xl border p-6 glass transition-all duration-200 motion-reduce:transition-none hover:-translate-y-0.5"
                   >
                     <div className="flex items-center justify-between mb-5">
                       <div className="w-11 h-11 rounded-full bg-sky/50 flex items-center justify-center text-peach-deep">
                         <Icon className="w-5 h-5" aria-hidden="true" />
                       </div>
-                      {stage.age && (
+                      {stage.fromAge && (
                         <span className="text-xs font-semibold uppercase tracking-wide text-ink bg-sky px-3 py-1 rounded-full">
-                          Age {stage.age}
+                          From age {stage.fromAge}
                         </span>
                       )}
                     </div>
@@ -515,10 +516,6 @@ export function HomePage() {
         </div>
       </section>
 
-      <div className="mb-16">
-        <ResearchFindings />
-      </div>
-
       {/* Why we built this */}
       <section className="mb-16" aria-labelledby="why-heading">
         <div className="glass rounded-2xl p-8 md:p-10 max-w-3xl">
@@ -528,7 +525,7 @@ export function HomePage() {
           </h2>
           <p className="text-muted-ink leading-relaxed mb-5">
             I&rsquo;m {SITE.founder}. I built {SITE.name} as a non-profit because {SITE.founderReason}. Everything here
-            follows your country&rsquo;s official healthcare guidelines and what women told us in our research.
+            follows the UK&rsquo;s official healthcare guidelines.
           </p>
           <Link
             to="/about"

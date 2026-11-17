@@ -8,7 +8,9 @@ import { SITE, isPlaceholder } from '../lib/site';
  * Journey AI is described as a planned paid product. Hidden until Ida confirms it exists;
  * flip this to show the two paragraphs again.
  */
-const SHOW_JOURNEY_AI = false;
+const SHOW_JOURNEY_AI = true;
+/** The £3 a month price is not confirmed, so it stays hidden. */
+const SHOW_JOURNEY_AI_PRICE = false;
 
 const PRINCIPLES = [
   {
@@ -24,7 +26,7 @@ const PRINCIPLES = [
   {
     icon: Search,
     title: 'One search, every option',
-    body: 'Egg freezing, embryo freezing, IVF and fertility testing — at home and abroad — in a single place, so you are not rebuilding your research for each clinic.',
+    body: 'Egg freezing, embryo freezing, IVF and fertility testing for UK clinics, in a single place, so you are not rebuilding your research for each clinic.',
   },
   {
     icon: HeartHandshake,
@@ -61,7 +63,7 @@ const TEAM: {
   {
     role: 'Engineering',
     icon: Code2,
-    bio: 'Builds the search, the cost model and the enquiry pipeline — including the data protection that health data demands. Owns the rule that we never show a price we cannot source.',
+    bio: 'Builds the search and the cost model, including the data protection that health data demands. Owns the rule that we never show a price we cannot source.',
   },
 ];
 
@@ -129,11 +131,15 @@ export function About() {
         </div>
 
         <div className="glass rounded-2xl p-8">
-          <h3 className="text-lg font-semibold text-ink mb-5">How we make money</h3>
+          <h3 className="text-lg font-semibold text-ink mb-5">How we're funded</h3>
           <div className="space-y-4 text-muted-ink leading-relaxed text-sm">
             <p>
-              We earn a referral fee when someone books a consultation through the platform. That
-              fee is the same across every clinic we work with.
+              JourneyFertility is completely non-profit. We take no fees from clinics. If it helps
+              you, you can support it with a{' '}
+              <Link to="/donate" className="hit-area font-semibold text-peach-deep underline underline-offset-2">
+                donation
+              </Link>
+              .
             </p>
             <p>
               Clinics cannot pay for a higher position, a better rating, or to have a competitor
@@ -148,11 +154,11 @@ export function About() {
               hold of: your prescribed doses and injection timings, what happens next, and what to
               ask at your next appointment.
             </p>
-            <p>
+            {SHOW_JOURNEY_AI_PRICE && <p>
               Journey AI will be{' '}
               <span className="font-semibold text-ink">£3 a month</span>. Everything you see
               here — the search, the comparisons, the guides — stays free.
-            </p>
+            </p>}
             </>
             )}
             <p>
@@ -253,21 +259,6 @@ export function About() {
               </div>
             );
           })}
-        </div>
-      </section>
-
-      {/* Our research */}
-      <section className="mb-16 md:mb-24 max-w-3xl" aria-labelledby="research-about-heading">
-        <Eyebrow>Our research</Eyebrow>
-        <h2 id="research-about-heading" className="text-2xl md:text-3xl font-semibold tracking-tight text-ink mb-4">
-          What shaped this site
-        </h2>
-        <div className="space-y-4 text-muted-ink leading-relaxed">
-          <p>How we did it: {SITE.researchMethod}.</p>
-          <p>
-            Thank you to every woman who took part and shared what fertility decisions are really like. This site is
-            built around what you told us.
-          </p>
         </div>
       </section>
 

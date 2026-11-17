@@ -1,5 +1,4 @@
 import { useEffect } from 'react';
-import { RETENTION_MONTHS } from '../lib/enquiry';
 import { Eyebrow } from './SiteChrome';
 
 /**
@@ -22,7 +21,7 @@ export function PrivacyNotice() {
         Fertility is private. This page explains exactly what we collect, why, who sees it and how
         to get rid of it — in plain terms, without the usual padding.
       </p>
-      <p className="text-sm text-muted-ink mb-12">Last updated 20 July 2026</p>
+      <p className="text-sm text-muted-ink mb-12">Last updated 17 November 2026</p>
 
       <div className="glass rounded-2xl p-5 mb-12 text-sm text-muted-ink leading-relaxed">
         <span className="font-semibold text-peach-deep">Before publishing:</span> the operator must
@@ -46,16 +45,15 @@ export function PrivacyNotice() {
 
         <section>
           <h2 className="text-2xl font-semibold tracking-tight text-ink mb-3">
-            Browsing without enquiring
+            When you browse
           </h2>
           <p className="mb-3">
             You can search and compare clinics without telling us who you are. We do not ask you to
             sign in, and we do not set advertising or analytics cookies.
           </p>
           <p className="mb-3">
-            If you use a quiz, your answers stay in your browser and are never sent to us. Closing
-            the tab discards them. If you save a cost breakdown, it is stored on your own device, not
-            on our servers.
+            If you use the self-assessment, your answers stay in your browser and are never sent to
+            us. Closing the tab discards them.
           </p>
           <p>
             Everything on the page — the typeface, the images, the code — is served from us. No
@@ -84,96 +82,30 @@ export function PrivacyNotice() {
 
         <section>
           <h2 className="text-2xl font-semibold tracking-tight text-ink mb-3">
-            When you send an enquiry
+            If you donate{' '}
+            <span className="text-sm font-semibold text-peach-deep align-middle">[draft for review]</span>
           </h2>
-          <p className="mb-4">
-            Asking a clinic to contact you about fertility treatment says something about your
-            health. The law treats that as sensitive, and so do we.
-          </p>
-
-          <h3 className="text-base font-semibold text-ink mb-2">What we collect</h3>
-          <ul className="list-disc pl-5 space-y-1 mb-5">
-            <li>Your name and email address, and your phone number if you give one</li>
-            <li>How you would like to be contacted</li>
-            <li>Roughly when you hope to start, and whether you expect NHS or private funding</li>
-            <li>Anything you choose to write in the message box</li>
-            <li>Which clinic and treatment you enquired about, and when</li>
-            <li>A record of the consents you gave, and the time you gave them</li>
-          </ul>
-
-          <h3 className="text-base font-semibold text-ink mb-2">
-            What we deliberately do not collect
-          </h3>
           <p>
-            We do not ask for your medical history, diagnoses, test results, medication or previous
-            treatment — and our systems will not store them. The clinic can take those from you
-            safely once you are in their care. Please leave them out of the message box.
+            Donations are taken by{' '}
+            <span className="font-semibold text-ink">[to confirm: donation platform]</span>, not by
+            us. When you follow a donate link you leave this site, and the platform handles your
+            payment under its own privacy notice. We never see your card details.
           </p>
         </section>
 
         <section>
           <h2 className="text-2xl font-semibold tracking-tight text-ink mb-3">
-            Why we are allowed to use it
+            Your rights{' '}
+            <span className="text-sm font-semibold text-peach-deep align-middle">[draft for review]</span>
           </h2>
           <p className="mb-3">
-            Your explicit consent, and nothing else. That is UK GDPR Article 6(1)(a) and, because it
-            concerns health, Article 9(2)(a).
+            We do not ask for your name, email or any health information, and we hold no personal
+            information about you beyond the hosting logs described above.
           </p>
           <p>
-            Consent means you have to actively agree. Nothing is pre-ticked, and the optional
-            marketing box is never a condition of sending your enquiry. You can withdraw consent at
-            any time, and we will delete your enquiry when you do.
-          </p>
-        </section>
-
-        <section>
-          <h2 className="text-2xl font-semibold tracking-tight text-ink mb-3">Who sees it</h2>
-          <ul className="list-disc pl-5 space-y-2">
-            <li>
-              <span className="font-semibold text-ink">The clinic you chose</span> — named on
-              the consent screen before you send anything. We do not pass your enquiry to any other
-              clinic, and we never sell your details.
-            </li>
-            <li>
-              <span className="font-semibold text-ink">Our hosting provider</span>, which
-              stores the data on our behalf under a contract and cannot use it for anything else.
-            </li>
-          </ul>
-        </section>
-
-        <section>
-          <h2 className="text-2xl font-semibold tracking-tight text-ink mb-3">
-            How long we keep it
-          </h2>
-          <p className="mb-3">
-            {RETENTION_MONTHS} months from the day you send it, so we can follow up on the
-            clinic&rsquo;s response. After that it is deleted automatically — this runs on a schedule
-            rather than relying on someone remembering.
-          </p>
-          <p>
-            When your enquiry is deleted, all of it goes. We keep only a dated note that an enquiry
-            existed and how it ended, with nothing in it that could identify you.
-          </p>
-        </section>
-
-        <section>
-          <h2 className="text-2xl font-semibold tracking-tight text-ink mb-3">Your rights</h2>
-          <p className="mb-3">You can ask us to:</p>
-          <ul className="list-disc pl-5 space-y-1 mb-4">
-            <li>Give you a copy of what we hold about you</li>
-            <li>Correct anything that is wrong</li>
-            <li>Delete your enquiry, at any time and without giving a reason</li>
-            <li>Send you your data in a portable format</li>
-            <li>Stop using it, or restrict how we use it</li>
-          </ul>
-          <p className="mb-3">
-            Email <span className="font-semibold text-ink">[to confirm: privacy@ address]</span>{' '}
-            with your enquiry reference. We reply within one month. There is no charge.
-          </p>
-          <p>
-            Withdrawing consent does not undo what happened before you withdrew it — if the clinic
-            has already contacted you, that contact is between you and them, and their own privacy
-            notice covers it.
+            If you have a question about your information, email{' '}
+            <span className="font-semibold text-ink">[to confirm: privacy@ address]</span>. We reply
+            within one month. There is no charge.
           </p>
         </section>
 
@@ -182,10 +114,10 @@ export function PrivacyNotice() {
             Where your data is held
           </h2>
           <p>
-            We list UK clinics and store data{' '}
-            <span className="font-semibold text-ink">[to confirm: hosting region]</span>. If we
-            ever need to send your information outside the UK, we will tell you and put the required
-            safeguards in place first.
+            We list UK clinics only. Our search and the clinic database run in London, in the UK{' '}
+            <span className="font-semibold text-ink">[to confirm once the site is deployed]</span>. If
+            we ever need to send your information outside the UK, we will tell you and put the
+            required safeguards in place first.
           </p>
         </section>
 
@@ -210,8 +142,7 @@ export function PrivacyNotice() {
           <h2 className="text-2xl font-semibold tracking-tight text-ink mb-3">Changes</h2>
           <p>
             If we change how we handle your information we will update this page and the date at the
-            top. Where the change is significant and we rely on your consent, we will ask again
-            rather than assume.
+            top.
           </p>
         </section>
       </div>

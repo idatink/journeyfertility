@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router';
+import { Heart } from 'lucide-react';
+import { NhsGuideAll } from '../components/NhsGuide';
 import { Eyebrow } from '../components/SiteChrome';
 import { SelfAssessmentQuiz } from '../components/SelfAssessmentQuiz';
 import { FaqList } from './HomePage';
@@ -159,6 +161,57 @@ export function NotFoundPage() {
         <Link to="/resources" className="inline-flex items-center min-h-11 font-semibold text-peach-deep underline underline-offset-2">
           Read the guides
         </Link>
+      </div>
+    </div>
+  );
+}
+
+export function NhsPage() {
+  usePageTitle('Using the NHS for fertility care');
+  return (
+    <div>
+      <PageIntro eyebrow="Using the NHS" title="What you can get on the NHS">
+        Before you pay for anything, check what the NHS can do for you. Here is what NICE and the HFEA say for each
+        service, and how to start.
+      </PageIntro>
+      <div className="max-w-3xl">
+        <NhsGuideAll />
+      </div>
+    </div>
+  );
+}
+
+export function DonatePage() {
+  usePageTitle('Donate');
+  const linkIsReal = !isPlaceholder(SITE.donationUrl);
+  return (
+    <div>
+      <PageIntro eyebrow="Support us" title="Help keep JourneyFertility free">
+        {SITE.name} is completely non-profit. It is free to use, has no adverts, and clinics cannot pay to be listed
+        or ranked higher. If it helped you, you can support it with a donation.
+      </PageIntro>
+      <div className="glass rounded-2xl p-6 md:p-8 max-w-3xl space-y-4">
+        {linkIsReal ? (
+          <a
+            href={SITE.donationUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center justify-center h-12 px-8 rounded-md bg-blush hover:bg-peach text-ink font-semibold"
+          >
+            <Heart className="w-4 h-4 mr-2" aria-hidden="true" />
+            Donate
+            <span className="visually-hidden"> (opens in a new tab)</span>
+          </a>
+        ) : (
+          <p className="font-semibold text-ink">Donation link: {SITE.donationUrl}</p>
+        )}
+        <p className="text-sm text-muted-ink leading-relaxed">
+          Donations are taken by our donation platform, not by us, so we never see your card details. See our{' '}
+          <Link to="/privacy" className="hit-area font-semibold text-peach-deep underline underline-offset-2">
+            privacy policy
+          </Link>
+          .
+        </p>
       </div>
     </div>
   );
